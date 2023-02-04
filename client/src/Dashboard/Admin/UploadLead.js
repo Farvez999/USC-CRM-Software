@@ -37,7 +37,7 @@ const UploadLead = () => {
             const workSheet = workBook.Sheets[workSheetName]
             //convert to array
             const fileData = XLSX.utils.sheet_to_json(workSheet, { header: 1 })
-            //   console.log(fileData)
+            console.log(fileData)
             const headers = fileData[0]
             const heads = headers.map(head => ({ title: head, field: head }))
             setColDefs(heads)

@@ -37,6 +37,7 @@ function verifyJWT(req, res, next) {
 async function run() {
     try {
         const usersCollection = client.db("usc-crm").collection("users");
+        const PersonalDataCollection = client.db("usc-crm").collection("personal-data");
         const categoriesCollection = client.db("used-products-resale-portal").collection("categories");
         const productsCollection = client.db("used-products-resale-portal").collection("products");
         const bookingsCollection = client.db("used-products-resale-portal").collection("bookings");
@@ -79,6 +80,37 @@ async function run() {
 
         // --------------------------------------------
 
+
+        //User post
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
+        })
+
+        app.post('/personal-data-add', async (req, res) => {
+            const personalData = req.body.data;
+            const employeeName = req.body.employeeName;
+            const existingEmployee = await PersonalDataCollection.findOne({ employeeName: employeeName });
+            console.log(existingEmployee);
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                const newArr = [...existingData, ...personalData];
+                const updateEmployee = await PersonalDataCollection.updateOne({ employeeName: employeeName }, { $set: { data: newArr } }, { new: true });
+                return res.send(updateEmployee);
+            }
+            else {
+                const existingEmployee = await PersonalDataCollection.insertOne({ employeeName: employeeName, data: personalData });
+                return res.send(existingEmployee);
+            }
+        })
+
+
+
+
+
+
+
         //All User 
         app.get('/users', async (req, res) => {
             const query = {}
@@ -94,12 +126,7 @@ async function run() {
             res.send(users)
         })
 
-        //User post
-        app.post('/users', async (req, res) => {
-            const user = req.body;
-            const result = await usersCollection.insertOne(user);
-            res.send(result);
-        })
+
 
         app.get('/allUser/:role', async (req, res) => {
             const role = req.params.role;
