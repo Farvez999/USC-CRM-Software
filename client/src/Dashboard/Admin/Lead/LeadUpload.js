@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx'
 import { Data } from './Data';
+import _ from 'lodash'
 
 const LeadUpload = () => {
+
+    // pagination
+    const pageSize = 10;
+    const [paginationData, setPaginationData] = useState()
+    const [currentPage, setcurrentPage] = useState(1)
+    // console.log(paginationData);
 
     const [employeeName, setEmployeeName] = useState('')
     const [checkData, setCheckData] = useState([]);
@@ -51,6 +58,7 @@ const LeadUpload = () => {
             const data = XLSX.utils.sheet_to_json(worksheet);
             console.log(data);
             setExcelData(data);
+            setPaginationData(_(data).slice(0).take(pageSize).value())
         }
         else {
             setExcelData(null);
@@ -88,6 +96,19 @@ const LeadUpload = () => {
         // .catch(error => { toast.error(error.message); setIsloader(false) })
     }
 
+
+    // pagination
+    const pageCount = excelData !== null && Math.ceil(excelData.length / pageSize);
+    console.log(pageCount);
+    if (pageCount === 1) { return null }
+    const pages = _.range(1, pageCount + 1)
+
+    const paginitaion = (pageNo) => {
+        setcurrentPage(pageNo)
+        const startIndex = (pageNo - 1) * pageSize;
+        const paginationD = _(excelData).slice(startIndex).take(pageSize).value();
+        setPaginationData(paginationD)
+    }
 
     return (
         <div className="container">
@@ -140,13 +161,26 @@ const LeadUpload = () => {
                                     excelData={excelData}
                                     employeeName={employeeName}
                                     checkData={checkData}
-                                    setCheckData={setCheckData} />
+                                    setCheckData={setCheckData}
+                                    paginationData={paginationData} />
                             </tbody>
                         </table>
                     </div>
                 )}
             </div>
 
+            <div className='pagination flex items-1 items-center justify-center'>
+                {
+                    pages.map((page) => (
+                        <p className={
+                            page === currentPage ? 'bg-sky-500 p-2' : 'mx-2'
+                        }
+                            onClick={() => paginitaion(page)}
+                        >{page}</p>
+                    ))
+                }
+
+            </div>
         </div>
     );
 };

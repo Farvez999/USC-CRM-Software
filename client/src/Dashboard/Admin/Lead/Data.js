@@ -1,8 +1,8 @@
 import React from 'react'
 import { IndividualData } from './IndividualData'
 
-export const Data = ({ excelData, employeeName, checkData, setCheckData }) => {
-    return excelData.map((individualExcelData) => (
+export const Data = ({ excelData, employeeName, checkData, setCheckData,paginationData }) => {
+    return paginationData.map((individualExcelData) => (
         <tr key={individualExcelData.Id}>
             <IndividualData
                 individualExcelData={individualExcelData}
