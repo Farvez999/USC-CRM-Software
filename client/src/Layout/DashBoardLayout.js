@@ -27,7 +27,7 @@ const DashBoardLayout = () => {
 
                         {
                             !isDHead && !isAdmin && <>
-                                <li><Link to='/dashboard/myProducts'>My Products</Link></li>
+                                <li><Link to='/dashboard/my-lead'>My Lead</Link></li>
                                 <li><Link to='/dashboard/myWishlists'>My Wishlists</Link></li>
                             </>
                         }
@@ -42,8 +42,8 @@ const DashBoardLayout = () => {
 
                         {
                             isAdmin && <>
-                                <li><Link to={`/dashboard/upload-lead`}>Upload Lead</Link></li>
-                                <li><Link to={`/dashboard/lead-upload`}>UploadLead</Link></li>
+                                {/* <li><Link to={`/dashboard/upload-lead`}>Upload Lead</Link></li> */}
+                                <li><Link to={`/dashboard/lead-upload`}>Upload Lead</Link></li>
                                 <li><Link to={`/dashboard/allSeller`}>All Seller</Link></li>
                                 <li><Link to={`/dashboard/allBuyer`}>All Buyers</Link></li>
                             </>

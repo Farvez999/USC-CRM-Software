@@ -105,7 +105,16 @@ async function run() {
             }
         })
 
-
+        // Seller product get
+        app.get('/leads/:email', async (req, res) => {
+            const email = req.params.email;
+            console.log(email);
+            const existingEmployee = await PersonalDataCollection.findOne({ employeeName: email });
+            console.log(existingEmployee);
+            // const query = { email: email }
+            // const result = await PersonalDataCollection.find(query).toArray()
+            res.send(existingEmployee);
+        });
 
 
 
@@ -241,13 +250,7 @@ async function run() {
             res.send(result);
         });
 
-        //Seller product get
-        app.get('/products/:email', async (req, res) => {
-            const email = req.params.email;
-            const query = { email: email }
-            const result = await productsCollection.find(query).toArray()
-            res.send(result);
-        });
+
 
 
         //Seller add product
@@ -331,7 +334,7 @@ async function run() {
         // bookings post (submit data)
         app.post('/bookings', async (req, res) => {
             const booking = req.body;
-            console.log(booking)
+            // console.log(booking)
 
             // const query = {
             //     appointmentDate: booking.appointmentDate,
@@ -354,7 +357,7 @@ async function run() {
         // Wishlist post add wishlist
         app.post('/wishlist', async (req, res) => {
             const wishlist = req.body;
-            console.log(wishlist)
+            // console.log(wishlist)
             const result = await wishlistsCollection.insertOne(wishlist)
             res.send(result);
         })
@@ -388,7 +391,7 @@ async function run() {
         // Payment Api
         app.post("/create-payment-intent", async (req, res) => {
             const booking = req.body;
-            console.log(booking)
+            // console.log(booking)
             const resalePrice = booking.resalePrice
             const amount = resalePrice * 100
 

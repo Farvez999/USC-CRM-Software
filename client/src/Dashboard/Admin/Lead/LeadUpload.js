@@ -64,7 +64,7 @@ const LeadUpload = () => {
             const worksheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[worksheetName];
             const data = XLSX.utils.sheet_to_json(worksheet);
-            // console.log(data);
+            console.log(data);
             setExcelData(data);
             setPaginationData(_(data).slice(0).take(pageSize).value())
         }
@@ -136,7 +136,7 @@ const LeadUpload = () => {
     // single checkbox 
     const handleChange = (e, name) => {
         console.log(e.target.checked);
-        paginationData.map(pd => pd?.FirstName === name ? pd.isChecked = e.target.checked : pd)
+        paginationData.map(pd => pd?.Name === name ? pd.isChecked = e.target.checked : pd)
         setPaginationData(paginationData)
     }
 
@@ -147,20 +147,27 @@ const LeadUpload = () => {
             <div className='form'>
                 <form className='form-group' autoComplete="off"
                     onSubmit={handleSubmit}>
-                    <label><h5>Upload Excel file</h5></label>
-                    <select className="select w-full max-w-xs" onChange={handleSelect}>
-                        <option disabled selected>Select User</option>
-                        <option>Sumaiya</option>
-                        <option>Sonia</option>
-                    </select>
-                    <button onClick={handleAdded} type="submit">Added</button>
+                    <label className='text-left'><h5>Upload Excel file</h5></label>
+
+                    <div className='flex items-center'>
+                        <input type='file' className='form-control'
+                            onChange={handleFile} required></input>
+                        {excelFileError && <div className='text-danger'
+                            style={{ marginTop: 5 + 'px' }}>{excelFileError}</div>}
+                        <button type='submit' className='btn btn-success btn-sm'
+                            style={{ marginTop: 5 + 'px' }}>Add Import File</button>
+                    </div>
+
                     <br></br>
-                    <input type='file' className='form-control'
-                        onChange={handleFile} required></input>
-                    {excelFileError && <div className='text-danger'
-                        style={{ marginTop: 5 + 'px' }}>{excelFileError}</div>}
-                    <button type='submit' className='btn btn-success'
-                        style={{ marginTop: 5 + 'px' }}>Submit</button>
+
+                    <div className='flex items-center'>
+                        <select className="select select-bordered select-sm w-1/5 max-w-xs" required onChange={handleSelect}>
+                            <option disabled selected>Select User</option>
+                            <option>Sumaiya</option>
+                            <option>Sonia</option>
+                        </select>
+                        <button className='btn btn-success btn-sm mx-6' onClick={handleAdded} type="submit">Added User or DataBase</button>
+                    </div>
                 </form>
             </div>
 
@@ -168,8 +175,7 @@ const LeadUpload = () => {
             <hr></hr>
 
             {/* All Select checkbox */}
-            <form className="form w-100">
-                <h3>Select Users</h3>
+            <form className="flex justify-start form w-100">
                 <div className="form-check">
                     <input
                         type="checkbox"
@@ -178,12 +184,12 @@ const LeadUpload = () => {
                         checked={allChecked}
                         onChange={toggle}
                     />
-                    <label className="form-check-label ms-2">All Select</label>
+                    <label className="form-check-label ms-2"> All Select</label>
                 </div>
             </form>
-
+            <hr></hr>
             {/* view file section */}
-            <h5>View Excel file</h5>
+            <h5 >View Excel file</h5>
             <div className='viewer'>
                 {excelData === null && <>No file selected</>}
                 {excelData !== null && (
@@ -193,12 +199,16 @@ const LeadUpload = () => {
                                 <tr>
                                     <th scope='col'>Select</th>
                                     <th scope='col'>ID</th>
-                                    <th scope='col'>First Name</th>
-                                    <th scope='col'>Last Name</th>
-                                    <th scope='col'>Gender</th>
-                                    <th scope='col'>Country</th>
-                                    <th scope='col'>Age</th>
-                                    <th scope='col'>Date</th>
+                                    <th scope='col'>Name</th>
+                                    <th scope='col'>Phone</th>
+                                    <th scope='col'>Email</th>
+                                    <th scope='col'>FirstFollowup</th>
+                                    <th scope='col'>SecondFollowup</th>
+                                    <th scope='col'>ThirdFollowup</th>
+                                    <th scope='col'>NextFollowupDate</th>
+                                    <th scope='col'>Remark</th>
+                                    <th scope='col'>RemarkTwo</th>
+                                    <th scope='col'>AdmissionStates</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom"
 import LeadUpload from "../Dashboard/Admin/Lead/LeadUpload";
 import UploadLead from "../Dashboard/Admin/UploadLead";
 import Dashboard from "../Dashboard/Dashboard";
+import MyLead from "../Dashboard/Employee/MyLead";
 import DashBoardLayout from "../Layout/DashBoardLayout";
 import Main from "../Layout/Main";
 import Home from "../Pages/Home/Home";
@@ -58,10 +59,10 @@ const router = createBrowserRouter([
                 path: '/dashboard/lead-upload',
                 element: <LeadUpload></LeadUpload>
             },
-            // {
-            //     path: '/dashboard/myProducts',
-            //     element: <MyProducts></MyProducts>
-            // },
+            {
+                path: '/dashboard/my-lead',
+                element: <MyLead></MyLead>
+            },
             // {
             //     path: '/dashboard/myWishlists',
             //     element: <MyWishlists></MyWishlists>
