@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as XLSX from 'xlsx'
 import { Data } from './Data';
-import _ from 'lodash'
+import _, { pad } from 'lodash'
+import { toast } from 'react-hot-toast';
+
+
 
 const LeadUpload = () => {
+
+    // All select Checkbox 
+    const [allChecked, setAllChecked] = useState(false)
+
 
     // pagination
     const pageSize = 10;
@@ -13,6 +20,7 @@ const LeadUpload = () => {
 
     const [employeeName, setEmployeeName] = useState('')
     const [checkData, setCheckData] = useState([]);
+    // console.log(checkData);
 
 
     // on change states
@@ -27,7 +35,7 @@ const LeadUpload = () => {
     const fileType = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
     const handleFile = (e) => {
         let selectedFile = e.target.files[0];
-        console.log(selectedFile);
+        // console.log(selectedFile);
         if (selectedFile) {
             // console.log(selectedFile.type);
             if (selectedFile && fileType.includes(selectedFile.type)) {
@@ -56,7 +64,7 @@ const LeadUpload = () => {
             const worksheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[worksheetName];
             const data = XLSX.utils.sheet_to_json(worksheet);
-            console.log(data);
+            // console.log(data);
             setExcelData(data);
             setPaginationData(_(data).slice(0).take(pageSize).value())
         }
@@ -69,9 +77,11 @@ const LeadUpload = () => {
         setEmployeeName(e.target.value);
     }
 
+
     const handleAdded = () => {
+        const ccc = paginationData.filter(cd => cd.isChecked === true);
         const personalData = {
-            data: checkData,
+            data: ccc,
             employeeName
         }
 
@@ -85,11 +95,11 @@ const LeadUpload = () => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
+                // console.log(data);
                 // if (data.acknowledged) {
                 //     console.log(data);
                 //     // setIsloader(false)
-                //     // toast.success('Your Package added successfully')
+                toast.success('Database Data added successfully')
                 //     // navigate('/dashboard/sellerProducts')
                 // }
             })
@@ -99,7 +109,7 @@ const LeadUpload = () => {
 
     // pagination
     const pageCount = excelData !== null && Math.ceil(excelData.length / pageSize);
-    console.log(pageCount);
+    // console.log(pageCount);
     if (pageCount === 1) { return null }
     const pages = _.range(1, pageCount + 1)
 
@@ -108,6 +118,26 @@ const LeadUpload = () => {
         const startIndex = (pageNo - 1) * pageSize;
         const paginationD = _(excelData).slice(startIndex).take(pageSize).value();
         setPaginationData(paginationD)
+    }
+
+    // All select checkbox 
+    const toggle = (e) => {
+        console.log(e.target.checked);
+        setAllChecked(e.target.checked)
+        if (e.target.checked) {
+            paginationData.map(data => data.isChecked = true)
+        }
+        else {
+            paginationData.map(data => data.isChecked = false)
+        }
+        console.log(paginationData);
+    }
+
+    // single checkbox 
+    const handleChange = (e, name) => {
+        console.log(e.target.checked);
+        paginationData.map(pd => pd?.FirstName === name ? pd.isChecked = e.target.checked : pd)
+        setPaginationData(paginationData)
     }
 
     return (
@@ -137,6 +167,21 @@ const LeadUpload = () => {
             <br></br>
             <hr></hr>
 
+            {/* All Select checkbox */}
+            <form className="form w-100">
+                <h3>Select Users</h3>
+                <div className="form-check">
+                    <input
+                        type="checkbox"
+                        className="form-check-input"
+                        name="allSelect"
+                        checked={allChecked}
+                        onChange={toggle}
+                    />
+                    <label className="form-check-label ms-2">All Select</label>
+                </div>
+            </form>
+
             {/* view file section */}
             <h5>View Excel file</h5>
             <div className='viewer'>
@@ -146,7 +191,7 @@ const LeadUpload = () => {
                         <table className='table'>
                             <thead>
                                 <tr>
-                                    <th scope='col'>Hello</th>
+                                    <th scope='col'>Select</th>
                                     <th scope='col'>ID</th>
                                     <th scope='col'>First Name</th>
                                     <th scope='col'>Last Name</th>
@@ -162,13 +207,15 @@ const LeadUpload = () => {
                                     employeeName={employeeName}
                                     checkData={checkData}
                                     setCheckData={setCheckData}
-                                    paginationData={paginationData} />
+                                    paginationData={paginationData}
+                                    handleChange={handleChange} />
                             </tbody>
                         </table>
                     </div>
                 )}
             </div>
 
+            {/* Pagination  */}
             <div className='pagination flex items-1 items-center justify-center'>
                 {
                     pages.map((page) => (

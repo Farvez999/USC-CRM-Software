@@ -1,23 +1,10 @@
-import React, { useRef } from 'react'
+import React from 'react'
 
-export const IndividualData = ({ individualExcelData, employeeName, checkData, setCheckData }) => {
+export const IndividualData = ({ individualExcelData, employeeName, checkData, setCheckData, handleChange, checkbox }) => {
 
-    const checkbox = useRef();
-    const handleChange = (data) => {
-        // setPersonalData(data);
-        if (checkbox.current.checked) {
-            const pData = [...checkData, data]
-            setCheckData(pData);
-        } else {
-            const pData = checkData.filter(person => person.LastName !== data.LastName);
-            setCheckData(pData);
-        }
-
-    }
-
-    console.log(checkData)
     return (
-        <><th><input type="checkbox" value={individualExcelData} onChange={() => handleChange(individualExcelData)} ref={checkbox} /></th>
+        <>
+            <th><input type="checkbox" checked={individualExcelData?.isChecked} onChange={(e) => handleChange(e, individualExcelData.FirstName)} /></th>
             <th>{individualExcelData.Id}</th>
             <th>{individualExcelData.FirstName}</th>
             <th>{individualExcelData.LastName}</th>
