@@ -37,8 +37,8 @@ function verifyJWT(req, res, next) {
 async function run() {
     try {
         const usersCollection = client.db("usc-crm").collection("users");
-        const PersonalDataCollection = client.db("usc-crm").collection("personal-data");
-        const categoriesCollection = client.db("used-products-resale-portal").collection("categories");
+        const personalDataCollection = client.db("usc-crm").collection("personal-data");
+        const admissitionsCollection = client.db("usc-crm").collection("admisstion-data");
         const productsCollection = client.db("used-products-resale-portal").collection("products");
         const bookingsCollection = client.db("used-products-resale-portal").collection("bookings");
         const wishlistsCollection = client.db("used-products-resale-portal").collection("wishlists");
@@ -91,30 +91,52 @@ async function run() {
         app.post('/personal-data-add', async (req, res) => {
             const personalData = req.body.data;
             const employeeName = req.body.employeeName;
-            const existingEmployee = await PersonalDataCollection.findOne({ employeeName: employeeName });
+            const existingEmployee = await personalDataCollection.findOne({ employeeName: employeeName });
             console.log(existingEmployee);
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
                 const newArr = [...existingData, ...personalData];
-                const updateEmployee = await PersonalDataCollection.updateOne({ employeeName: employeeName }, { $set: { data: newArr } }, { new: true });
+                const updateEmployee = await personalDataCollection.updateOne({ employeeName: employeeName }, { $set: { data: newArr } }, { new: true });
                 return res.send(updateEmployee);
             }
             else {
-                const existingEmployee = await PersonalDataCollection.insertOne({ employeeName: employeeName, data: personalData });
+                const existingEmployee = await personalDataCollection.insertOne({ employeeName: employeeName, data: personalData });
                 return res.send(existingEmployee);
+            }
+        })
+
+        app.post('/user-admission-add', async (req, res) => {
+            const admissionData = req.body.data;
+            const employeeName = req.body.employeeName;
+            const existingEmployee = await admissitionsCollection.findOne({ employeeName: employeeName });
+
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                console.log(existingData);
+                const newArr = [{ ...existingData }, { ...admissionData }];
+                // console.log(newArr);
+                const updateEmployee = await admissitionsCollection.updateOne({ employeeName: employeeName }, { $set: { data: newArr } }, { new: true });
+                return res.send(updateEmployee);
+            }
+            else {
+                const existingEmploye = await admissitionsCollection.insertOne({ employeeName: employeeName, data: admissionData });
+                return res.send(existingEmploye);
             }
         })
 
         // Seller product get
         app.get('/leads/:email', async (req, res) => {
             const email = req.params.email;
-            // console.log(email);
-            const existingEmployee = await PersonalDataCollection.findOne({ employeeName: email });
-            // console.log(existingEmployee);
-            // const query = { email: email }
-            // const result = await PersonalDataCollection.find(query).toArray()
+            const existingEmployee = await personalDataCollection.findOne({ employeeName: email });
             res.send(existingEmployee);
         });
+
+        //User Admissions get
+        // app.get('/user/admissions/:name', async (req, res) => {
+        //     const name = req.params.name;
+        //     const existingEmployee = await personalDataCollection.findOne({ employeeName: name });
+        //     console.log(existingEmployee.data.findOne({ AdmissionStates: 'admission' }));
+        // })
 
         //Update put
         app.put('/leads/:name', async (req, res) => {
@@ -129,7 +151,7 @@ async function run() {
                     data: updateLead
                 }
             }
-            const resulted = await PersonalDataCollection.updateOne(filter, updatedUser, option)
+            const resulted = await personalDataCollection.updateOne(filter, updatedUser, option)
             res.send(resulted);
         })
 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthProvider';
 import { useQuery } from '@tanstack/react-query'
 import Edit from './Edit';
+import { toast } from 'react-hot-toast';
 
 const MyLead = () => {
 
@@ -65,11 +66,43 @@ const MyLead = () => {
             .then((response) => response.json())
             .then((data) => {
                 // console.log('Success:', data);
-                if (data.modifiedCount > 0) {
-                    alert('Lead Update Success')
-                    console.log(data);
-                }
+                toast.success('Lead Updates Success')
+                // if (data.modifiedCount > 0) {
+                //     alert('Lead Update Success')
+                //     console.log(data);
+                // }
             });
+    }
+
+    const handleAdmission = data => {
+        console.log(data);
+        console.log(user.displayName);
+        const employeeName = user.displayName
+        const admissionData = {
+            data: data,
+            employeeName
+        }
+
+        fetch(`http://localhost:5000/user-admission-add`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
+            },
+            body: JSON.stringify(admissionData)
+        })
+            .then(res => res.json())
+            .then(data => {
+                // console.log(data);
+                // if (data.acknowledged) {
+                //     console.log(data);
+                //     // setIsloader(false)
+                toast.success('Admisstion Data added successfully')
+                //     // navigate('/dashboard/sellerProducts')
+                // }
+            })
+        // .catch(error => { toast.error(error.message); setIsloader(false) })
+
     }
 
     return (
@@ -79,7 +112,6 @@ const MyLead = () => {
             <div className="overflow-x-auto">
                 <form onSubmit={handleUpdate}>
                     <table className="table-fixed">
-
                         <thead>
                             <tr>
                                 <th style={{ border: "1px solid black" }}>#</th>
@@ -96,8 +128,8 @@ const MyLead = () => {
                                 <th style={{ border: "1px solid black" }}>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
 
+                        <tbody>
                             {
                                 leads?.data?.map((lead, i) =>
                                     updateState === lead.Id ? <Edit
@@ -121,7 +153,10 @@ const MyLead = () => {
                                             <td style={{ border: "1px solid black" }}>{lead.AdmissionStates}</td>
                                             <td style={{ border: "1px solid black" }}>
                                                 <button onClick={() => handleEdit(lead.Id)} className="btn btn-sm btn-primary mr-2">Edit</button>
-                                                <button className="btn btn-sm btn-secondary">Delete</button>
+                                                <p onClick={() => handleAdmission(lead)} >Admission</p>
+                                            </td>
+                                            <td>
+
                                             </td>
 
 
@@ -132,6 +167,7 @@ const MyLead = () => {
                             }
 
                         </tbody>
+
                     </table>
                 </form>
             </div>
