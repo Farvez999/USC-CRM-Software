@@ -2,23 +2,26 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthProvider';
 import { useQuery } from '@tanstack/react-query'
+import Edit from './Edit';
 
 const MyLead = () => {
 
     const { user } = useContext(AuthContext)
-    console.log(user)
+    // console.log(user)
 
     const [leads, setLeads] = useState([])
     // console.log(leads)
 
 
-    fetch(`http://localhost:5000/leads/${user.displayName}`, {
-        headers: {
-            authorization: `bearer ${localStorage.getItem('accessToken')}`
-        }
+    useEffect(() => {
+        fetch(`http://localhost:5000/leads/${user.displayName}`, {
+            headers: {
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
+            }
+        })
+            .then((response) => response.json())
+            .then((data) => setLeads(data))
     })
-        .then((response) => response.json())
-        .then((data) => setLeads(data))
 
 
     // const { data: products, isLoading, refetch } = useQuery({
@@ -44,90 +47,139 @@ const MyLead = () => {
     // const handleEdit = (id) => {
 
     // }
+    const [leadsStatus, setLeadsStatus] = useState()
+    // console.log(updateState);
+    // console.log(leadsStatus);
+
+
+    const handleUpdate = event => {
+        event.preventDefault();
+        console.log(leadsStatus);
+        fetch(`http://localhost:5000/leads/${user.displayName}`, {
+            method: 'PUT', // or 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(leadsStatus),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                // console.log('Success:', data);
+                if (data.modifiedCount > 0) {
+                    alert('Lead Update Success')
+                    console.log(data);
+                }
+            });
+    }
 
     return (
         <div>
             <h3 className="text-3xl mb-5">My Leads : {leads?.data?.length}</h3>
 
             <div className="overflow-x-auto">
-                <table className="table w-full">
+                <form onSubmit={handleUpdate}>
+                    <table className="table-fixed">
 
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Email</th>
-                            <th>FirstFollowup</th>
-                            <th>SecondFollowup</th>
-                            <th>ThirdFollowup</th>
-                            <th>NextFollowupDate</th>
-                            <th>Remark</th>
-                            <th>RemarkTwo</th>
-                            <th>AdmissionStates</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                        <thead>
+                            <tr>
+                                <th style={{ border: "1px solid black" }}>#</th>
+                                <th style={{ border: "1px solid black" }}>Name</th>
+                                <th style={{ border: "1px solid black" }}>Phone</th>
+                                <th style={{ border: "1px solid black" }}>Email</th>
+                                <th style={{ border: "1px solid black" }}>FirstFollowup</th>
+                                <th style={{ border: "1px solid black" }}>SecondFollowup</th>
+                                <th style={{ border: "1px solid black" }}>ThirdFollowup</th>
+                                <th style={{ border: "1px solid black" }}>NextFollowupDate</th>
+                                <th style={{ border: "1px solid black" }}>Remark</th>
+                                <th style={{ border: "1px solid black" }}>RemarkTwo</th>
+                                <th style={{ border: "1px solid black" }}>AdmissionStates</th>
+                                <th style={{ border: "1px solid black" }}>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                        {
-                            leads?.data?.map((lead, i) =>
-                                updateState === lead.Id ? <Edit lead={lead} leads={leads} setLeads={setLeads} /> :
-                                    <tr
-                                        key={lead.Id}>
-                                        <th>{i + 1}</th>
-                                        <td>{lead.Name}</td>
-                                        <td>{lead?.Phone}</td>
-                                        <td>{lead.Email}</td>
-                                        <td>{lead.FirstFollowup}</td>
-                                        <td>{lead.SecondFollowup}</td>
-                                        <td>{lead.ThirdFollowup}</td>
-                                        <td>{lead.NextFollowupDate}</td>
-                                        <td>{lead.Remark}</td>
-                                        <td>{lead.RemarkTwo}</td>
-                                        <td>{lead.AdmissionStates}</td>
-                                        <td>
-                                            <button onClick={() => handleEdit(lead.Id)} className="btn btn-sm btn-primary mr-2">Edit</button>
-                                            <button className="btn btn-sm btn-secondary">Delete</button>
-                                        </td>
+                            {
+                                leads?.data?.map((lead, i) =>
+                                    updateState === lead.Id ? <Edit
+                                        lead={lead}
+                                        leads={leads}
+                                        setLeads={setLeads}
+                                        leadsStatus={leadsStatus}
+                                        setLeadsStatus={setLeadsStatus} /> :
+                                        <tr className='active'
+                                            key={lead.Id}>
+                                            <th style={{ border: "1px solid black" }}>{i + 1}</th>
+                                            <td style={{ border: "1px solid black" }}>{lead.Name}</td>
+                                            <td style={{ border: "1px solid black" }}>{lead?.Phone}</td>
+                                            <td style={{ border: "1px solid black" }}>{lead.Email}</td>
+                                            <td style={{ border: "1px solid black" }}>{lead.FirstFollowup}</td>
+                                            <td style={{ border: "1px solid black" }}>{lead.SecondFollowup}</td>
+                                            <td style={{ border: "1px solid black" }}>{lead.ThirdFollowup}</td>
+                                            <td style={{ border: "1px solid black" }}>{lead.NextFollowupDate}</td>
+                                            <td style={{ border: "1px solid black" }}>{lead.Remark}</td>
+                                            <td style={{ border: "1px solid black" }}>{lead.RemarkTwo}</td>
+                                            <td style={{ border: "1px solid black" }}>{lead.AdmissionStates}</td>
+                                            <td style={{ border: "1px solid black" }}>
+                                                <button onClick={() => handleEdit(lead.Id)} className="btn btn-sm btn-primary mr-2">Edit</button>
+                                                <button className="btn btn-sm btn-secondary">Delete</button>
+                                            </td>
 
 
-                                        {/* <td>
-                                <label onClick={() => handleDelete(product)} htmlFor="confirmation-modal" className="btn btn-sm btn-error">Delete</label>
-                            </td>  */}
-                                    </tr>)
-                        }
+                                            {/* <td>
+            <label onClick={() => handleDelete(product)} htmlFor="confirmation-modal" className="btn btn-sm btn-error">Delete</label>
+        </td>  */}
+                                        </tr>)
+                            }
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </form>
             </div>
 
         </div>
     );
+
+    // function handleUpdate(e) {
+    //     e.preventDefault();
+    //     console.log(leads);
+    //     // setUpdateState(-1)
+    //     // console.log(e.target.value);
+    // }
 
     function handleEdit(id) {
         setUpdateState(id)
     }
 };
 
-function Edit({ lead, leads, setLeads }) {
-    console.log(lead);
-    return (
-        <tr>
-            <th>{1}</th>
-            <td>{lead.Name}</td>
-            <td>{lead?.Phone}</td>
-            <td>{lead.Email}</td>
-            <td><input type="text" name="name" value={lead.FirstFollowup}></input></td>
-            <td><input type="text" name="name" value={lead.SecondFollowup}></input></td>
-            <td>{lead.ThirdFollowup}</td>
-            <td>{lead.NextFollowupDate}</td>
-            <td>{lead.Remark}</td>
-            <td>{lead.RemarkTwo}</td>
-            <td>{lead.AdmissionStates}</td>
-            <button type='submit' className="btn btn-sm btn-primary mr-2">Edit</button>
-        </tr>
-    )
-}
+// function Editt({ lead, leads, setLeads }) {
+
+
+
+//     const handleInputChange = event => {
+//         const field = event.target.name;
+//         const value = event.target.value;
+//         console.log("field : ", field, "value : ", value);
+//         const newLeads = leads?.data.map(newLead => newLead.Id === leads.Id ? { ...newLead, [field]: [value] } : newLead)
+//         console.log(newLeads);
+//         leadsStatus(newLeads);
+//     }
+
+//     return (
+//         <tr>
+//             <th>{1}</th>
+//             <td>{lead.Name}</td>
+//             <td>{lead?.Phone}</td>
+//             <td>{lead.Email}</td>
+//             <td><input onChange={handleInputChange} className='input input-bordered' type="text" name="FirstFollowup" defaultValue={lead.FirstFollowup}></input></td>
+//             <td><input onChange={handleInputChange} className='input input-bordered' type="text" name="SecondFollowup" defaultValue={lead.SecondFollowup}></input></td>
+//             <td>{lead.ThirdFollowup}</td>
+//             <td>{lead.NextFollowupDate}</td>
+//             <td>{lead.Remark}</td>
+//             <td>{lead.RemarkTwo}</td>
+//             <td>{lead.AdmissionStates}</td>
+//             <button type='submit' className="btn btn-sm btn-primary mr-2">Update</button>
+//         </tr>
+//     )
+// }
 
 export default MyLead;

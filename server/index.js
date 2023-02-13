@@ -108,17 +108,35 @@ async function run() {
         // Seller product get
         app.get('/leads/:email', async (req, res) => {
             const email = req.params.email;
-            console.log(email);
+            // console.log(email);
             const existingEmployee = await PersonalDataCollection.findOne({ employeeName: email });
-            console.log(existingEmployee);
+            // console.log(existingEmployee);
             // const query = { email: email }
             // const result = await PersonalDataCollection.find(query).toArray()
             res.send(existingEmployee);
         });
 
+        //Update put
+        app.put('/leads/:name', async (req, res) => {
+            const name = req.params.name;
+            // console.log(id);
+            const filter = { employeeName: name }
+            const updateLead = req.body;
+            // console.log(updateLead);
+            const option = { upsert: true };
+            const updatedUser = {
+                $set: {
+                    data: updateLead
+                }
+            }
+            const resulted = await PersonalDataCollection.updateOne(filter, updatedUser, option)
+            res.send(resulted);
+        })
 
 
 
+
+        // ''''''''''''''''''''''''''''''''''''''''''''''''''''
 
         //All User 
         app.get('/users', async (req, res) => {

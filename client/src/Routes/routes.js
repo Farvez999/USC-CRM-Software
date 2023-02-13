@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom"
 import LeadUpload from "../Dashboard/Admin/Lead/LeadUpload";
 import UploadLead from "../Dashboard/Admin/UploadLead";
 import Dashboard from "../Dashboard/Dashboard";
+import MyAdmission from "../Dashboard/Employee/MyAdmission";
 import MyLead from "../Dashboard/Employee/MyLead";
 import DashBoardLayout from "../Layout/DashBoardLayout";
 import Main from "../Layout/Main";
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
             {
                 path: '/dashboard/my-lead',
                 element: <MyLead></MyLead>
+            },
+            {
+                path: '/dashboard/my-admission',
+                element: <MyAdmission></MyAdmission>
             },
             // {
             //     path: '/dashboard/myWishlists',
