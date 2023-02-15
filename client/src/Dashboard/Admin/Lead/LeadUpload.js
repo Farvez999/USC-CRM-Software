@@ -18,7 +18,11 @@ const LeadUpload = () => {
     const [currentPage, setcurrentPage] = useState(1)
     // console.log(paginationData);
 
+    const [courseName, setCourseName] = useState('')
+    const [batchName, setBatchName] = useState('')
     const [employeeName, setEmployeeName] = useState('')
+    const [headName, setHeadName] = useState('')
+
     const [checkData, setCheckData] = useState([]);
     // console.log(checkData);
 
@@ -73,8 +77,20 @@ const LeadUpload = () => {
         }
     }
 
-    const handleSelect = (e) => {
+    const handleCourseName = (e) => {
+        setCourseName(e.target.value);
+    }
+
+    const handleBatchName = (e) => {
+        setBatchName(e.target.value);
+    }
+
+    const handleSelectUser = (e) => {
         setEmployeeName(e.target.value);
+    }
+
+    const handleSelectHead = (e) => {
+        setHeadName(e.target.value);
     }
 
 
@@ -82,7 +98,10 @@ const LeadUpload = () => {
         const ccc = paginationData.filter(cd => cd.isChecked === true);
         const personalData = {
             data: ccc,
-            employeeName
+            courseName,
+            batchName,
+            employeeName,
+            headName
         }
 
         fetch(`http://localhost:5000/personal-data-add`, {
@@ -160,12 +179,33 @@ const LeadUpload = () => {
 
                     <br></br>
 
-                    <div className='flex items-center'>
-                        <select className="select select-bordered select-sm w-1/5 max-w-xs" required onChange={handleSelect}>
+                    <div className='flex items-center gap-2'>
+                        <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleCourseName}>
+                            <option disabled selected>Course Name</option>
+                            <option>Python</option>
+                            <option>Mern</option>
+                        </select>
+
+                        <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleBatchName}>
+                            <option disabled selected>Batch No</option>
+                            <option>Python-101</option>
+                            <option>Python-102</option>
+                            <option>Mern-101</option>
+                            <option>Mern-102</option>
+                        </select>
+
+                        <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleSelectUser}>
                             <option disabled selected>Select User</option>
                             <option>Sumaiya</option>
                             <option>Sonia</option>
                         </select>
+
+                        <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleSelectHead}>
+                            <option disabled selected>Select Head</option>
+                            <option>Shuvo</option>
+                            <option>Nahid</option>
+                        </select>
+
                         <button className='btn btn-success btn-sm mx-6' onClick={handleAdded} type="submit">Added User or DataBase</button>
                     </div>
                 </form>

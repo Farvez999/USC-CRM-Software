@@ -77,10 +77,17 @@ const MyLead = () => {
     const handleAdmission = data => {
         console.log(data);
         console.log(user.displayName);
-        const employeeName = user.displayName
+
+        const courseName = leads.courseName;
+        const batchName = leads.batchName
+        const employeeName = leads.employeeName
+        const headName = leads.headName
         const admissionData = {
             data: data,
-            employeeName
+            courseName,
+            batchName,
+            employeeName,
+            headName
         }
 
         fetch(`http://localhost:5000/user-admission-add`, {
@@ -105,9 +112,18 @@ const MyLead = () => {
 
     }
 
+    console.log(leads);
+
     return (
         <div>
             <h3 className="text-3xl mb-5">My Leads : {leads?.data?.length}</h3>
+
+            <div className='flex w-full justify-between my-2'>
+                <h3 className='font-bold'>Course Name : {leads.courseName}</h3>
+                <h3 className='font-bold'>Batch Name : {leads.batchName}</h3>
+                <h3 className='font-bold'>User Name : {leads.employeeName}</h3>
+                <h3 className='font-bold'>Head Name : {leads.headName}</h3>
+            </div>
 
             <div className="overflow-x-auto">
                 <form onSubmit={handleUpdate}>

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
+const e = require('express');
 require('dotenv').config();
 
 
@@ -90,7 +91,10 @@ async function run() {
 
         app.post('/personal-data-add', async (req, res) => {
             const personalData = req.body.data;
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
             const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
             const existingEmployee = await personalDataCollection.findOne({ employeeName: employeeName });
             console.log(existingEmployee);
             if (existingEmployee) {
@@ -100,29 +104,19 @@ async function run() {
                 return res.send(updateEmployee);
             }
             else {
-                const existingEmployee = await personalDataCollection.insertOne({ employeeName: employeeName, data: personalData });
+                const existingEmployee = await personalDataCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        data: personalData
+                    });
                 return res.send(existingEmployee);
             }
         })
 
-        app.post('/user-admission-add', async (req, res) => {
-            const admissionData = req.body.data;
-            const employeeName = req.body.employeeName;
-            const existingEmployee = await admissitionsCollection.findOne({ employeeName: employeeName });
 
-            if (existingEmployee) {
-                const existingData = existingEmployee.data;
-                console.log(existingData);
-                const newArr = [{ ...existingData }, { ...admissionData }];
-                // console.log(newArr);
-                const updateEmployee = await admissitionsCollection.updateOne({ employeeName: employeeName }, { $set: { data: newArr } }, { new: true });
-                return res.send(updateEmployee);
-            }
-            else {
-                const existingEmploye = await admissitionsCollection.insertOne({ employeeName: employeeName, data: admissionData });
-                return res.send(existingEmploye);
-            }
-        })
 
         // Seller product get
         app.get('/leads/:email', async (req, res) => {
@@ -131,12 +125,7 @@ async function run() {
             res.send(existingEmployee);
         });
 
-        //User Admissions get
-        // app.get('/user/admissions/:name', async (req, res) => {
-        //     const name = req.params.name;
-        //     const existingEmployee = await personalDataCollection.findOne({ employeeName: name });
-        //     console.log(existingEmployee.data.findOne({ AdmissionStates: 'admission' }));
-        // })
+
 
         //Update put
         app.put('/leads/:name', async (req, res) => {
@@ -153,6 +142,61 @@ async function run() {
             }
             const resulted = await personalDataCollection.updateOne(filter, updatedUser, option)
             res.send(resulted);
+        })
+
+        // Admission Post 
+        app.post('/user-admission-add', async (req, res) => {
+            const admissionData = [req.body.data];
+            console.log(admissionData);
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await admissitionsCollection.findOne({ employeeName: employeeName });
+            // console.log(existingEmployee);
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                console.log(existingData);
+                const newArr = [...existingData, ...admissionData];
+                // const newArr = [newAr]
+                console.log(newArr);
+                const updateEmployee = await admissitionsCollection.updateOne({ employeeName: employeeName }, { $set: { data: newArr } }, { new: true });
+                return res.send(updateEmployee);
+            }
+            else {
+                const existingEmploye = await admissitionsCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        data: admissionData
+                    });
+                return res.send(existingEmploye);
+            }
+        })
+
+        //User Admissions get
+        app.get('/user/admissions/:name', async (req, res) => {
+            const name = req.params.name;
+            console.log(name);
+            const existingEmployee = await admissitionsCollection.findOne({ employeeName: name });
+            console.log(existingEmployee);
+            res.send(existingEmployee);
+        })
+
+        app.get('/user/admissions/:name', async (req, res) => {
+            const name = req.params.name;
+            const existingEmployee = await admissitionsCollection.findOne({ employeeName: name });
+            console.log(existingEmployee);
+            res.send(existingEmployee);
+        })
+
+        app.get('/user/total-admissions', async (req, res) => {
+            const query = {};
+            const cursors = admissitionsCollection.find(query)
+            const TotalAdmission = await cursors.toArray()
+            res.send(TotalAdmission)
         })
 
 

@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom"
 import LeadUpload from "../Dashboard/Admin/Lead/LeadUpload";
+import TotalAdmission from "../Dashboard/Admin/Lead/TotalAdmission";
 import UploadLead from "../Dashboard/Admin/UploadLead";
 import Dashboard from "../Dashboard/Dashboard";
 import MyAdmission from "../Dashboard/Employee/MyAdmission";
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
             {
                 path: '/dashboard/upload-lead',
                 element: <UploadLead></UploadLead>
+            },
+            {
+                path: '/dashboard/total-admission',
+                element: <TotalAdmission></TotalAdmission>
             },
             {
                 path: '/dashboard/lead-upload',
