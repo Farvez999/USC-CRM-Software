@@ -95,12 +95,12 @@ async function run() {
             const batchName = req.body.batchName;
             const employeeName = req.body.employeeName;
             const headName = req.body.headName;
-            const existingEmployee = await personalDataCollection.findOne({ employeeName: employeeName });
+            const existingEmployee = await personalDataCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
             console.log(existingEmployee);
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
                 const newArr = [...existingData, ...personalData];
-                const updateEmployee = await personalDataCollection.updateOne({ employeeName: employeeName }, { $set: { data: newArr } }, { new: true });
+                const updateEmployee = await personalDataCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
                 return res.send(updateEmployee);
             }
             else {
@@ -116,14 +116,27 @@ async function run() {
             }
         })
 
-
+        app.get('/leads', async (req, res) => {
+            const query = {}
+            const users = await personalDataCollection.find(query).toArray()
+            res.send(users)
+        })
 
         // Seller product get
-        app.get('/leads/:email', async (req, res) => {
-            const email = req.params.email;
-            const existingEmployee = await personalDataCollection.findOne({ employeeName: email });
-            res.send(existingEmployee);
-        });
+        // app.get('/leads/:userName', async (req, res) => {
+        //     const userName = req.params.userName;
+        //     console.log(userName);
+        //     const existingEmployee = await personalDataCollection.findOne({ employeeName: userName });
+        //     res.send(existingEmployee);
+        // });
+
+        // app.get('/leads/:email', async (req, res) => {
+        //     const email = req.params.email;
+        //     // console.log(email);
+        //     const existingEBatchName = await personalDataCollection.findOne({ batchName: email });
+        //     console.log(existingEBatchName);
+        //     // res.send(existingEmployee);
+        // });
 
 
 

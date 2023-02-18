@@ -16,9 +16,17 @@ const MyAdmission = () => {
     });
 
     console.log(admissions);
+    console.log(admissions.batchName);
     return (
         <div>
             <h3 className="text-3xl mb-5">My Admissions : {admissions?.data?.length}</h3>
+
+            <div className='flex w-full justify-between my-2'>
+                <h3 className='font-bold'>Course Name : {admissions.courseName}</h3>
+                <h3 className='font-bold'>Batch Name : {admissions.batchName}</h3>
+                <h3 className='font-bold'>User Name : {admissions.employeeName}</h3>
+                <h3 className='font-bold'>Head Name : {admissions.headName}</h3>
+            </div>
 
             <div className="overflow-x-auto">
                 <form>
@@ -26,44 +34,49 @@ const MyAdmission = () => {
                         <thead>
                             <tr>
                                 <th style={{ border: "1px solid black" }}>#</th>
-                                <th style={{ border: "1px solid black" }}>Name</th>
-                                <th style={{ border: "1px solid black" }}>Phone</th>
-                                <th style={{ border: "1px solid black" }}>Email</th>
-                                {/* <th style={{ border: "1px solid black" }}>FirstFollowup</th>
-                                <th style={{ border: "1px solid black" }}>SecondFollowup</th>
-                                <th style={{ border: "1px solid black" }}>ThirdFollowup</th>
-                                <th style={{ border: "1px solid black" }}>NextFollowupDate</th>
-                                <th style={{ border: "1px solid black" }}>Remark</th>
-                                <th style={{ border: "1px solid black" }}>RemarkTwo</th>
-                                <th style={{ border: "1px solid black" }}>AdmissionStates</th> */}
-                                {/* <th style={{ border: "1px solid black" }}>Action</th> */}
+                                <th style={{ border: "1px solid black" }}>Course Name</th>
+                                <th style={{ border: "1px solid black" }}>Batch Name</th>
+                                <th style={{ border: "1px solid black" }}>User Name</th>
+                                <th style={{ border: "1px solid black" }}>Head Name</th>
+                                <th style={{ border: "1px solid black" }}>Student Information</th>
+                                {/* <th style={{ border: "1px solid black" }}>Phone</th>
+                                <th style={{ border: "1px solid black" }}>Email</th> */}
                             </tr>
                         </thead>
 
                         <tbody>
+
                             {
-                                admissions?.data?.map((lead, i) =>
-                                    <tr className='active'
-                                        key={lead.Id}>
-                                        <th style={{ border: "1px solid black" }}>{i + 1}</th>
-                                        <td style={{ border: "1px solid black" }}>{lead.Name}</td>
-                                        <td style={{ border: "1px solid black" }}>{lead?.Phone}</td>
-                                        <td style={{ border: "1px solid black" }}>{lead.Email}</td>
-                                        {/* <td style={{ border: "1px solid black" }}>{lead.FirstFollowup}</td>
-                                        <td style={{ border: "1px solid black" }}>{lead.SecondFollowup}</td>
-                                        <td style={{ border: "1px solid black" }}>{lead.ThirdFollowup}</td>
-                                        <td style={{ border: "1px solid black" }}>{lead.NextFollowupDate}</td>
-                                        <td style={{ border: "1px solid black" }}>{lead.Remark}</td>
-                                        <td style={{ border: "1px solid black" }}>{lead.RemarkTwo}</td>
-                                        <td style={{ border: "1px solid black" }}>{lead.AdmissionStates}</td> */}
-                                        {/* <td style={{ border: "1px solid black" }}>
-                                            <button className="btn btn-sm btn-primary mr-2">Edit</button>
-                                            <p  >Admission</p>
-                                        </td> */}
 
-
-                                    </tr>)
+                                <tr className='active'
+                                    key={admissions.Id}>
+                                    <th style={{ border: "1px solid black" }}>{1}</th>
+                                    <td style={{ border: "1px solid black" }}>{admissions.courseName}</td>
+                                    <td style={{ border: "1px solid black" }}>{admissions.batchName}</td>
+                                    <td style={{ border: "1px solid black" }}>{admissions.employeeName}</td>
+                                    <td style={{ border: "1px solid black" }}>{admissions.headName}</td>
+                                    {
+                                        admissions?.data?.map((d, i) => <tr>
+                                            {/* <td style={{ border: "1px solid black" }}>{i + 1}</td> */}
+                                            <td style={{ border: "1px solid black" }}>{d.Name}</td>
+                                            <td style={{ border: "1px solid black" }}>{d.Phone}</td>
+                                            <td style={{ border: "1px solid black" }}>{d.Email}</td>
+                                        </tr>)
+                                    }
+                                </tr>
                             }
+
+                            {/* {
+                                 admissions?.data?.map((lead, i) =>
+                                 <tr className='active'
+                                     key={lead.Id}>
+                                     
+                                     <th style={{ border: "1px solid black" }}>{i + 1}</th>
+                                     <td style={{ border: "1px solid black" }}>{lead.Name}</td>
+                                     <td style={{ border: "1px solid black" }}>{lead?.Phone}</td>
+                                     <td style={{ border: "1px solid black" }}>{lead.Email}</td>
+                                 </tr>)
+                            } */}
 
                         </tbody>
 

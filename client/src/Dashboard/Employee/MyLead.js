@@ -11,11 +11,12 @@ const MyLead = () => {
     // console.log(user)
 
     const [leads, setLeads] = useState([])
+    const [batchName, setBatchData] = useState([])
     // console.log(leads)
 
 
     useEffect(() => {
-        fetch(`http://localhost:5000/leads/${user.displayName}`, {
+        fetch(`http://localhost:5000/leads`, {
             headers: {
                 authorization: `bearer ${localStorage.getItem('accessToken')}`
             }
@@ -24,6 +25,7 @@ const MyLead = () => {
             .then((data) => setLeads(data))
     })
 
+    // console.log(leads);
 
     // const { data: products, isLoading, refetch } = useQuery({
     //     queryKey: ['products'],
@@ -112,11 +114,11 @@ const MyLead = () => {
 
     }
 
-    console.log(leads);
+
 
     return (
         <div>
-            <h3 className="text-3xl mb-5">My Leads : {leads?.data?.length}</h3>
+            <h3 className="text-3xl mb-5">My Leads : {leads?.length}</h3>
 
             <div className='flex w-full justify-between my-2'>
                 <h3 className='font-bold'>Course Name : {leads.courseName}</h3>
@@ -131,55 +133,69 @@ const MyLead = () => {
                         <thead>
                             <tr>
                                 <th style={{ border: "1px solid black" }}>#</th>
-                                <th style={{ border: "1px solid black" }}>Name</th>
-                                <th style={{ border: "1px solid black" }}>Phone</th>
-                                <th style={{ border: "1px solid black" }}>Email</th>
-                                <th style={{ border: "1px solid black" }}>FirstFollowup</th>
-                                <th style={{ border: "1px solid black" }}>SecondFollowup</th>
-                                <th style={{ border: "1px solid black" }}>ThirdFollowup</th>
-                                <th style={{ border: "1px solid black" }}>NextFollowupDate</th>
-                                <th style={{ border: "1px solid black" }}>Remark</th>
-                                <th style={{ border: "1px solid black" }}>RemarkTwo</th>
-                                <th style={{ border: "1px solid black" }}>AdmissionStates</th>
-                                <th style={{ border: "1px solid black" }}>Action</th>
+                                <th style={{ border: "1px solid black" }}>Batch Name</th>
+                                <tr>
+                                    <th style={{ border: "1px solid black" }}>Name</th>
+                                    <th style={{ border: "1px solid black" }}>Phone</th>
+                                    <th style={{ border: "1px solid black" }}>Email</th>
+                                    <th style={{ border: "1px solid black" }}>FirstFollowup</th>
+                                    <th style={{ border: "1px solid black" }}>SecondFollowup</th>
+                                    <th style={{ border: "1px solid black" }}>ThirdFollowup</th>
+                                    <th style={{ border: "1px solid black" }}>NextFollowupDate</th>
+                                    <th style={{ border: "1px solid black" }}>Remark</th>
+                                    <th style={{ border: "1px solid black" }}>RemarkTwo</th>
+                                    <th style={{ border: "1px solid black" }}>AdmissionStates</th>
+                                    <th style={{ border: "1px solid black" }}>Action</th>
+                                </tr>
                             </tr>
                         </thead>
 
                         <tbody>
                             {
-                                leads?.data?.map((lead, i) =>
-                                    updateState === lead.Id ? <Edit
-                                        lead={lead}
-                                        leads={leads}
-                                        setLeads={setLeads}
-                                        leadsStatus={leadsStatus}
-                                        setLeadsStatus={setLeadsStatus} /> :
-                                        <tr className='active'
-                                            key={lead.Id}>
-                                            <th style={{ border: "1px solid black" }}>{i + 1}</th>
-                                            <td style={{ border: "1px solid black" }}>{lead.Name}</td>
-                                            <td style={{ border: "1px solid black" }}>{lead?.Phone}</td>
-                                            <td style={{ border: "1px solid black" }}>{lead.Email}</td>
-                                            <td style={{ border: "1px solid black" }}>{lead.FirstFollowup}</td>
-                                            <td style={{ border: "1px solid black" }}>{lead.SecondFollowup}</td>
-                                            <td style={{ border: "1px solid black" }}>{lead.ThirdFollowup}</td>
-                                            <td style={{ border: "1px solid black" }}>{lead.NextFollowupDate}</td>
-                                            <td style={{ border: "1px solid black" }}>{lead.Remark}</td>
-                                            <td style={{ border: "1px solid black" }}>{lead.RemarkTwo}</td>
-                                            <td style={{ border: "1px solid black" }}>{lead.AdmissionStates}</td>
-                                            <td style={{ border: "1px solid black" }}>
-                                                <button onClick={() => handleEdit(lead.Id)} className="btn btn-sm btn-primary mr-2">Edit</button>
-                                                <p onClick={() => handleAdmission(lead)} >Admission</p>
-                                            </td>
-                                            <td>
+                                leads?.map((singleLead, i) =>
+                                    // updateState === l.Id ? <Edit
+                                    //     lead={lead}
+                                    //     leads={leads}
+                                    //     setLeads={setLeads}
+                                    //     leadsStatus={leadsStatus}
+                                    //     setLeadsStatus={setLeadsStatus} /> :
+                                    <tr>
+                                        <th style={{ border: "1px solid black" }}>{i + 1}</th>
+                                        <th style={{ border: "1px solid black" }}>{singleLead.batchName}</th>
+                                        {
+                                            singleLead?.data?.map((l, i) =>
+                                                updateState === l.Id ? <Edit
+                                                    l={l}
+                                                    singleLead={singleLead}
+                                                    setLeads={setLeads}
+                                                    leadsStatus={leadsStatus}
+                                                    setLeadsStatus={setLeadsStatus} /> :
+                                                    <tr>
+                                                        {/* <td style={{ border: "1px solid black" }}>{l.Id}</td> */}
+                                                        <td style={{ border: "1px solid black" }}>{l.Name}</td>
+                                                        <td style={{ border: "1px solid black" }}>{l.Phone}</td>
+                                                        <td style={{ border: "1px solid black" }}>{l.Email}</td>
+                                                        <td style={{ border: "1px solid black" }}>{l.FirstFollowup}</td>
+                                                        <td style={{ border: "1px solid black" }}>{l.SecondFollowup}</td>
+                                                        <td style={{ border: "1px solid black" }}>{l.ThirdFollowup}</td>
+                                                        <td style={{ border: "1px solid black" }}>{l.NextFollowupDate}</td>
+                                                        <td style={{ border: "1px solid black" }}>{l.Remark}</td>
+                                                        <td style={{ border: "1px solid black" }}>{l.RemarkTwo}</td>
+                                                        <td style={{ border: "1px solid black" }}>{l.AdmissionStates}</td>
+                                                        <td style={{ border: "1px solid black" }}>
+                                                            {/* <p onClick={() => handleEdit(l.Id)} >Edit</p> */}
+                                                            <button onClick={() => handleEdit(l.Id)} className="btn btn-sm btn-primary mr-2">Edit</button>
+                                                            <p onClick={() => handleAdmission(l)} >Admission</p>
+                                                        </td>
+                                                        <td>
 
-                                            </td>
+                                                        </td>
+                                                    </tr>
+                                            )
+                                        }
+                                    </tr>
 
-
-                                            {/* <td>
-            <label onClick={() => handleDelete(product)} htmlFor="confirmation-modal" className="btn btn-sm btn-error">Delete</label>
-        </td>  */}
-                                        </tr>)
+                                )
                             }
 
                         </tbody>
@@ -200,6 +216,7 @@ const MyLead = () => {
 
     function handleEdit(id) {
         setUpdateState(id)
+        console.log(id);
     }
 };
 
