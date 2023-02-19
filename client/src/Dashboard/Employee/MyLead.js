@@ -31,44 +31,9 @@ const MyLead = () => {
             })
     })
 
-    // useEffect(() => {
-    //     fetch(`http://localhost:5000/user/admissions/${user.displayName}`, {
-    //         headers: {
-    //             authorization: `bearer ${localStorage.getItem('accessToken')}`
-    //         }
-    //     })
-    //         .then((response) => response.json())
-    //         .then((data) => setAdmission(data))
-    // })
-
-    // console.log(leads);
-
-    // const { data: products, isLoading, refetch } = useQuery({
-    //     queryKey: ['products'],
-    //     queryFn: async () => {
-    //         try {
-    //             const res = await fetch(`http://localhost:5000/leads/${user.displayName}`, {
-    //                 headers: {
-    //                     authorization: `bearer ${localStorage.getItem('accessToken')}`
-    //                 }
-    //             });
-    //             const data = await res.json();
-    //             return data;
-    //         }
-    //         catch (error) {
-
-    //         }
-    //     }
-    // });
-
     const [updateState, setUpdateState] = useState(-1)
 
-    // const handleEdit = (id) => {
-
-    // }
     const [leadsStatus, setLeadsStatus] = useState()
-    // console.log(updateState);
-    // console.log(leadsStatus);
 
 
     const handleUpdate = event => {
@@ -83,27 +48,18 @@ const MyLead = () => {
         })
             .then((response) => response.json())
             .then((data) => {
-                // console.log('Success:', data);
                 toast.success('Lead Updates Success')
-                // if (data.modifiedCount > 0) {
-                //     alert('Lead Update Success')
-                //     console.log(data);
-                // }
             });
     }
 
 
 
     const handleAdmission = (l, singleLead) => {
-        // console.log(i);
-        // console.log(singleLead);
-        // console.log(user.displayName);
 
         const courseName = singleLead.courseName;
         const batchName = singleLead.batchName
         const employeeName = singleLead.employeeName
         const headName = singleLead.headName
-        // console.log(courseName, batchName, employeeName, headName);
         const admissionData = {
             data: l,
             courseName,
@@ -173,6 +129,62 @@ const MyLead = () => {
             })
     }
 
+    const handleOnline = (l, singleLead) => {
+        const courseName = singleLead.courseName
+        const batchName = singleLead.batchName
+        const employeeName = singleLead.employeeName
+        const headName = singleLead.headName
+        const onlineAdmisssionIntersted = {
+            data: l,
+            courseName,
+            batchName,
+            employeeName,
+            headName
+        }
+
+        fetch(`http://localhost:5000/user-online-admission-add`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
+            },
+            body: JSON.stringify(onlineAdmisssionIntersted)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                toast.success('Online Admissions Interested')
+            })
+    }
+
+    const handleOffline = (l, singleLead) => {
+        const courseName = singleLead.courseName
+        const batchName = singleLead.batchName
+        const employeeName = singleLead.employeeName
+        const headName = singleLead.headName
+        const offlineAdmisssionIntersted = {
+            data: l,
+            courseName,
+            batchName,
+            employeeName,
+            headName
+        }
+
+        fetch(`http://localhost:5000/user-offline-admission-add`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
+            },
+            body: JSON.stringify(offlineAdmisssionIntersted)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                toast.success('Offline Admissions Interested')
+            })
+    }
+
 
 
     return (
@@ -205,6 +217,7 @@ const MyLead = () => {
                                     <th style={{ border: "1px solid black" }}>RemarkTwo</th>
                                     <th style={{ border: "1px solid black" }}>AdmissionStates</th>
                                     <th style={{ border: "1px solid black" }}>Action</th>
+                                    <th style={{ border: "1px solid black" }}>Interested</th>
                                 </tr>
                             </tr>
                         </thead>
@@ -242,8 +255,9 @@ const MyLead = () => {
                                                             <p className='btn btn-sm btn-primary my-2' onClick={() => handleAdmission(l, singleLead)} >Admission</p>
                                                             <p className='btn btn-sm btn-denger' onClick={() => handleClose(l, singleLead)} >Close</p>
                                                         </td>
-                                                        <td>
-
+                                                        <td style={{ border: "1px solid black" }}>
+                                                            <p className='btn btn-sm btn-primary my-2' onClick={() => handleOnline(l, singleLead)} >Online</p>
+                                                            <p className='btn btn-sm btn-denger' onClick={() => handleOffline(l, singleLead)} >Offline</p>
                                                         </td>
                                                     </tr>
                                             )
@@ -263,12 +277,6 @@ const MyLead = () => {
         </div>
     );
 
-    // function handleUpdate(e) {
-    //     e.preventDefault();
-    //     console.log(leads);
-    //     // setUpdateState(-1)
-    //     // console.log(e.target.value);
-    // }
 
     function handleEdit(id) {
         setUpdateState(id)
@@ -276,35 +284,5 @@ const MyLead = () => {
     }
 };
 
-// function Editt({ lead, leads, setLeads }) {
-
-
-
-//     const handleInputChange = event => {
-//         const field = event.target.name;
-//         const value = event.target.value;
-//         console.log("field : ", field, "value : ", value);
-//         const newLeads = leads?.data.map(newLead => newLead.Id === leads.Id ? { ...newLead, [field]: [value] } : newLead)
-//         console.log(newLeads);
-//         leadsStatus(newLeads);
-//     }
-
-//     return (
-//         <tr>
-//             <th>{1}</th>
-//             <td>{lead.Name}</td>
-//             <td>{lead?.Phone}</td>
-//             <td>{lead.Email}</td>
-//             <td><input onChange={handleInputChange} className='input input-bordered' type="text" name="FirstFollowup" defaultValue={lead.FirstFollowup}></input></td>
-//             <td><input onChange={handleInputChange} className='input input-bordered' type="text" name="SecondFollowup" defaultValue={lead.SecondFollowup}></input></td>
-//             <td>{lead.ThirdFollowup}</td>
-//             <td>{lead.NextFollowupDate}</td>
-//             <td>{lead.Remark}</td>
-//             <td>{lead.RemarkTwo}</td>
-//             <td>{lead.AdmissionStates}</td>
-//             <button type='submit' className="btn btn-sm btn-primary mr-2">Update</button>
-//         </tr>
-//     )
-// }
 
 export default MyLead;

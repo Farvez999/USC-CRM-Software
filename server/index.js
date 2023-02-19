@@ -41,6 +41,8 @@ async function run() {
         const personalDataCollection = client.db("usc-crm").collection("personal-data");
         const admissitionsCollection = client.db("usc-crm").collection("admisstion-data");
         const closeCollection = client.db("usc-crm").collection("close-data");
+        const onlineAdmissitionsCollection = client.db("usc-crm").collection("online-admission-data");
+        const offlineAdmissitionsCollection = client.db("usc-crm").collection("offline-admission-data");
         const productsCollection = client.db("used-products-resale-portal").collection("products");
         const bookingsCollection = client.db("used-products-resale-portal").collection("bookings");
         const wishlistsCollection = client.db("used-products-resale-portal").collection("wishlists");
@@ -148,7 +150,7 @@ async function run() {
         // Admission Post 
         app.post('/user-admission-add', async (req, res) => {
             const admissionData = [req.body.data];
-            console.log(admissionData);
+            // console.log(admissionData);
             const courseName = req.body.courseName;
             const batchName = req.body.batchName;
             const employeeName = req.body.employeeName;
@@ -251,6 +253,64 @@ async function run() {
 
 
 
+        // Online Admission Post 
+        app.post('/user-online-admission-add', async (req, res) => {
+            const onlineAdmissionData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await onlineAdmissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                console.log(existingData);
+                const newArr = [...existingData, ...onlineAdmissionData];
+                console.log(newArr);
+                const updateEmployee = await onlineAdmissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+                return res.send(updateEmployee);
+            }
+            else {
+                const existingEmploye = await onlineAdmissitionsCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        data: onlineAdmissionData
+                    });
+                return res.send(existingEmploye);
+            }
+        })
+
+
+        // Online Admission Post 
+        app.post('/user-offline-admission-add', async (req, res) => {
+            const offlineAdmissionData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await offlineAdmissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                console.log(existingData);
+                const newArr = [...existingData, ...offlineAdmissionData];
+                console.log(newArr);
+                const updateEmployee = await offlineAdmissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+                return res.send(updateEmployee);
+            }
+            else {
+                const existingEmploye = await offlineAdmissitionsCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        data: offlineAdmissionData
+                    });
+                return res.send(existingEmploye);
+            }
+        })
 
         // ''''''''''''''''''''''''''''''''''''''''''''''''''''
 
@@ -338,6 +398,24 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const result = await usersCollection.deleteOne(query);
             res.send(result);
+        })
+
+
+
+        //User Admissions get
+        app.get('/user/online-admissions/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { employeeName: name }
+            const users = await admissitionsCollection.find(query).toArray()
+            res.send(users)
+        })
+
+        //User Admissions get
+        app.get('/user/offline-admissions/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { employeeName: name }
+            const users = await admissitionsCollection.find(query).toArray()
+            res.send(users)
         })
 
 

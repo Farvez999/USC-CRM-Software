@@ -7,6 +7,8 @@ import Dashboard from "../Dashboard/Dashboard";
 import MyAdmission from "../Dashboard/Employee/MyAdmission";
 import MyClose from "../Dashboard/Employee/MyClose";
 import MyLead from "../Dashboard/Employee/MyLead";
+import OnlineStudent from "../Dashboard/Employee/OnlineStudent";
+import OfflineStudent from "../Dashboard/Employee/OfflineStudent";
 import DashBoardLayout from "../Layout/DashBoardLayout";
 import Main from "../Layout/Main";
 import Home from "../Pages/Home/Home";
@@ -82,6 +84,14 @@ const router = createBrowserRouter([
             {
                 path: '/dashboard/my-close',
                 element: <MyClose></MyClose>
+            },
+            {
+                path: '/dashboard/online-student',
+                element: <OnlineStudent></OnlineStudent>
+            },
+            {
+                path: '/dashboard/offline-student',
+                element: <OfflineStudent></OfflineStudent>
             },
             // {
             //     path: '/dashboard/addProducts',
