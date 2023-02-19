@@ -11,8 +11,9 @@ const MyLead = () => {
     // console.log(user)
 
     const [leads, setLeads] = useState([])
+    const [signleLeads, setSignleLeads] = useState([])
     const [batchName, setBatchData] = useState([])
-    // console.log(leads)
+
 
 
     useEffect(() => {
@@ -76,16 +77,20 @@ const MyLead = () => {
             });
     }
 
-    const handleAdmission = data => {
-        console.log(data);
-        console.log(user.displayName);
 
-        const courseName = leads.courseName;
-        const batchName = leads.batchName
-        const employeeName = leads.employeeName
-        const headName = leads.headName
+
+    const handleAdmission = (l, singleLead) => {
+        // console.log(i);
+        // console.log(singleLead);
+        // console.log(user.displayName);
+
+        const courseName = singleLead.courseName;
+        const batchName = singleLead.batchName
+        const employeeName = singleLead.employeeName
+        const headName = singleLead.headName
+        // console.log(courseName, batchName, employeeName, headName);
         const admissionData = {
-            data: data,
+            data: l,
             courseName,
             batchName,
             employeeName,
@@ -102,16 +107,42 @@ const MyLead = () => {
         })
             .then(res => res.json())
             .then(data => {
-                // console.log(data);
-                // if (data.acknowledged) {
-                //     console.log(data);
-                //     // setIsloader(false)
                 toast.success('Admisstion Data added successfully')
-                //     // navigate('/dashboard/sellerProducts')
-                // }
-            })
-        // .catch(error => { toast.error(error.message); setIsloader(false) })
 
+            })
+
+    }
+
+
+
+    const handleClose = (l, singleLead) => {
+        const courseName = singleLead.courseName
+        const batchName = singleLead.batchName
+        const employeeName = singleLead.employeeName
+        const headName = singleLead.headName
+        const closeData = {
+            data: l,
+            courseName,
+            batchName,
+            employeeName,
+            headName
+        }
+
+        fetch(`http://localhost:5000/user-close-add`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
+            },
+            body: JSON.stringify(closeData)
+        })
+            .then(res => res.json())
+            .then(data => {
+                toast.success('Admisstion Data Close successfully')
+                if(data.success){
+                    
+                }
+            })
     }
 
 
@@ -153,12 +184,7 @@ const MyLead = () => {
                         <tbody>
                             {
                                 leads?.map((singleLead, i) =>
-                                    // updateState === l.Id ? <Edit
-                                    //     lead={lead}
-                                    //     leads={leads}
-                                    //     setLeads={setLeads}
-                                    //     leadsStatus={leadsStatus}
-                                    //     setLeadsStatus={setLeadsStatus} /> :
+                                    // setSignleLeads(singleLead)
                                     <tr>
                                         <th style={{ border: "1px solid black" }}>{i + 1}</th>
                                         <th style={{ border: "1px solid black" }}>{singleLead.batchName}</th>
@@ -185,7 +211,8 @@ const MyLead = () => {
                                                         <td style={{ border: "1px solid black" }}>
                                                             {/* <p onClick={() => handleEdit(l.Id)} >Edit</p> */}
                                                             <button onClick={() => handleEdit(l.Id)} className="btn btn-sm btn-primary mr-2">Edit</button>
-                                                            <p onClick={() => handleAdmission(l)} >Admission</p>
+                                                            <p onClick={() => handleAdmission(l, singleLead)} >Admission</p>
+                                                            <p onClick={() => handleClose(l, singleLead)} >Close</p>
                                                         </td>
                                                         <td>
 
@@ -194,6 +221,7 @@ const MyLead = () => {
                                             )
                                         }
                                     </tr>
+
 
                                 )
                             }

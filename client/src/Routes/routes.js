@@ -4,6 +4,7 @@ import TotalAdmission from "../Dashboard/Admin/Lead/TotalAdmission";
 import UploadLead from "../Dashboard/Admin/UploadLead";
 import Dashboard from "../Dashboard/Dashboard";
 import MyAdmission from "../Dashboard/Employee/MyAdmission";
+import MyClose from "../Dashboard/Employee/MyClose";
 import MyLead from "../Dashboard/Employee/MyLead";
 import DashBoardLayout from "../Layout/DashBoardLayout";
 import Main from "../Layout/Main";
@@ -73,10 +74,10 @@ const router = createBrowserRouter([
                 path: '/dashboard/my-admission',
                 element: <MyAdmission></MyAdmission>
             },
-            // {
-            //     path: '/dashboard/myWishlists',
-            //     element: <MyWishlists></MyWishlists>
-            // },
+            {
+                path: '/dashboard/my-close',
+                element: <MyClose></MyClose>
+            },
             // {
             //     path: '/dashboard/addProducts',
             //     element: <SellerRoute><AddProduct></AddProduct></SellerRoute>

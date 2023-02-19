@@ -40,6 +40,7 @@ async function run() {
         const usersCollection = client.db("usc-crm").collection("users");
         const personalDataCollection = client.db("usc-crm").collection("personal-data");
         const admissitionsCollection = client.db("usc-crm").collection("admisstion-data");
+        const closeCollection = client.db("usc-crm").collection("close-data");
         const productsCollection = client.db("used-products-resale-portal").collection("products");
         const bookingsCollection = client.db("used-products-resale-portal").collection("bookings");
         const wishlistsCollection = client.db("used-products-resale-portal").collection("wishlists");
@@ -158,15 +159,13 @@ async function run() {
             const batchName = req.body.batchName;
             const employeeName = req.body.employeeName;
             const headName = req.body.headName;
-            const existingEmployee = await admissitionsCollection.findOne({ employeeName: employeeName });
-            // console.log(existingEmployee);
+            const existingEmployee = await admissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
                 console.log(existingData);
                 const newArr = [...existingData, ...admissionData];
-                // const newArr = [newAr]
                 console.log(newArr);
-                const updateEmployee = await admissitionsCollection.updateOne({ employeeName: employeeName }, { $set: { data: newArr } }, { new: true });
+                const updateEmployee = await admissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
                 return res.send(updateEmployee);
             }
             else {
@@ -184,16 +183,13 @@ async function run() {
 
         //User Admissions get
         app.get('/user/admissions/:name', async (req, res) => {
-            // const name = req.params.name;
-            // console.log(name);
-            // const existingEmployee = await admissitionsCollection.findOne({ employeeName: name });
-            // console.log(existingEmployee);
-            // res.send(existingEmployee);
             const query = {}
-            const users = await personalDataCollection.find(query).toArray()
+            const users = await admissitionsCollection.find(query).toArray()
             res.send(users)
         })
 
+
+        // User Adminsiion Students
         app.get('/user/admissions/:name', async (req, res) => {
             const name = req.params.name;
             const existingEmployee = await admissitionsCollection.findOne({ employeeName: name });
@@ -201,11 +197,57 @@ async function run() {
             res.send(existingEmployee);
         })
 
+        // Total Students
         app.get('/user/total-admissions', async (req, res) => {
             const query = {};
             const cursors = admissitionsCollection.find(query)
             const TotalAdmission = await cursors.toArray()
             res.send(TotalAdmission)
+        })
+
+        // Student Close or delete
+
+        app.post('/user-close-add', async (req, res) => {
+            const closeData = [req.body.data];
+            console.log(closeData);
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await closeCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                console.log(existingData);
+                const newArr = [...existingData, ...closeData];
+                console.log(newArr);
+                const updateEmployee = await closeCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+                return res.send(updateEmployee);
+            }
+            else {
+                const existingEmploye = await closeCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        data: closeData
+                    });
+                return res.send(existingEmploye);
+            }
+        })
+
+        //User Close get
+        app.get('/user/close/:name', async (req, res) => {
+            const query = {}
+            const users = await admissitionsCollection.find(query).toArray()
+            res.send(users)
+        })
+
+        app.delete('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await productsCollection.deleteOne(query);
+            res.send(result);
         })
 
 

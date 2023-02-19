@@ -29,7 +29,7 @@ const DashBoardLayout = () => {
                             !isDHead && !isAdmin && <>
                                 <li><Link to='/dashboard/my-lead'>My Lead</Link></li>
                                 <li><Link to='/dashboard/my-admission'>My Admission</Link></li>
-                                <li><Link to='/dashboard/myWishlists'>My Wishlists</Link></li>
+                                <li><Link to='/dashboard/my-close'>My Close</Link></li>
                             </>
                         }
 
