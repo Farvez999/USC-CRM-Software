@@ -130,13 +130,6 @@ async function run() {
         //     res.send(existingEmployee);
         // });
 
-        // app.get('/leads/:email', async (req, res) => {
-        //     const email = req.params.email;
-        //     // console.log(email);
-        //     const existingEBatchName = await personalDataCollection.findOne({ batchName: email });
-        //     console.log(existingEBatchName);
-        //     // res.send(existingEmployee);
-        // });
 
 
 
@@ -191,11 +184,14 @@ async function run() {
 
         //User Admissions get
         app.get('/user/admissions/:name', async (req, res) => {
-            const name = req.params.name;
-            console.log(name);
-            const existingEmployee = await admissitionsCollection.findOne({ employeeName: name });
-            console.log(existingEmployee);
-            res.send(existingEmployee);
+            // const name = req.params.name;
+            // console.log(name);
+            // const existingEmployee = await admissitionsCollection.findOne({ employeeName: name });
+            // console.log(existingEmployee);
+            // res.send(existingEmployee);
+            const query = {}
+            const users = await personalDataCollection.find(query).toArray()
+            res.send(users)
         })
 
         app.get('/user/admissions/:name', async (req, res) => {
