@@ -223,6 +223,14 @@ async function run() {
             }
         })
 
+        // Admin Total Close
+        app.get('/user/total-close', async (req, res) => {
+            const query = {};
+            const cursors = closeCollection.find(query)
+            const TotalAdmission = await cursors.toArray()
+            res.send(TotalAdmission)
+        })
+
         //User Close get
         app.get('/user/close/:name', async (req, res) => {
             const name = req.params.name;

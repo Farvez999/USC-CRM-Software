@@ -17,12 +17,11 @@ const TotalAdmission = () => {
     });
 
 
-    console.log(admissions);
+    // console.log(admissions);
 
 
 
     return (
-        <div>
             <div>
                 <h3 className="text-3xl mb-5">Total Admission</h3>
 
@@ -68,7 +67,6 @@ const TotalAdmission = () => {
                 </div>
 
             </div>
-        </div>
     );
 };
 
