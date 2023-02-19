@@ -117,19 +117,13 @@ async function run() {
             }
         })
 
-        app.get('/leads', async (req, res) => {
-            const query = {}
+        //get user lead
+        app.get('/leads/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { employeeName: name };
             const users = await personalDataCollection.find(query).toArray()
-            res.send(users)
+            res.send(users);
         })
-
-        // Seller product get
-        // app.get('/leads/:userName', async (req, res) => {
-        //     const userName = req.params.userName;
-        //     console.log(userName);
-        //     const existingEmployee = await personalDataCollection.findOne({ employeeName: userName });
-        //     res.send(existingEmployee);
-        // });
 
 
 
@@ -183,19 +177,12 @@ async function run() {
 
         //User Admissions get
         app.get('/user/admissions/:name', async (req, res) => {
-            const query = {}
+            const name = req.params.name;
+            const query = { employeeName: name }
             const users = await admissitionsCollection.find(query).toArray()
             res.send(users)
         })
 
-
-        // User Adminsiion Students
-        app.get('/user/admissions/:name', async (req, res) => {
-            const name = req.params.name;
-            const existingEmployee = await admissitionsCollection.findOne({ employeeName: name });
-            console.log(existingEmployee);
-            res.send(existingEmployee);
-        })
 
         // Total Students
         app.get('/user/total-admissions', async (req, res) => {
@@ -238,15 +225,19 @@ async function run() {
 
         //User Close get
         app.get('/user/close/:name', async (req, res) => {
-            const query = {}
-            const users = await admissitionsCollection.find(query).toArray()
+            const name = req.params.name;
+            const query = { employeeName: name }
+            const users = await closeCollection.find(query).toArray()
             res.send(users)
         })
 
-        app.delete('/products/:id', async (req, res) => {
+        app.delete('/user-close-delete/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: ObjectId(id) };
-            const result = await productsCollection.deleteOne(query);
+            // console.log(id);
+            const query = { Id: id };
+            // console.log(query);
+            const result = await personalDataCollection.deleteOne(query);
+            // console.log(result);
             res.send(result);
         })
 

@@ -11,20 +11,35 @@ const MyLead = () => {
     // console.log(user)
 
     const [leads, setLeads] = useState([])
+    const [admission, setAdmission] = useState([])
     const [signleLeads, setSignleLeads] = useState([])
     const [batchName, setBatchData] = useState([])
 
-
+    // console.log(leads);
+    // console.log(admission);
 
     useEffect(() => {
-        fetch(`http://localhost:5000/leads`, {
+        fetch(`http://localhost:5000/leads/${user.displayName}`, {
             headers: {
                 authorization: `bearer ${localStorage.getItem('accessToken')}`
             }
         })
             .then((response) => response.json())
-            .then((data) => setLeads(data))
+            .then((data) => {
+                setLeads(data)
+                console.log(data);
+            })
     })
+
+    // useEffect(() => {
+    //     fetch(`http://localhost:5000/user/admissions/${user.displayName}`, {
+    //         headers: {
+    //             authorization: `bearer ${localStorage.getItem('accessToken')}`
+    //         }
+    //     })
+    //         .then((response) => response.json())
+    //         .then((data) => setAdmission(data))
+    // })
 
     // console.log(leads);
 
@@ -138,9 +153,22 @@ const MyLead = () => {
         })
             .then(res => res.json())
             .then(data => {
+                console.log(data);
                 toast.success('Admisstion Data Close successfully')
-                if(data.success){
-                    
+                if (data.acknowledged) {
+                    fetch(`http://localhost:5000/user-close-delete/${l.Id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            authorization: `bearer ${localStorage.getItem('accessToken')}`
+                        }
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.deletedCount > 0) {
+                                // refetch();
+                                toast.success(`Doctor ${l.Name} deleted successfully`)
+                            }
+                        })
                 }
             })
     }
@@ -210,9 +238,9 @@ const MyLead = () => {
                                                         <td style={{ border: "1px solid black" }}>{l.AdmissionStates}</td>
                                                         <td style={{ border: "1px solid black" }}>
                                                             {/* <p onClick={() => handleEdit(l.Id)} >Edit</p> */}
-                                                            <button onClick={() => handleEdit(l.Id)} className="btn btn-sm btn-primary mr-2">Edit</button>
-                                                            <p onClick={() => handleAdmission(l, singleLead)} >Admission</p>
-                                                            <p onClick={() => handleClose(l, singleLead)} >Close</p>
+                                                            <button onClick={() => handleEdit(l.Id)} className="btn btn-sm btn-secondary mr-2">Edit</button>
+                                                            <p className='btn btn-sm btn-primary my-2' onClick={() => handleAdmission(l, singleLead)} >Admission</p>
+                                                            <p className='btn btn-sm btn-denger' onClick={() => handleClose(l, singleLead)} >Close</p>
                                                         </td>
                                                         <td>
 

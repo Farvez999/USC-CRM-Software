@@ -32,18 +32,24 @@ const TotalAdmission = () => {
                             <thead>
                                 <tr>
                                     <th style={{ border: "1px solid black" }}>#</th>
-                                    <th style={{ border: "1px solid black" }}>Employee Name</th>
-                                    <th style={{ border: "1px solid black" }}>Student Info</th>
+                                    <th style={{ border: "1px solid black" }}>Course Name</th>
+                                    <th style={{ border: "1px solid black" }}>Batch Name</th>
+                                    <th style={{ border: "1px solid black" }}>User Name</th>
+                                    <th style={{ border: "1px solid black" }}>Head Name</th>
+                                    <th style={{ border: "1px solid black" }}>Student Information</th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 {
                                     admissions?.map((admission, i) =>
-                                        <tr className='active'
+                                        <tr
                                             key={admission.Id}>
                                             <th style={{ border: "1px solid black" }}>{i + 1}</th>
+                                            <td style={{ border: "1px solid black" }}>{admission.courseName}</td>
+                                            <td style={{ border: "1px solid black" }}>{admission.batchName}</td>
                                             <td style={{ border: "1px solid black" }}>{admission.employeeName}   : {admission?.data?.length}</td>
+                                            <td style={{ border: "1px solid black" }}>{admission.headName}</td>
                                             {
                                                 admission?.data?.map((d, i) => <tr>
                                                     <td style={{ border: "1px solid black" }}>{i + 1}</td>
