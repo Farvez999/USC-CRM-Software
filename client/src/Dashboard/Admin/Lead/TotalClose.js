@@ -1,10 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import React, { useContext } from 'react';
-import { AuthContext } from '../../../contexts/AuthProvider';
+import React, { useState } from 'react';
 
 const TotalClose = () => {
-    const { user } = useContext(AuthContext)
-    console.log(user);
+
+    const [search, setSearch] = useState("");
 
     const { data: closes = [], refetch } = useQuery({
         queryKey: ['closes'],
@@ -15,11 +14,11 @@ const TotalClose = () => {
         }
     });
 
-
-    // console.log(admissions);
     return (
         <div>
             <h3 className="text-3xl mb-5">Total Admission</h3>
+
+            <input type="text" className="input input-bordered w-full max-w-xs mb-5" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Name, Phone, Email'></input>
 
             <div className="overflow-x-auto">
                 <form>
@@ -46,12 +45,15 @@ const TotalClose = () => {
                                         <td style={{ border: "1px solid black" }}>{close.employeeName}   : {close?.data?.length}</td>
                                         <td style={{ border: "1px solid black" }}>{close.headName}</td>
                                         {
-                                            close?.data?.map((d, i) => <tr>
-                                                <td style={{ border: "1px solid black" }}>{i + 1}</td>
-                                                <td style={{ border: "1px solid black" }}>{d.Name}</td>
-                                                <td style={{ border: "1px solid black" }}>{d.Phone}</td>
-                                                <td style={{ border: "1px solid black" }}>{d.Email}</td>
-                                            </tr>)
+                                            close?.data?.filter((d) => {
+                                                return search?.toLowerCase() === '' ? d : d.Name.toLowerCase().includes(search) || d.Phone.toLowerCase().includes(search) || d.Email.toLowerCase().includes(search);
+                                            })
+                                                ?.map((d, i) => <tr>
+                                                    <td style={{ border: "1px solid black" }}>{i + 1}</td>
+                                                    <td style={{ border: "1px solid black" }}>{d.Name}</td>
+                                                    <td style={{ border: "1px solid black" }}>{d.Phone}</td>
+                                                    <td style={{ border: "1px solid black" }}>{d.Email}</td>
+                                                </tr>)
                                         }
                                     </tr>)
                             }

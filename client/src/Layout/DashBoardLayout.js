@@ -32,6 +32,7 @@ const DashBoardLayout = () => {
                                 <li><Link to='/dashboard/my-close'>My Close</Link></li>
                                 <li><Link to='/dashboard/online-student'>My Online</Link></li>
                                 <li><Link to='/dashboard/offline-student'>My Offline</Link></li>
+                                <li><Link to='/dashboard/seminar-interested'>Seminar Inter</Link></li>
                             </>
                         }
 
@@ -49,6 +50,8 @@ const DashBoardLayout = () => {
                                 <li><Link to={`/dashboard/lead-upload`}>Upload Lead</Link></li>
                                 <li><Link to={`/dashboard/total-admission`}>Total Admission</Link></li>
                                 <li><Link to={`/dashboard/total-close`}>Total Close</Link></li>
+                                <li><Link to={`/dashboard/online-students`}>Online Student</Link></li>
+                                <li><Link to={`/dashboard/offline-students`}>Offline Student</Link></li>
                             </>
                         }
                     </ul>

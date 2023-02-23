@@ -15,6 +15,9 @@ import Home from "../Pages/Home/Home";
 import Login from "../Pages/Login/Login";
 import Signup from "../Pages/Login/Signup";
 import PrivateRoutes from "./PrivateRoutes";
+import OfflineStudents from "../Dashboard/Admin/Lead/OfflineStudents";
+import OnlineStudents from "../Dashboard/Admin/Lead/OnlineStudents";
+import SeminarInterested from "../Dashboard/Employee/SeminarInterested";
 
 const router = createBrowserRouter([
     {
@@ -70,6 +73,14 @@ const router = createBrowserRouter([
                 element: <TotalClose></TotalClose>
             },
             {
+                path: '/dashboard/online-students',
+                element: <OnlineStudents></OnlineStudents>
+            },
+            {
+                path: '/dashboard/offline-students',
+                element: <OfflineStudents></OfflineStudents>
+            },
+            {
                 path: '/dashboard/lead-upload',
                 element: <LeadUpload></LeadUpload>
             },
@@ -92,6 +103,10 @@ const router = createBrowserRouter([
             {
                 path: '/dashboard/offline-student',
                 element: <OfflineStudent></OfflineStudent>
+            },
+            {
+                path: '/dashboard/seminar-interested',
+                element: <SeminarInterested></SeminarInterested>
             },
             // {
             //     path: '/dashboard/addProducts',

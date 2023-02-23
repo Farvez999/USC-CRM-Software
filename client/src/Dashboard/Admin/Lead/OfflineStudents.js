@@ -1,25 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 
-const TotalAdmission = () => {
-
+const OfflineStudents = () => {
     const [search, setSearch] = useState("");
 
-
-    const { data: admissions = [], refetch } = useQuery({
-        queryKey: ['admissions'],
+    const { data: offlineStudents = [], refetch } = useQuery({
+        queryKey: ['offlineStudents'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user/total-admissions`);
+            const res = await fetch(`http://localhost:5000/user/total-offline-student`);
             const data = await res.json();
             return data;
         }
     });
 
-
-
     return (
         <div>
-            <h3 className="text-3xl mb-5">Total Admission</h3>
+            <h3 className="text-3xl mb-5">Total Offline Student</h3>
 
             <input type="text" className="input input-bordered w-full max-w-xs mb-5" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Name, Phone, Email'></input>
 
@@ -38,27 +34,31 @@ const TotalAdmission = () => {
                         </thead>
 
                         <tbody>
+
                             {
-                                admissions?.map((admission, i) =>
-                                    <tr
-                                        key={admission.Id}>
+                                offlineStudents.map((offlineStudent, i) =>
+                                    <tr key={offlineStudent.Id}>
                                         <th style={{ border: "1px solid black" }}>{i + 1}</th>
-                                        <td style={{ border: "1px solid black" }}>{admission.courseName}</td>
-                                        <td style={{ border: "1px solid black" }}>{admission.batchName}</td>
-                                        <td style={{ border: "1px solid black" }}>{admission.employeeName}   : {admission?.data?.length}</td>
-                                        <td style={{ border: "1px solid black" }}>{admission.headName}</td>
+                                        <td style={{ border: "1px solid black" }}>{offlineStudent.courseName}</td>
+                                        <td style={{ border: "1px solid black" }}>{offlineStudent.batchName}</td>
+                                        <td style={{ border: "1px solid black" }}>{offlineStudent.employeeName}</td>
+                                        <td style={{ border: "1px solid black" }}>{offlineStudent.headName}</td>
+
                                         {
-                                            admission?.data?.filter((d) => {
+                                            offlineStudent?.data?.filter((d) => {
                                                 return search?.toLowerCase() === '' ? d : d.Name.toLowerCase().includes(search) || d.Phone.toLowerCase().includes(search) || d.Email.toLowerCase().includes(search);
                                             })
-                                                ?.map((d, i) => <tr>
-                                                    <td style={{ border: "1px solid black" }}>{i + 1}</td>
-                                                    <td style={{ border: "1px solid black" }}>{d.Name}</td>
-                                                    <td style={{ border: "1px solid black" }}>{d.Phone}</td>
-                                                    <td style={{ border: "1px solid black" }}>{d.Email}</td>
-                                                </tr>)
+                                                ?.map(d =>
+                                                    <tr>
+                                                        <td style={{ border: "1px solid black" }}>{d.Name}</td>
+                                                        <td style={{ border: "1px solid black" }}>{d.Phone}</td>
+                                                        <td style={{ border: "1px solid black" }}>{d.Email}</td>
+                                                    </tr>
+                                                )
                                         }
-                                    </tr>)
+                                    </tr>
+
+                                )
                             }
 
                         </tbody>
@@ -71,4 +71,4 @@ const TotalAdmission = () => {
     );
 };
 
-export default TotalAdmission;
+export default OfflineStudents;

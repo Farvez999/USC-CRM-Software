@@ -43,6 +43,7 @@ async function run() {
         const closeCollection = client.db("usc-crm").collection("close-data");
         const onlineAdmissitionsCollection = client.db("usc-crm").collection("online-admission-data");
         const offlineAdmissitionsCollection = client.db("usc-crm").collection("offline-admission-data");
+        const seminarInterestedCollection = client.db("usc-crm").collection("seminar-interested-data");
         const productsCollection = client.db("used-products-resale-portal").collection("products");
         const bookingsCollection = client.db("used-products-resale-portal").collection("bookings");
         const wishlistsCollection = client.db("used-products-resale-portal").collection("wishlists");
@@ -188,11 +189,38 @@ async function run() {
 
         // Total Students
         app.get('/user/total-admissions', async (req, res) => {
-            const query = {};
-            const cursors = admissitionsCollection.find(query)
-            const TotalAdmission = await cursors.toArray()
+            let query = {};
+            const cursors = admissitionsCollection.find(query);
+            const TotalAdmission = await cursors.toArray();
             res.send(TotalAdmission)
         })
+        // app.get('/user/total-admissions', async (req, res) => {
+        //     const search = req.query.search
+        //     console.log(search)
+        //     let query = {};
+        //     if (search.length) {
+        //         query = {
+        //             $text: { $search: search }
+        //         }
+        //     }
+        //     // let query = {
+        //     //     // "$or": [
+        //     //     //     { Name: { $regex: search } },
+        //     //     //     { Email: { $regex: search } }
+        //     //     // ]
+
+        //     // };
+        //     // if(search.length){
+        //     //     query = {
+        //     //         $text: {
+        //     //             $search: search
+        //     //         }
+        //     //     }
+        //     // }
+        //     const cursors = admissitionsCollection.find(query);
+        //     const TotalAdmission = await cursors.toArray();
+        //     res.send(TotalAdmission)
+        // })
 
         // Student Close or delete
 
@@ -203,17 +231,18 @@ async function run() {
             const batchName = req.body.batchName;
             const employeeName = req.body.employeeName;
             const headName = req.body.headName;
-            const existingEmployee = await closeCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
+            const existingEmployee = await closeCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
                 console.log(existingData);
                 const newArr = [...existingData, ...closeData];
                 console.log(newArr);
-                const updateEmployee = await closeCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
-                return res.send(updateEmployee);
+                await closeCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+
             }
             else {
-                const existingEmploye = await closeCollection.insertOne(
+                await closeCollection.insertOne(
                     {
                         courseName: courseName,
                         batchName: batchName,
@@ -221,8 +250,15 @@ async function run() {
                         headName: headName,
                         data: closeData
                     });
-                return res.send(existingEmploye);
             }
+
+            const idData = await personalDataCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await personalDataCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
         })
 
         // Admin Total Close
@@ -311,6 +347,86 @@ async function run() {
                 return res.send(existingEmploye);
             }
         })
+
+        //User Admissions get
+        app.get('/user/online-admissions/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { employeeName: name }
+            const users = await onlineAdmissitionsCollection.find(query).toArray()
+            res.send(users)
+        })
+
+        //User Admissions get
+        app.get('/user/offline-admissions/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { employeeName: name }
+            const users = await offlineAdmissitionsCollection.find(query).toArray()
+            res.send(users)
+        })
+
+
+        // Admin Total online-student
+        app.get('/user/total-online-student', async (req, res) => {
+            const query = {};
+            const cursors = onlineAdmissitionsCollection.find(query)
+            const TotalAdmission = await cursors.toArray()
+            res.send(TotalAdmission)
+        })
+
+        // Admin Total offline-student
+        app.get('/user/total-offline-student', async (req, res) => {
+            const query = {};
+            const cursors = offlineAdmissitionsCollection.find(query)
+            const TotalAdmission = await cursors.toArray()
+            res.send(TotalAdmission)
+        })
+
+
+
+
+        // Online Admission Post 
+        app.post('/user-seminar-interested-add', async (req, res) => {
+            const seminarInterestedData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await seminarInterestedCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                console.log(existingData);
+                const newArr = [...existingData, ...seminarInterestedData];
+                console.log(newArr);
+                const updateEmployee = await seminarInterestedCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+                return res.send(updateEmployee);
+            }
+            else {
+                const existingEmploye = await seminarInterestedCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        data: seminarInterestedData
+                    });
+                return res.send(existingEmploye);
+            }
+        })
+
+
+        app.get('/user/seminar-interested/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { employeeName: name }
+            const users = await seminarInterestedCollection.find(query).toArray()
+            res.send(users)
+        })
+
+
+
+
+
+
+
 
         // ''''''''''''''''''''''''''''''''''''''''''''''''''''
 
@@ -402,21 +518,7 @@ async function run() {
 
 
 
-        //User Admissions get
-        app.get('/user/online-admissions/:name', async (req, res) => {
-            const name = req.params.name;
-            const query = { employeeName: name }
-            const users = await admissitionsCollection.find(query).toArray()
-            res.send(users)
-        })
 
-        //User Admissions get
-        app.get('/user/offline-admissions/:name', async (req, res) => {
-            const name = req.params.name;
-            const query = { employeeName: name }
-            const users = await admissitionsCollection.find(query).toArray()
-            res.send(users)
-        })
 
 
 
