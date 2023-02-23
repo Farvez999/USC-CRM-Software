@@ -9,38 +9,41 @@ const Edit = ({ l, singleLead, setLeads, leadsStatus, setLeadsStatus }) => {
 
     const handleInputChange = event => {
         const field = event.target.name;
+        console.log(field);
         const value = event.target.value;
+        console.log(value);
         console.log("field : ", field, "value : ", value);
         const newLeads = singleLead?.data?.map(newLead => newLead.Id === l.Id ? { ...newLead, [field]: value } : newLead)
-        console.log(newLeads);
+        // console.log(newLeads);
         setLeadsStatus(newLeads);
     }
 
     return (
-
-        <tr className='active'>
-            {/* <th style={{ border: "1px solid black" }}>{1}</th>
-            <th style={{ border: "1px solid black" }}>Batch Name</th> */}
-            {/* <tr> */}
+        <tr className='active text-xs'>
             <td style={{ border: "1px solid black" }}>{l.Name}</td>
             <td style={{ border: "1px solid black" }}>{l?.Phone}</td>
             <td style={{ border: "1px solid black" }}>{l.Email}</td>
             <td style={{ border: "1px solid black" }}>
-                <textarea onChange={handleInputChange} className='textarea textarea-secondary' type="text" name="FirstFollowup" defaultValue={l.FirstFollowup}></textarea></td>
+                <input onChange={handleInputChange} type="date" name="FirstFollowup" placeholder='First Follow up' defaultValue={l.FirstFollowup}></input></td>
             <td style={{ border: "1px solid black" }}>
-                <textarea onChange={handleInputChange} className='textarea textarea-secondary' type="text" name="SecondFollowup" defaultValue={l.SecondFollowup}></textarea></td>
+                <input onChange={handleInputChange} type="date" name="SecondFollowup" placeholder='Second Follow up' defaultValue={l.SecondFollowup}></input></td>
             <td style={{ border: "1px solid black" }}>
-                <textarea onChange={handleInputChange} className='textarea textarea-secondary' type="text" name="ThirdFollowup" defaultValue={l.ThirdFollowup}></textarea></td>
+                <input onChange={handleInputChange} type="date" name="ThirdFollowup" placeholder='Third Follow up' defaultValue={l.ThirdFollowup}></input></td>
             <td style={{ border: "1px solid black" }}>
-                <textarea onChange={handleInputChange} className='textarea textarea-secondary' type="text" name="NextFollowupDate" defaultValue={l.NextFollowupDate}></textarea></td>
+                <input onChange={handleInputChange} type="date" name="NextFollowupDate"
+                    placeholder='Next Follow Date' defaultValue={l.NextFollowupDate}></input></td>
             <td style={{ border: "1px solid black" }}>
-                <textarea onChange={handleInputChange} className='textarea textarea-secondary' type="text" name="Remark" defaultValue={l.Remark}></textarea></td>
+                <textarea onChange={handleInputChange} type="date" name="Remark" placeholder='Remark' defaultValue={l.Remark}></textarea></td>
             <td style={{ border: "1px solid black" }}>
-                <textarea onChange={handleInputChange} className='textarea textarea-secondary' type="text" name="RemarkTwo" defaultValue={l.RemarkTwo}></textarea></td>
+                <textarea onChange={handleInputChange} type="date" name="RemarkTwo" placeholder='Remark Two' defaultValue={l.RemarkTwo}></textarea></td>
             <td style={{ border: "1px solid black" }}>
-                <textarea onChange={handleInputChange} className='textarea textarea-secondary' type="text" name="AdmissionStates" defaultValue={l.AdmissionStates}></textarea>{ }</td>
+                <textarea onChange={handleInputChange} type="date" name="AdmissionStates" placeholder='Admission States' defaultValue={l.AdmissionStates}></textarea>{ }</td>
+
+
             <button type='submit' className="btn btn-sm btn-primary mr-2">Update</button>
-            {/* </tr> */}
+
+
+
 
         </tr>
     );

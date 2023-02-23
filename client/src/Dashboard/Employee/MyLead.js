@@ -14,9 +14,8 @@ const MyLead = () => {
     const [admission, setAdmission] = useState([])
     const [signleLeads, setSignleLeads] = useState([])
     const [batchName, setBatchData] = useState([])
+    const [myLeads, setMyLeads] = useState([])
 
-    // console.log(leads);
-    // console.log(admission);
 
     useEffect(() => {
         fetch(`http://localhost:5000/leads/${user.displayName}`, {
@@ -29,6 +28,8 @@ const MyLead = () => {
                 setLeads(data)
             })
     }, [])
+
+
 
     const [updateState, setUpdateState] = useState(-1)
 
@@ -111,7 +112,6 @@ const MyLead = () => {
             .then(data => {
                 console.log(data);
                 toast.success('Admisstion Data Close successfully')
-                // eslint-disable-next-line array-callback-return
                 let lData = leads.map(lead => {
                     if (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) {
                         const lds = lead.data.filter(ld => ld.Id !== l.Id)
@@ -124,25 +124,39 @@ const MyLead = () => {
                 })
 
                 lData = lData.filter(ld => ld.data.length !== 0);
-                //const lData = leads.map(lead => (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) ? lead.data = lead.data.filter(da => da.Id !== l.Id) : lead)
+
                 setLeads(lData)
-                // if (data.acknowledged) {
-                //     fetch(`http://localhost:5000/user-close-delete/${l.Id}`, {
-                //         method: 'DELETE',
-                //         headers: {
-                //             authorization: `bearer ${localStorage.getItem('accessToken')}`
-                //         }
-                //     })
-                //         .then(res => res.json())
-                //         .then(data => {
-                //             if (data.deletedCount > 0) {
-                //                 // refetch();
-                //                 toast.success(`Doctor ${l.Name} deleted successfully`)
-                //             }
-                //         })
-                // }
+
             })
     }
+
+    // const handleTodayFollowup = (l, singleLead) => {
+    //     let lData = leads.map(lead => {
+    //         if (lead.batchName === singleLead.batchName && lead.courseName === singleLead.courseName && lead.employeeName === singleLead.employeeName && lead.headName === singleLead.headName) {
+    //             var date = new Date();
+    //             console.log(date);
+    //             var formatedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+    //             console.log(formatedDate);
+                
+
+    //             const lds = lead.data.filter(ld => ld.FirstFollowup === '2023-02-23')
+    //             console.log(lds);
+    //             // lead.data = lds;
+    //             // var date = new Date();
+    //             // console.log(date);
+    //             // var formatedDate = `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`
+    //             // console.log(formatedDate);
+    //             return lead;
+    //         } else {
+
+    //             return lead;
+    //         }
+    //     })
+
+    //     lData = lData.filter(ld => ld.data.length !== 0);
+
+    //     setLeads(lData)
+    // }
 
     const handleOnline = (l, singleLead) => {
         const courseName = singleLead.courseName
@@ -232,26 +246,28 @@ const MyLead = () => {
 
     return (
         <div>
-            <h3 className="text-3xl mb-5">My Leads : {leads?.length}</h3>
+            <h3 className="text-2xl mb-3">My Leads</h3>
 
-            <input type="text" className="input input-bordered w-full max-w-xs mb-5" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Name, Phone, Email'></input>
+            <input type="text" className="input input-bordered input-sm w-full max-w-xs mb-3" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Batch Name'></input>
+
+            <button type="">Today</button>
 
             <div className='w-100' >
-                <div className="overflow-scroll" style={{ height: '300px' }}>
+                <div className="overflow-scroll" style={{ height: '430px', width: "1050px" }}>
                     <form onSubmit={handleUpdate}>
                         <table className="table-fixed">
                             <thead>
-                                <tr>
+                                <tr className='text-xs'>
                                     <th style={{ border: "1px solid black" }}>#</th>
-                                    <th style={{ border: "1px solid black" }}>Batch Name</th>
+                                    <th style={{ border: "1px solid black" }}>B Name</th>
                                     <tr>
-                                        <th style={{ border: "1px solid black" }}>Name</th>
-                                        <th style={{ border: "1px solid black" }}>Phone</th>
-                                        <th style={{ border: "1px solid black" }}>Email</th>
+                                        <th style={{ border: "1px solid black", width: '60px' }}>Name</th>
+                                        <th style={{ border: "1px solid black", width: '200px' }}>Phone</th>
+                                        <th style={{ border: "1px solid black", width: '180px' }}>Email</th>
                                         <th style={{ border: "1px solid black" }}>FirstFollowup</th>
                                         <th style={{ border: "1px solid black" }}>SecondFollowup</th>
-                                        <th style={{ border: "1px solid black" }}>ThirdFollowup</th>
-                                        <th style={{ border: "1px solid black" }}>NextFollowupDate</th>
+                                        <th placeholder='Third Follow up' style={{ border: "1px solid black" }}>ThirdFollowup</th>
+                                        <th placeholder='Next Follow Date' style={{ border: "1px solid black" }}>NextFollowupDate</th>
                                         <th style={{ border: "1px solid black" }}>Remark</th>
                                         <th style={{ border: "1px solid black" }}>RemarkTwo</th>
                                         <th style={{ border: "1px solid black" }}>AdmissionStates</th>
@@ -262,17 +278,17 @@ const MyLead = () => {
                                 </tr>
                             </thead>
 
-                            <tbody className='w-fit'>
+                            <tbody className='w-fit text-xs'>
                                 {
-                                    leads?.map((singleLead, i) =>
-                                        <tr>
-                                            <th style={{ border: "1px solid black" }}>{i + 1}</th>
-                                            <th style={{ border: "1px solid black" }}>{singleLead.batchName}</th>
-                                            {
-                                                singleLead?.data?.filter((l) => {
-                                                    return search?.toLowerCase() === '' ? l : l.Name.toLowerCase().includes(search?.toLowerCase()) || l.Phone.toLowerCase().includes(search?.toLowerCase()) || l.Email.toLowerCase().includes(search?.toLowerCase());
-                                                })
-                                                    ?.map((l, i) =>
+                                    leads?.filter((singleLead) => {
+                                        return search?.toLowerCase() === '' ? singleLead : singleLead.batchName.toLowerCase().includes(search?.toLowerCase())
+                                    })
+                                        ?.map((singleLead, i) =>
+                                            <tr>
+                                                <th style={{ border: "1px solid black" }}>{i + 1}</th>
+                                                <th style={{ border: "1px solid black" }}>{singleLead.batchName}</th>
+                                                {
+                                                    singleLead?.data?.map((l, i) =>
                                                         updateState === l.Id ? <Edit
                                                             l={l}
                                                             singleLead={singleLead}
@@ -281,7 +297,7 @@ const MyLead = () => {
                                                             setLeadsStatus={setLeadsStatus} /> :
                                                             <tr>
                                                                 {/* <td style={{ border: "1px solid black" }}>{l.Id}</td> */}
-                                                                <td style={{ border: "1px solid black" }}>{l.Name}</td>
+                                                                <td style={{ border: "1px solid black", width: '60px' }}>{l.Name}</td>
                                                                 <td className='w-20' style={{ border: "1px solid black" }}>{l.Phone}</td>
                                                                 <td className='w-20' style={{ border: "1px solid black" }}>{l.Email}</td>
                                                                 <td style={{ border: "1px solid black" }}>{l.FirstFollowup}</td>
@@ -292,25 +308,25 @@ const MyLead = () => {
                                                                 <td style={{ border: "1px solid black" }}>{l.RemarkTwo}</td>
                                                                 <td style={{ border: "1px solid black" }}>{l.AdmissionStates}</td>
                                                                 <td style={{ border: "1px solid black" }}>
-                                                                    {/* <p onClick={() => handleEdit(l.Id)} >Edit</p> */}
-                                                                    <button onClick={() => handleEdit(l.Id)} className="btn btn-sm btn-secondary mr-2">Edit</button>
-                                                                    <p className='btn btn-sm btn-primary my-2' onClick={() => handleAdmission(l, singleLead)} >Admission</p>
-                                                                    <p className='btn btn-sm btn-denger' onClick={() => handleClose(l, singleLead)} >Close</p>
+                                                                    <button onClick={() => handleEdit(l.Id)} className="btn btn-xs btn-secondary mr-2">Edit</button>
+                                                                    <p className='btn btn-xs btn-primary my-2' onClick={() => handleAdmission(l, singleLead)} >Admission</p>
+                                                                    <p className='btn btn-xs btn-denger' onClick={() => handleClose(l, singleLead)} >Close</p>
                                                                 </td>
                                                                 <td style={{ border: "1px solid black" }}>
-                                                                    <p className='btn btn-sm btn-primary my-2' onClick={() => handleOnline(l, singleLead)} >Online</p>
-                                                                    <p className='btn btn-sm btn-denger' onClick={() => handleOffline(l, singleLead)} >Offline</p>
+                                                                    <p className='btn btn-xs btn-primary my-2' onClick={() => handleOnline(l, singleLead)} >Online</p>
+                                                                    <p className='btn btn-xs btn-denger' onClick={() => handleOffline(l, singleLead)} >Offline</p>
                                                                 </td>
                                                                 <td style={{ border: "1px solid black" }}>
-                                                                    <p className='btn btn-sm btn-primary my-2' onClick={() => handleSeminarInterested(l, singleLead)} >Interested</p>
+                                                                    <p className='btn btn-xs btn-primary my-2' onClick={() => handleSeminarInterested(l, singleLead)} >Interested</p>
+                                                                    {/* <p onClick={() => handleTodayFollowup(l, singleLead)} type="">Today</p> */}
                                                                 </td>
                                                             </tr>
                                                     )
-                                            }
-                                        </tr>
+                                                }
+                                            </tr>
 
 
-                                    )
+                                        )
                                 }
 
                             </tbody>
