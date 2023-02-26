@@ -15,7 +15,7 @@ const Signup = () => {
     const [token] = useToken(createUserEmail)
     // console.log(user)
 
-   
+
 
     let navigate = useNavigate();
     let location = useLocation();
@@ -58,7 +58,7 @@ const Signup = () => {
 
     const saveUserDasboard = (name, email, role) => {
         const user = { name, email, role };
-        fetch('http://localhost:5000/users', {
+        fetch('https://server-farvez999.vercel.app/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

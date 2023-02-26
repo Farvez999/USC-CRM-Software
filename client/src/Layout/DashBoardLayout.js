@@ -33,14 +33,17 @@ const DashBoardLayout = () => {
                                 <li><Link to='/dashboard/online-student'>My Online</Link></li>
                                 <li><Link to='/dashboard/offline-student'>My Offline</Link></li>
                                 <li><Link to='/dashboard/seminar-interested'>Seminar Inter</Link></li>
+                                <li><Link to='/dashboard/today-followup'>Today Follow</Link></li>
                             </>
                         }
 
 
                         {
                             isDHead && <>
-                                <li><Link to="/dashboard/addProducts">Add Products</Link></li>
-                                <li><Link to="/dashboard/sellerProducts">My Products</Link></li>
+                                <li><Link to="/dashboard/head-admission">Admission</Link></li>
+                                <li><Link to="/dashboard/head-close">Close</Link></li>
+                                <li><Link to="/dashboard/head-online">Online Inter</Link></li>
+                                <li><Link to="/dashboard/head-offline">Offline Inter</Link></li>
                             </>
                         }
 

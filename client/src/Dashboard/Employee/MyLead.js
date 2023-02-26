@@ -18,7 +18,7 @@ const MyLead = () => {
 
 
     useEffect(() => {
-        fetch(`http://localhost:5000/leads/${user.displayName}`, {
+        fetch(`https://server-farvez999.vercel.app/leads/${user.displayName}`, {
             headers: {
                 authorization: `bearer ${localStorage.getItem('accessToken')}`
             }
@@ -39,7 +39,7 @@ const MyLead = () => {
     const handleUpdate = event => {
         event.preventDefault();
         console.log(leadsStatus);
-        fetch(`http://localhost:5000/leads/${user.displayName}`, {
+        fetch(`https://server-farvez999.vercel.app/leads/${user.displayName}`, {
             method: 'PUT', // or 'PUT'
             headers: {
                 'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-admission-add`, {
+        fetch(`https://server-farvez999.vercel.app/user-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -100,7 +100,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-close-add`, {
+        fetch(`https://server-farvez999.vercel.app/user-close-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -130,33 +130,26 @@ const MyLead = () => {
             })
     }
 
-    // const handleTodayFollowup = (l, singleLead) => {
-    //     let lData = leads.map(lead => {
-    //         if (lead.batchName === singleLead.batchName && lead.courseName === singleLead.courseName && lead.employeeName === singleLead.employeeName && lead.headName === singleLead.headName) {
-    //             var date = new Date();
-    //             console.log(date);
-    //             var formatedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-    //             console.log(formatedDate);
-                
+    function formatedDate(date) {
+        const newDate = new Date(date);
+        return `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${newDate.getDate()}`
+    }
 
-    //             const lds = lead.data.filter(ld => ld.FirstFollowup === '2023-02-23')
-    //             console.log(lds);
-    //             // lead.data = lds;
-    //             // var date = new Date();
-    //             // console.log(date);
-    //             // var formatedDate = `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`
-    //             // console.log(formatedDate);
-    //             return lead;
-    //         } else {
+    const handleTodayFollowup = () => {
+        let lData = leads.map(lead => {
 
-    //             return lead;
-    //         }
-    //     })
+            const lds = lead.data.filter(ld => formatedDate(ld.FirstFollowup) === formatedDate(Date.now()))
+            // console.log(new Date(lead.data[0].FirstFollowup));
 
-    //     lData = lData.filter(ld => ld.data.length !== 0);
+            console.log(lds);
+            return lead;
 
-    //     setLeads(lData)
-    // }
+        })
+
+        lData = lData.filter(ld => ld.data.length !== 0);
+
+        setLeads(lData)
+    }
 
     const handleOnline = (l, singleLead) => {
         const courseName = singleLead.courseName
@@ -171,7 +164,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-online-admission-add`, {
+        fetch(`https://server-farvez999.vercel.app/user-online-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -199,7 +192,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-offline-admission-add`, {
+        fetch(`https://server-farvez999.vercel.app/user-offline-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -227,7 +220,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-seminar-interested-add`, {
+        fetch(`https://server-farvez999.vercel.app/user-seminar-interested-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -250,30 +243,30 @@ const MyLead = () => {
 
             <input type="text" className="input input-bordered input-sm w-full max-w-xs mb-3" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Batch Name'></input>
 
-            <button type="">Today</button>
+            <button onClick={handleTodayFollowup} type="">Today</button>
 
-            <div className='w-100' >
+            <div >
                 <div className="overflow-scroll" style={{ height: '430px', width: "1050px" }}>
                     <form onSubmit={handleUpdate}>
                         <table className="table-fixed">
-                            <thead>
+                            <thead style={{ width: "1050px" }}>
                                 <tr className='text-xs'>
                                     <th style={{ border: "1px solid black" }}>#</th>
                                     <th style={{ border: "1px solid black" }}>B Name</th>
                                     <tr>
-                                        <th style={{ border: "1px solid black", width: '60px' }}>Name</th>
-                                        <th style={{ border: "1px solid black", width: '200px' }}>Phone</th>
-                                        <th style={{ border: "1px solid black", width: '180px' }}>Email</th>
-                                        <th style={{ border: "1px solid black" }}>FirstFollowup</th>
-                                        <th style={{ border: "1px solid black" }}>SecondFollowup</th>
-                                        <th placeholder='Third Follow up' style={{ border: "1px solid black" }}>ThirdFollowup</th>
-                                        <th placeholder='Next Follow Date' style={{ border: "1px solid black" }}>NextFollowupDate</th>
-                                        <th style={{ border: "1px solid black" }}>Remark</th>
-                                        <th style={{ border: "1px solid black" }}>RemarkTwo</th>
-                                        <th style={{ border: "1px solid black" }}>AdmissionStates</th>
-                                        <th style={{ border: "1px solid black" }}>Action</th>
-                                        <th style={{ border: "1px solid black" }}>Interested</th>
-                                        <th style={{ border: "1px solid black" }}>Seminar</th>
+                                        <th width="4%" style={{ border: "1px solid black" }}>Name</th>
+                                        <th width="7%" style={{ border: "1px solid black" }}>Phone</th>
+                                        <th width="10%" style={{ border: "1px solid black" }}>Email</th>
+                                        <th width="4%" style={{ border: "1px solid black" }}>1st F up</th>
+                                        <th width="4%" style={{ border: "1px solid black" }}>2nd F up</th>
+                                        <th width="4%" style={{ border: "1px solid black" }}>3rd F up</th>
+                                        <th width="4%" style={{ border: "1px solid black" }}>Next F D</th>
+                                        <th width="4%" style={{ border: "1px solid black" }}>Remark</th>
+                                        <th width="3%" style={{ border: "1px solid black" }}>Remark 2</th>
+                                        <th width="6%" style={{ border: "1px solid black" }}>Ad S</th>
+                                        <th width="6%" style={{ border: "1px solid black" }}>Action</th>
+                                        <th width="6%" style={{ border: "1px solid black" }}>Interested</th>
+                                        <th width="6%" style={{ border: "1px solid black" }}>Seminar</th>
                                     </tr>
                                 </tr>
                             </thead>
@@ -297,16 +290,16 @@ const MyLead = () => {
                                                             setLeadsStatus={setLeadsStatus} /> :
                                                             <tr>
                                                                 {/* <td style={{ border: "1px solid black" }}>{l.Id}</td> */}
-                                                                <td style={{ border: "1px solid black", width: '60px' }}>{l.Name}</td>
-                                                                <td className='w-20' style={{ border: "1px solid black" }}>{l.Phone}</td>
-                                                                <td className='w-20' style={{ border: "1px solid black" }}>{l.Email}</td>
-                                                                <td style={{ border: "1px solid black" }}>{l.FirstFollowup}</td>
-                                                                <td style={{ border: "1px solid black" }}>{l.SecondFollowup}</td>
-                                                                <td style={{ border: "1px solid black" }}>{l.ThirdFollowup}</td>
-                                                                <td style={{ border: "1px solid black" }}>{l.NextFollowupDate}</td>
-                                                                <td style={{ border: "1px solid black" }}>{l.Remark}</td>
-                                                                <td style={{ border: "1px solid black" }}>{l.RemarkTwo}</td>
-                                                                <td style={{ border: "1px solid black" }}>{l.AdmissionStates}</td>
+                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.Name}</td>
+                                                                <td width="5%" className='w-20' style={{ border: "1px solid black" }}>{l.Phone}</td>
+                                                                <td width="5%" className='w-20' style={{ border: "1px solid black" }}>{l.Email}</td>
+                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.FirstFollowup}</td>
+                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.SecondFollowup}</td>
+                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.ThirdFollowup}</td>
+                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.NextFollowupDate}</td>
+                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.Remark}</td>
+                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.RemarkTwo}</td>
+                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.AdmissionStates}</td>
                                                                 <td style={{ border: "1px solid black" }}>
                                                                     <button onClick={() => handleEdit(l.Id)} className="btn btn-xs btn-secondary mr-2">Edit</button>
                                                                     <p className='btn btn-xs btn-primary my-2' onClick={() => handleAdmission(l, singleLead)} >Admission</p>

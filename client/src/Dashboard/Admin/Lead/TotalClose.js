@@ -8,7 +8,7 @@ const TotalClose = () => {
     const { data: closes = [], refetch } = useQuery({
         queryKey: ['closes'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user/total-close`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user/total-close`);
             const data = await res.json();
             return data;
         }

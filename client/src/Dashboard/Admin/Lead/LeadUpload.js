@@ -104,7 +104,7 @@ const LeadUpload = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/personal-data-add`, {
+        fetch(`https://server-farvez999.vercel.app/personal-data-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',

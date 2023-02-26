@@ -159,9 +159,9 @@ async function run() {
             const existingEmployee = await admissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
-                console.log(existingData);
+                // console.log(existingData);
                 const newArr = [...existingData, ...admissionData];
-                console.log(newArr);
+                // console.log(newArr);
                 const updateEmployee = await admissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
                 return res.send(updateEmployee);
             }
@@ -186,6 +186,13 @@ async function run() {
             res.send(users)
         })
 
+        // Head admission
+        app.get('/head/admissions/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { headName: name }
+            const users = await admissitionsCollection.find(query).toArray()
+            res.send(users)
+        })
 
         // Total Students
         app.get('/user/total-admissions', async (req, res) => {
@@ -226,7 +233,7 @@ async function run() {
 
         app.post('/user-close-add', async (req, res) => {
             const closeData = [req.body.data];
-            console.log(closeData);
+            // console.log(closeData);
             const courseName = req.body.courseName;
             const batchName = req.body.batchName;
             const employeeName = req.body.employeeName;
@@ -235,9 +242,9 @@ async function run() {
             let updateEmployee;
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
-                console.log(existingData);
+                // console.log(existingData);
                 const newArr = [...existingData, ...closeData];
-                console.log(newArr);
+                // console.log(newArr);
                 await closeCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
 
             }
@@ -277,6 +284,14 @@ async function run() {
             res.send(users)
         })
 
+        //Head Close get
+        app.get('/head/close/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { headName: name }
+            const users = await closeCollection.find(query).toArray()
+            res.send(users)
+        })
+
         app.delete('/user-close-delete/:id', async (req, res) => {
             const id = req.params.id;
             // console.log(id);
@@ -299,9 +314,9 @@ async function run() {
             const existingEmployee = await onlineAdmissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
-                console.log(existingData);
+                // console.log(existingData);
                 const newArr = [...existingData, ...onlineAdmissionData];
-                console.log(newArr);
+                // console.log(newArr);
                 const updateEmployee = await onlineAdmissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
                 return res.send(updateEmployee);
             }
@@ -329,9 +344,9 @@ async function run() {
             const existingEmployee = await offlineAdmissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
-                console.log(existingData);
+                // console.log(existingData);
                 const newArr = [...existingData, ...offlineAdmissionData];
-                console.log(newArr);
+                // console.log(newArr);
                 const updateEmployee = await offlineAdmissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
                 return res.send(updateEmployee);
             }
@@ -356,6 +371,14 @@ async function run() {
             res.send(users)
         })
 
+         //Head Admissions get
+         app.get('/head/online-admissions/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { headName: name }
+            const users = await onlineAdmissitionsCollection.find(query).toArray()
+            res.send(users)
+        })
+
         //User Admissions get
         app.get('/user/offline-admissions/:name', async (req, res) => {
             const name = req.params.name;
@@ -364,6 +387,14 @@ async function run() {
             res.send(users)
         })
 
+
+         //Head offline get
+         app.get('/head/offline-admissions/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { headName: name }
+            const users = await offlineAdmissitionsCollection.find(query).toArray()
+            res.send(users)
+        })
 
         // Admin Total online-student
         app.get('/user/total-online-student', async (req, res) => {
@@ -394,9 +425,9 @@ async function run() {
             const existingEmployee = await seminarInterestedCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
-                console.log(existingData);
+                // console.log(existingData);
                 const newArr = [...existingData, ...seminarInterestedData];
-                console.log(newArr);
+                // console.log(newArr);
                 const updateEmployee = await seminarInterestedCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
                 return res.send(updateEmployee);
             }
@@ -421,10 +452,55 @@ async function run() {
             res.send(users)
         })
 
+        function formatedDate(date) {
+            const newDate = new Date(date);
+            return `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${newDate.getDate()}`
+        }
 
+        app.get('/followup/:name/:date', async (req, res) => {
+            const name = req.params.name;
+            const date = req.params.date;
+            const query = { employeeName: name };
+            const users = await personalDataCollection.find(query).toArray()
+            let lData = users.map(lead => {
 
+                const lds = lead.data.filter(ld => formatedDate(ld.FirstFollowup) === formatedDate(date))
+                console.log("LDS", lds);
+                lead.data = lds
+                return lead;
 
+            })
+            let namee = lData.filter(d => d.employeeName)
+            console.log("Farvez", namee);
+            if (name) {
+                let data = lData.filter(d => d.data.length > 0)
+            }
+            // console.log("Farvez", lData.filter(d => d.employeeName));
+            let data = lData.filter(d => d.data.length > 0)
+            console.log("Last Date", data);
+            res.send(data)
+        })
 
+        // const existingEmployee = await seminarInterestedCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
+        // if (existingEmployee) {
+        //     const existingData = existingEmployee.data;
+        //     // console.log(existingData);
+        //     const newArr = [...existingData, ...seminarInterestedData];
+        //     // console.log(newArr);
+        //     const updateEmployee = await seminarInterestedCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+        //     return res.send(updateEmployee);
+        // }
+        // else {
+        //     const existingEmploye = await seminarInterestedCollection.insertOne(
+        //         {
+        //             courseName: courseName,
+        //             batchName: batchName,
+        //             employeeName: employeeName,
+        //             headName: headName,
+        //             data: seminarInterestedData
+        //         });
+        //     return res.send(existingEmploye);
+        // }
 
 
 
@@ -444,8 +520,6 @@ async function run() {
             const users = await usersCollection.findOne(query)
             res.send(users)
         })
-
-
 
         app.get('/allUser/:role', async (req, res) => {
             const role = req.params.role;
@@ -467,7 +541,7 @@ async function run() {
             const email = req.params.email;
             const query = { email }
             const user = await usersCollection.findOne(query);
-            res.send({ isSeller: user?.role === 'Department Head' });
+            res.send({ isDHead: user?.role === 'Department Head' });
         })
 
         // Update user role Admin

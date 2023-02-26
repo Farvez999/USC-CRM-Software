@@ -2,15 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthProvider';
 
-const SeminarInterested = () => {
+const OfflineSt = () => {
 
     const { user } = useContext(AuthContext)
     const [search, setSearch] = useState("");
 
-    const { data: onlines = [], refetch } = useQuery({
-        queryKey: ['onlines'],
+    const { data: offlines = [], refetch } = useQuery({
+        queryKey: ['offlines'],
         queryFn: async () => {
-            const res = await fetch(`https://server-farvez999.vercel.app/user/seminar-interested/${user.displayName}`);
+            const res = await fetch(`http://localhost:5000/head/offline-admissions/${user.displayName}`);
             const data = await res.json();
             return data;
         }
@@ -18,7 +18,7 @@ const SeminarInterested = () => {
 
     return (
         <div>
-            <h3 className="text-2xl mb-3">Seminar Interested Student</h3>
+            <h3 className="text-2xl mb-3">Offline Interested Student</h3>
 
             <input type="text" className="input input-bordered input-sm w-full max-w-xs mb-3" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Name, Phone, Email'></input>
 
@@ -39,29 +39,29 @@ const SeminarInterested = () => {
                         <tbody>
 
                             {
-                                onlines.filter((online) => {
-                                    return search?.toLowerCase() === '' ? online : online.batchName.toLowerCase().includes(search);
-                                })
-                                    ?.map((online, i) =>
-                                        <tr key={online.Id}>
-                                            <th style={{ border: "1px solid black" }}>{i + 1}</th>
-                                            <td style={{ border: "1px solid black" }}>{online.courseName}</td>
-                                            <td style={{ border: "1px solid black" }}>{online.batchName}</td>
-                                            <td style={{ border: "1px solid black" }}>{online.employeeName}</td>
-                                            <td style={{ border: "1px solid black" }}>{online.headName}</td>
+                                offlines.map((offline, i) =>
+                                    <tr key={offline.Id}>
+                                        <th style={{ border: "1px solid black" }}>{i + 1}</th>
+                                        <td style={{ border: "1px solid black" }}>{offline.courseName}</td>
+                                        <td style={{ border: "1px solid black" }}>{offline.batchName}</td>
+                                        <td style={{ border: "1px solid black" }}>{offline.employeeName}</td>
+                                        <td style={{ border: "1px solid black" }}>{offline.headName}</td>
 
-                                            {
-                                                online?.data?.map(d =>
+                                        {
+                                            offline?.data?.filter((d) => {
+                                                return search?.toLowerCase() === '' ? d : d.Name.toLowerCase().includes(search) || d.Phone.toLowerCase().includes(search) || d.Email.toLowerCase().includes(search);
+                                            })
+                                                ?.map(d =>
                                                     <tr>
                                                         <td style={{ border: "1px solid black" }}>{d.Name}</td>
                                                         <td style={{ border: "1px solid black" }}>{d.Phone}</td>
                                                         <td style={{ border: "1px solid black" }}>{d.Email}</td>
                                                     </tr>
                                                 )
-                                            }
-                                        </tr>
+                                        }
+                                    </tr>
 
-                                    )
+                                )
                             }
 
                         </tbody>
@@ -74,4 +74,4 @@ const SeminarInterested = () => {
     );
 };
 
-export default SeminarInterested;
+export default OfflineSt;

@@ -18,6 +18,11 @@ import PrivateRoutes from "./PrivateRoutes";
 import OfflineStudents from "../Dashboard/Admin/Lead/OfflineStudents";
 import OnlineStudents from "../Dashboard/Admin/Lead/OnlineStudents";
 import SeminarInterested from "../Dashboard/Employee/SeminarInterested";
+import TodayFollowup from "../Dashboard/Employee/TodayFollowup";
+import TotalAdd from "../Dashboard/Head/TotalAdd";
+import TClose from "../Dashboard/Head/TClose";
+import OnlineSt from "../Dashboard/Head/OnlineSt";
+import OfflineSt from "../Dashboard/Head/OfflineSt";
 
 const router = createBrowserRouter([
     {
@@ -108,10 +113,26 @@ const router = createBrowserRouter([
                 path: '/dashboard/seminar-interested',
                 element: <SeminarInterested></SeminarInterested>
             },
-            // {
-            //     path: '/dashboard/addProducts',
-            //     element: <SellerRoute><AddProduct></AddProduct></SellerRoute>
-            // },
+            {
+                path: '/dashboard/today-followup',
+                element: <TodayFollowup></TodayFollowup>
+            },
+            {
+                path: '/dashboard/head-admission',
+                element: <TotalAdd></TotalAdd>
+            },
+            {
+                path: '/dashboard/head-close',
+                element: <TClose></TClose>
+            },
+            {
+                path: '/dashboard/head-online',
+                element: <OnlineSt></OnlineSt>
+            },
+            {
+                path: '/dashboard/head-offline',
+                element: <OfflineSt></OfflineSt>
+            },
             // {
             //     path: '/dashboard/sellerProducts',
             //     element: <SellerRoute><SellerProducts></SellerProducts></SellerRoute>

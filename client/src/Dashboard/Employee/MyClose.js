@@ -10,7 +10,7 @@ const MyClose = () => {
     const { data: closes = [], refetch } = useQuery({
         queryKey: ['closes'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user/close/${user.displayName}`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user/close/${user.displayName}`);
             const data = await res.json();
             return data;
         }
@@ -19,11 +19,11 @@ const MyClose = () => {
 
     return (
         <div>
-            <h3 className="text-3xl mb-5">My Close Student</h3>
+            <h3 className="text-2xl mb-3">My Close Student</h3>
 
-            <input type="text" className="input input-bordered w-full max-w-xs mb-5" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Name, Phone, Email'></input>
+            <input type="text" className="input input-bordered input-sm w-full max-w-xs mb-3" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Name, Phone, Email'></input>
 
-            <div className="overflow-x-auto">
+            <div className="overflow-auto" style={{ height: '430px', width: "1050px" }}>
                 <form>
                     <table className="table">
                         <thead>
@@ -53,12 +53,12 @@ const MyClose = () => {
                                                 return search?.toLowerCase() === '' ? d : d.Name.toLowerCase().includes(search) || d.Phone.toLowerCase().includes(search) || d.Email.toLowerCase().includes(search);
                                             })
                                                 ?.map(d =>
-                                                <tr>
-                                                    <td style={{ border: "1px solid black" }}>{d.Name}</td>
-                                                    <td style={{ border: "1px solid black" }}>{d.Phone}</td>
-                                                    <td style={{ border: "1px solid black" }}>{d.Email}</td>
-                                                </tr>
-                                            )
+                                                    <tr>
+                                                        <td style={{ border: "1px solid black" }}>{d.Name}</td>
+                                                        <td style={{ border: "1px solid black" }}>{d.Phone}</td>
+                                                        <td style={{ border: "1px solid black" }}>{d.Email}</td>
+                                                    </tr>
+                                                )
                                         }
                                     </tr>
 
