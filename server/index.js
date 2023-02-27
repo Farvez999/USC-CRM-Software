@@ -157,25 +157,31 @@ async function run() {
             const employeeName = req.body.employeeName;
             const headName = req.body.headName;
             const existingEmployee = await admissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
+            let updateEmployee;
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
-                // console.log(existingData);
-                const newArr = [...existingData, ...admissionData];
-                // console.log(newArr);
-                const updateEmployee = await admissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
-                return res.send(updateEmployee);
+                const newArr = [...existingData, ...closeData];
+                await admissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+
             }
             else {
-                const existingEmploye = await admissitionsCollection.insertOne(
+                await admissitionsCollection.insertOne(
                     {
                         courseName: courseName,
                         batchName: batchName,
                         employeeName: employeeName,
                         headName: headName,
-                        data: admissionData
+                        data: closeData
                     });
-                return res.send(existingEmploye);
             }
+
+            const idData = await personalDataCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await personalDataCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
         })
 
         //User Admissions get
@@ -233,7 +239,6 @@ async function run() {
 
         app.post('/user-close-add', async (req, res) => {
             const closeData = [req.body.data];
-            // console.log(closeData);
             const courseName = req.body.courseName;
             const batchName = req.body.batchName;
             const employeeName = req.body.employeeName;
@@ -242,9 +247,7 @@ async function run() {
             let updateEmployee;
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
-                // console.log(existingData);
                 const newArr = [...existingData, ...closeData];
-                // console.log(newArr);
                 await closeCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
 
             }
@@ -371,8 +374,8 @@ async function run() {
             res.send(users)
         })
 
-         //Head Admissions get
-         app.get('/head/online-admissions/:name', async (req, res) => {
+        //Head Admissions get
+        app.get('/head/online-admissions/:name', async (req, res) => {
             const name = req.params.name;
             const query = { headName: name }
             const users = await onlineAdmissitionsCollection.find(query).toArray()
@@ -388,8 +391,8 @@ async function run() {
         })
 
 
-         //Head offline get
-         app.get('/head/offline-admissions/:name', async (req, res) => {
+        //Head offline get
+        app.get('/head/offline-admissions/:name', async (req, res) => {
             const name = req.params.name;
             const query = { headName: name }
             const users = await offlineAdmissitionsCollection.find(query).toArray()

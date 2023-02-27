@@ -80,7 +80,20 @@ const MyLead = () => {
             .then(data => {
                 toast.success('Admisstion Data added successfully')
 
+                let lData = leads.map(lead => {
+                    if (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) {
+                        const lds = lead.data.filter(ld => ld.Id !== l.Id)
+                        lead.data = lds;
+                        return lead;
+                    } else {
 
+                        return lead;
+                    }
+                })
+
+                lData = lData.filter(ld => ld.data.length !== 0);
+
+                setLeads(lData)
             })
 
     }
@@ -135,21 +148,21 @@ const MyLead = () => {
         return `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${newDate.getDate()}`
     }
 
-    const handleTodayFollowup = () => {
-        let lData = leads.map(lead => {
+    // const handleTodayFollowup = () => {
+    //     let lData = leads.map(lead => {
 
-            const lds = lead.data.filter(ld => formatedDate(ld.FirstFollowup) === formatedDate(Date.now()))
-            // console.log(new Date(lead.data[0].FirstFollowup));
+    //         const lds = lead.data.filter(ld => formatedDate(ld.FirstFollowup) === formatedDate(Date.now()))
+    //         // console.log(new Date(lead.data[0].FirstFollowup));
 
-            console.log(lds);
-            return lead;
+    //         console.log(lds);
+    //         return lead;
 
-        })
+    //     })
 
-        lData = lData.filter(ld => ld.data.length !== 0);
+    //     lData = lData.filter(ld => ld.data.length !== 0);
 
-        setLeads(lData)
-    }
+    //     setLeads(lData)
+    // }
 
     const handleOnline = (l, singleLead) => {
         const courseName = singleLead.courseName
@@ -243,13 +256,13 @@ const MyLead = () => {
 
             <input type="text" className="input input-bordered input-sm w-full max-w-xs mb-3" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Batch Name'></input>
 
-            <button onClick={handleTodayFollowup} type="">Today</button>
+            {/* <button onClick={handleTodayFollowup} type="">Today</button> */}
 
             <div >
                 <div className="overflow-scroll" style={{ height: '430px', width: "1050px" }}>
                     <form onSubmit={handleUpdate}>
                         <table className="table-fixed">
-                            <thead style={{ width: "1050px" }}>
+                            <thead className='sticky top-0' style={{ width: "1050px" }}>
                                 <tr className='text-xs'>
                                     <th style={{ border: "1px solid black" }}>#</th>
                                     <th style={{ border: "1px solid black" }}>B Name</th>
