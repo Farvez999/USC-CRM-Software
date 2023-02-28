@@ -23,6 +23,7 @@ import TotalAdd from "../Dashboard/Head/TotalAdd";
 import TClose from "../Dashboard/Head/TClose";
 import OnlineSt from "../Dashboard/Head/OnlineSt";
 import OfflineSt from "../Dashboard/Head/OfflineSt";
+import UserSetting from "../Dashboard/Admin/Settings/UserSetting";
 
 const router = createBrowserRouter([
     {
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
             {
                 path: '/dashboard/lead-upload',
                 element: <LeadUpload></LeadUpload>
+            },
+            {
+                path: '/dashboard/settings',
+                element: <UserSetting></UserSetting>
             },
             {
                 path: '/dashboard/my-lead',

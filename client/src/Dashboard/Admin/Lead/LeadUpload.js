@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx'
 import { Data } from './Data';
 import _, { pad } from 'lodash'
 import { toast } from 'react-hot-toast';
+import { useQuery } from '@tanstack/react-query';
 
 
 
@@ -81,17 +82,55 @@ const LeadUpload = () => {
         setCourseName(e.target.value);
     }
 
+    const { data: coursesName = [] } = useQuery({
+        queryKey: ['coursesName'],
+        queryFn: async () => {
+            const res = await fetch(`http://localhost:5000/course-name-setting`);
+            const data = await res.json();
+            return data;
+        }
+    });
+
     const handleBatchName = (e) => {
         setBatchName(e.target.value);
     }
+
+    const { data: batchsName = [] } = useQuery({
+        queryKey: ['batchsName'],
+        queryFn: async () => {
+            const res = await fetch(`http://localhost:5000/batch-name-setting`);
+            const data = await res.json();
+            return data;
+        }
+    });
 
     const handleSelectUser = (e) => {
         setEmployeeName(e.target.value);
     }
 
+    const { data: usersName = [] } = useQuery({
+        queryKey: ['usersName'],
+        queryFn: async () => {
+            const res = await fetch(`http://localhost:5000/user-name-setting`);
+            const data = await res.json();
+            return data;
+        }
+    });
+
+
     const handleSelectHead = (e) => {
         setHeadName(e.target.value);
     }
+
+    const { data: headsName = [] } = useQuery({
+        queryKey: ['headsName'],
+        queryFn: async () => {
+            const res = await fetch(`http://localhost:5000/head-name-setting`);
+            const data = await res.json();
+            return data;
+        }
+    });
+
 
 
     const handleAdded = () => {
@@ -181,29 +220,58 @@ const LeadUpload = () => {
 
                     <div className='flex items-center gap-2'>
                         <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleCourseName}>
-                            <option disabled selected>Course Name</option>
-                            <option>Python</option>
-                            <option>Mern</option>
+                            {
+                                coursesName?.map((user) =>
+                                    <option
+                                        key={user._id}
+                                        value={user.courseName}>
+                                        {user.courseName}
+                                    </option>
+                                )
+                            }
                         </select>
 
                         <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleBatchName}>
-                            <option disabled selected>Batch No</option>
-                            <option>Python-101</option>
-                            <option>Python-102</option>
-                            <option>Mern-101</option>
-                            <option>Mern-102</option>
+                        {
+                                batchsName?.map((user) =>
+                                    <option
+                                        key={user._id}
+                                        value={user.batchName}>
+                                        {user.batchName}
+                                    </option>
+                                )
+                            }
                         </select>
 
                         <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleSelectUser}>
-                            <option disabled selected>Select User</option>
+                            {/* <option disabled selected>Select User</option> */}
+                            {
+                                usersName?.map((user) =>
+                                    <option
+                                        key={user._id}
+                                        value={user.userName}>
+                                        {user.userName}
+                                    </option>
+                                )
+                            }
+                            {/* <option disabled selected>Select User</option>
                             <option>Sumaiya</option>
-                            <option>Sonia</option>
+                            <option>Sonia</option> */}
                         </select>
 
                         <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleSelectHead}>
-                            <option disabled selected>Select Head</option>
+                            {
+                                headsName?.map((user) =>
+                                    <option
+                                        key={user._id}
+                                        value={user.headName}>
+                                        {user.headName}
+                                    </option>
+                                )
+                            }
+                            {/* <option disabled selected>Select Head</option>
                             <option>Shuvo</option>
-                            <option>Nahid</option>
+                            <option>Nahid</option> */}
                         </select>
 
                         <button className='btn btn-success btn-sm mx-6' onClick={handleAdded} type="submit">Added User or DataBase</button>

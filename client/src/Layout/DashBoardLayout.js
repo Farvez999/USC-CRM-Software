@@ -55,6 +55,7 @@ const DashBoardLayout = () => {
                                 <li><Link to={`/dashboard/total-close`}>Total Close</Link></li>
                                 <li><Link to={`/dashboard/online-students`}>Online Student</Link></li>
                                 <li><Link to={`/dashboard/offline-students`}>Offline Student</Link></li>
+                                <li><Link to={`/dashboard/settings`}>Settings</Link></li>
                             </>
                         }
                     </ul>

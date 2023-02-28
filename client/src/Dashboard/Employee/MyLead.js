@@ -143,10 +143,10 @@ const MyLead = () => {
             })
     }
 
-    function formatedDate(date) {
-        const newDate = new Date(date);
-        return `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${newDate.getDate()}`
-    }
+    // function formatedDate(date) {
+    //     const newDate = new Date(date);
+    //     return `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${newDate.getDate()}`
+    // }
 
     // const handleTodayFollowup = () => {
     //     let lData = leads.map(lead => {

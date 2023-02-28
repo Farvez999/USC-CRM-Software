@@ -44,10 +44,11 @@ async function run() {
         const onlineAdmissitionsCollection = client.db("usc-crm").collection("online-admission-data");
         const offlineAdmissitionsCollection = client.db("usc-crm").collection("offline-admission-data");
         const seminarInterestedCollection = client.db("usc-crm").collection("seminar-interested-data");
-        const productsCollection = client.db("used-products-resale-portal").collection("products");
-        const bookingsCollection = client.db("used-products-resale-portal").collection("bookings");
-        const wishlistsCollection = client.db("used-products-resale-portal").collection("wishlists");
-        const paymentsCollection = client.db("used-products-resale-portal").collection("payments");
+        const userSettingCollection = client.db("usc-crm").collection("user-name-setting");
+        const headSettingCollection = client.db("usc-crm").collection("head-name-setting");
+        const courseSettingCollection = client.db("usc-crm").collection("course-name-setting");
+        const batchSettingCollection = client.db("usc-crm").collection("batch-name-setting");
+
 
         const verifyAdmin = async (req, res, next) => {
             const decodedEmail = req.decoded.email;
@@ -594,241 +595,54 @@ async function run() {
         })
 
 
-
-
-
-
-
-
-        // --------------------------------------------
-
-        //All category
-        app.get('/categories', async (req, res) => {
-            const query = {};
-            const cursors = categoriesCollection.find(query)
-            const categorie = await cursors.toArray()
-            res.send(categorie)
-        })
-
-        app.get('/categorie/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) }
-            const categorie = await categoriesCollection.findOne(query)
-            res.send(categorie)
-        })
-
-        app.get('/categories/:name', async (req, res) => {
-            const name = req.params.name;
-            const query = {
-                category: name
-            }
-
-            const products = await productsCollection.find(query).toArray()
-
-            // -----------booking paid == Category product dekhabe na--------------- 
-            const remainingProduct = products.filter(product => product.paid !== true)
-            // -----------booking paid == Category product dekhabe na--------------- 
-
-            res.send(remainingProduct)
-        })
-
-
-
-        //All product get
-        app.get('/products', async (req, res) => {
-            const query = {};
-            const result = await productsCollection.find(query).toArray()
-            res.send(result);
-        });
-
-
-
-
-        //Seller add product
-        app.post('/addProduct', verifyJWT, verifySeller, async (req, res) => {
-            const product = req.body;
-            const result = await productsCollection.insertOne(product);
-            const id =
-                res.send(result);
-        })
-
-        //Get Advertise
-        app.get('/advertise', async (req, res) => {
-            const query = { advertise: true };
-            const result = await productsCollection.find(query).toArray()
-            res.send(result);
-        });
-
-        //advertise data update
-        app.put('/addProduct/addAdvertisement/:id', async (req, res) => {
-
-            const id = req.params.id;
-            const ProductQuery = {
-                _id: ObjectId(id)
-            }
-            const updatedDoc = {
-                $set: {
-                    advertise: true,
-                }
-            }
-            const result = await productsCollection.updateOne(ProductQuery, updatedDoc);
-            res.send(result);
-
-        })
-
-        //advertise data remove
-        app.put('/addProduct/removeAdvertisement/:id', async (req, res) => {
-
-            const id = req.params.id;
-            const ProductQuery = {
-                _id: ObjectId(id)
-            }
-            const updatedDoc = {
-                $set: {
-                    advertise: false,
-                }
-            }
-            const result = await productsCollection.updateOne(ProductQuery, updatedDoc);
-            res.send(result);
-
-        })
-
-        // Seller delete
-        app.delete('/products/:id', verifyJWT, verifySeller, async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) };
-            const result = await productsCollection.deleteOne(query);
+        // user Setting 
+        app.post('/user-name-setting', async (req, res) => {
+            const userName = req.body;
+            const result = await userSettingCollection.insertOne(userName);
             res.send(result);
         })
 
-
-
-
-
-
-        //get bookings my product
-        app.get('/bookings', verifyJWT, async (req, res) => {
-            const email = req.query.email;
-
-            const decodedEmail = req.decoded.email;
-
-            if (email !== decodedEmail) {
-                return res.status(403).send({ message: 'forbidden access' })
-            }
-            // console.log('token', req.headers.authorization)
-
-            const query = { email: email };
-            const bookings = await bookingsCollection.find(query).toArray();
-            res.send(bookings);
-        })
-
-        // bookings post (submit data)
-        app.post('/bookings', async (req, res) => {
-            const booking = req.body;
-            // console.log(booking)
-
-            // const query = {
-            //     appointmentDate: booking.appointmentDate,
-            //     email: booking.email,
-            //     treatment: booking.treatment
-
-            // }
-
-            // const alreadyBooked = await bookingsCollection.find(query).toArray();
-
-            // if (alreadyBooked.length) {
-            //     const message = `You have already Booking on ${booking.appointmentDate}`
-            //     return res.send({ acknowledged: false, message });
-            // }
-
-            const result = await bookingsCollection.insertOne(booking)
+        app.post('/head-name-setting', async (req, res) => {
+            const userName = req.body;
+            const result = await headSettingCollection.insertOne(userName);
             res.send(result);
         })
 
-        // Wishlist post add wishlist
-        app.post('/wishlist', async (req, res) => {
-            const wishlist = req.body;
-            // console.log(wishlist)
-            const result = await wishlistsCollection.insertOne(wishlist)
+        app.post('/course-name-setting', async (req, res) => {
+            const userName = req.body;
+            const result = await courseSettingCollection.insertOne(userName);
             res.send(result);
         })
 
-        //get wishlist my wishlist
-        app.get('/wishlists', verifyJWT, async (req, res) => {
-            const email = req.query.email;
-
-            const decodedEmail = req.decoded.email;
-
-            if (email !== decodedEmail) {
-                return res.status(403).send({ message: 'forbidden access' })
-            }
-            // console.log('token', req.headers.authorization)
-
-            const query = { email: email };
-            const wishlists = await wishlistsCollection.find(query).toArray();
-            res.send(wishlists);
-        })
-
-
-        // Payment booking api
-        app.get('/bookings/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) }
-            const booking = await bookingsCollection.findOne(query)
-            res.send(booking);
-        })
-
-
-        // Payment Api
-        app.post("/create-payment-intent", async (req, res) => {
-            const booking = req.body;
-            // console.log(booking)
-            const resalePrice = booking.resalePrice
-            const amount = resalePrice * 100
-
-            // Create a PaymentIntent with the order amount and currency
-            const paymentIntent = await stripe.paymentIntents.create({
-                currency: 'usd',
-                amount: amount,
-                "payment_method_types": [
-                    "card"
-                ]
-            });
-            res.send({
-                clientSecret: paymentIntent.client_secret,
-            });
-        })
-
-        app.post('/payments', async (req, res) => {
-            const payment = req.body;
-            const result = await paymentsCollection.insertOne(payment);
-            const id = payment.bookingId
-            const filter = { _id: ObjectId(id) }
-            const updatedDoc = {
-                $set: {
-                    paid: true,
-                    transactionId: payment.transactionId
-                }
-            }
-            const updatedResult = await bookingsCollection.updateOne(filter, updatedDoc)
-
-            //------------Order update hole paid true --------
-            const orderData = await bookingsCollection.findOne(filter)
-            const productQuery = {
-                _id: ObjectId(orderData.productId)
-            };
-            const productUpdateDoc = {
-                $set: {
-                    paid: true
-                }
-            }
-            const productUpdateResult = await productsCollection.updateOne(productQuery, productUpdateDoc);
-            const updatedProduct = await productsCollection.findOne(productQuery)
-            //------------Order update hole paid true --------
-
+        app.post('/batch-name-setting', async (req, res) => {
+            const userName = req.body;
+            const result = await batchSettingCollection.insertOne(userName);
             res.send(result);
         })
 
+        app.get('/user-name-setting', async (req, res) => {
+            const query = {}
+            const users = await userSettingCollection.find(query).toArray()
+            res.send(users)
+        })
+
+        app.get('/head-name-setting', async (req, res) => {
+            const query = {}
+            const users = await headSettingCollection.find(query).toArray()
+            res.send(users)
+        })
+
+        app.get('/course-name-setting', async (req, res) => {
+            const query = {}
+            const users = await courseSettingCollection.find(query).toArray()
+            res.send(users)
+        })
+
+        app.get('/batch-name-setting', async (req, res) => {
+            const query = {}
+            const users = await batchSettingCollection.find(query).toArray()
+            res.send(users)
+        })
 
 
 
