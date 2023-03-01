@@ -15,6 +15,8 @@ app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.mordayw.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.kvy0n2p.mongodb.net/?retryWrites=true&w=majority`;
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 function verifyJWT(req, res, next) {
 
@@ -464,11 +466,13 @@ async function run() {
         app.get('/followup/:name/:date', async (req, res) => {
             const name = req.params.name;
             const date = req.params.date;
-            const query = { employeeName: name };
+            const query = {}; //employeeName: name
+            console.log(query);
             const users = await personalDataCollection.find(query).toArray()
+            console.log(users);
             let lData = users.map(lead => {
 
-                const lds = lead.data.filter(ld => formatedDate(ld.FirstFollowup) === formatedDate(date))
+                const lds = lead.data.filter(ld => formatedDate(ld.FirstFollowup) === formatedDate(date) || formatedDate(ld.SecondFollowup) === formatedDate(date) || formatedDate(ld.ThirdFollowup) === formatedDate(date) || formatedDate(ld.NextFollowupDate) === formatedDate(date))
                 console.log("LDS", lds);
                 lead.data = lds
                 return lead;

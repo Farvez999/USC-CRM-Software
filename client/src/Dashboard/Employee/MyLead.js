@@ -262,37 +262,37 @@ const MyLead = () => {
                 <div className="overflow-scroll" style={{ height: '430px', width: "1050px" }}>
                     <form onSubmit={handleUpdate}>
                         <table className="table-fixed">
-                            <thead className='sticky top-0' style={{ width: "1050px" }}>
+                            <thead className='sticky top-0 bg-slate-300' style={{ width: "1200px" }}>
                                 <tr className='text-xs'>
-                                    <th style={{ border: "1px solid black" }}>#</th>
-                                    <th style={{ border: "1px solid black" }}>B Name</th>
-                                    <tr>
-                                        <th width="4%" style={{ border: "1px solid black" }}>Name</th>
-                                        <th width="7%" style={{ border: "1px solid black" }}>Phone</th>
-                                        <th width="10%" style={{ border: "1px solid black" }}>Email</th>
-                                        <th width="4%" style={{ border: "1px solid black" }}>1st F up</th>
-                                        <th width="4%" style={{ border: "1px solid black" }}>2nd F up</th>
-                                        <th width="4%" style={{ border: "1px solid black" }}>3rd F up</th>
-                                        <th width="4%" style={{ border: "1px solid black" }}>Next F D</th>
-                                        <th width="4%" style={{ border: "1px solid black" }}>Remark</th>
-                                        <th width="3%" style={{ border: "1px solid black" }}>Remark 2</th>
-                                        <th width="6%" style={{ border: "1px solid black" }}>Ad S</th>
-                                        <th width="6%" style={{ border: "1px solid black" }}>Action</th>
-                                        <th width="6%" style={{ border: "1px solid black" }}>Interested</th>
-                                        <th width="6%" style={{ border: "1px solid black" }}>Seminar</th>
-                                    </tr>
+                                    <th width="20px" style={{ border: "1px solid black" }}>#</th>
+                                    <th width="30px" style={{ border: "1px solid black" }}>B Name</th>
+                                    <div>
+                                        <th width="70px" className='min-w-[70px] max-w-[70px]: overflow-x-auto' style={{ border: "1px solid black" }}>Name</th>
+                                        <th width="100px" className='min-w-[100px] max-w-[100px]: overflow-x-auto' style={{ border: "1px solid black" }}>Phone</th>
+                                        <th width="110px" className='min-w-[110px] max-w-[110px]: overflow-x-auto' style={{ border: "1px solid black" }}>Email</th>
+                                        <th width="70px" className='min-w-[70px] max-w-[70px]: overflow-x-auto' style={{ border: "1px solid black" }} >1st F up</th>
+                                        <th width="70px" className='min-w-[70px] max-w-[70px]: overflow-x-auto' style={{ border: "1px solid black" }}>2nd F up</th>
+                                        <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>3rd F up</th>
+                                        <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Next F D</th>
+                                        <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Remark</th>
+                                        <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Remark 2</th>
+                                        <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Ad Status</th>
+                                        <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Action</th>
+                                        <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Interested</th>
+                                        <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Seminar</th>
+                                    </div>
                                 </tr>
                             </thead>
 
-                            <tbody className='w-fit text-xs'>
+                            <tbody style={{ width: "1200px" }} className='w-fit text-xs'>
                                 {
                                     leads?.filter((singleLead) => {
                                         return search?.toLowerCase() === '' ? singleLead : singleLead.batchName.toLowerCase().includes(search?.toLowerCase())
                                     })
                                         ?.map((singleLead, i) =>
                                             <tr>
-                                                <th style={{ border: "1px solid black" }}>{i + 1}</th>
-                                                <th style={{ border: "1px solid black" }}>{singleLead.batchName}</th>
+                                                <th width="20px" style={{ border: "1px solid black" }}>{i + 1}</th>
+                                                <th width="30px" style={{ border: "1px solid black" }}>{singleLead.batchName}</th>
                                                 {
                                                     singleLead?.data?.map((l, i) =>
                                                         updateState === l.Id ? <Edit
@@ -301,32 +301,33 @@ const MyLead = () => {
                                                             setLeads={setLeads}
                                                             leadsStatus={leadsStatus}
                                                             setLeadsStatus={setLeadsStatus} /> :
-                                                            <tr>
-                                                                {/* <td style={{ border: "1px solid black" }}>{l.Id}</td> */}
-                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.Name}</td>
-                                                                <td width="5%" className='w-20' style={{ border: "1px solid black" }}>{l.Phone}</td>
-                                                                <td width="5%" className='w-20' style={{ border: "1px solid black" }}>{l.Email}</td>
-                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.FirstFollowup}</td>
-                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.SecondFollowup}</td>
-                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.ThirdFollowup}</td>
-                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.NextFollowupDate}</td>
-                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.Remark}</td>
-                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.RemarkTwo}</td>
-                                                                <td width="5%" style={{ border: "1px solid black" }}>{l.AdmissionStates}</td>
-                                                                <td style={{ border: "1px solid black" }}>
+                                                            <div>
+                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.Name}</td>
+                                                                <td width="100px" className='min-w-[100px] max-w-[100px]:' style={{ border: "1px solid black" }}>{l.Phone.slice(2)}</td>
+                                                                <td width="110px" className='min-w-[110px] max-w-[110px]:' style={{ border: "1px solid black" }}>{l.Email.slice(0, -9)}</td>
+                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.FirstFollowup}</td>
+                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.SecondFollowup}</td>
+                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.ThirdFollowup}</td>
+                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.NextFollowupDate}</td>
+                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.Remark}</td>
+                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.RemarkTwo}</td>
+                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.AdmissionStates}</td>
+                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
                                                                     <button onClick={() => handleEdit(l.Id)} className="btn btn-xs btn-secondary mr-2">Edit</button>
-                                                                    <p className='btn btn-xs btn-primary my-2' onClick={() => handleAdmission(l, singleLead)} >Admission</p>
-                                                                    <p className='btn btn-xs btn-denger' onClick={() => handleClose(l, singleLead)} >Close</p>
+                                                                    <p className='btn btn-xs btn-primary my-2' onClick={() => handleAdmission(l, singleLead)} >Add</p>
+                                                                    <p className='btn btn-xs btn-denger' onClick={() => handleClose(l, singleLead)} >Cl</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid black" }}>
-                                                                    <p className='btn btn-xs btn-primary my-2' onClick={() => handleOnline(l, singleLead)} >Online</p>
-                                                                    <p className='btn btn-xs btn-denger' onClick={() => handleOffline(l, singleLead)} >Offline</p>
+                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
+                                                                    <p className='btn btn-xs btn-primary my-2' onClick={() => handleOnline(l, singleLead)} >On</p>
+                                                                    <p className='btn btn-xs btn-denger' onClick={() => handleOffline(l, singleLead)} >Off</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid black" }}>
-                                                                    <p className='btn btn-xs btn-primary my-2' onClick={() => handleSeminarInterested(l, singleLead)} >Interested</p>
+                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
+                                                                    <p className='text-xs btn btn-xs btn-primary my-2' onClick={() => handleSeminarInterested(l, singleLead)} >Inter</p>
                                                                     {/* <p onClick={() => handleTodayFollowup(l, singleLead)} type="">Today</p> */}
                                                                 </td>
-                                                            </tr>
+
+                                                            </div>
+
                                                     )
                                                 }
                                             </tr>
@@ -351,6 +352,7 @@ const MyLead = () => {
         console.log(id);
     }
 };
+
 
 
 export default MyLead;

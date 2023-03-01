@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 
 const UserSetting = () => {
 
@@ -106,29 +107,34 @@ const UserSetting = () => {
     }
 
     return (
-        <div className='flex flex-wrap justify-around my-6'>
-            <div className='m-2'>
-                <h3 className='text-left my-2 ml-5'>Add User Name !</h3>
-                <input onChange={handleUser} type="text" placeholder="Type User Name" className="input input-bordered input-md w-full max-w-xs" />
-                <button onClick={handleUserAdd} className="btn btn-md m-2">Add User Name</button>
-            </div>
+        <div>
+            <div className='flex flex-wrap justify-around my-6'>
+                <div className='m-2'>
+                    <h3 className='text-left my-2 ml-5'>Add User Name !</h3>
+                    <input onChange={handleUser} type="text" placeholder="Type User Name" className="input input-bordered input-md w-full max-w-xs" />
+                    <button onClick={handleUserAdd} className="btn btn-md m-2">Add User Name</button>
+                </div>
 
-            <div className='m-2'>
-                <h3 className='text-left my-2 ml-5'>Add Head Name !</h3>
-                <input onChange={handleHead} type="text" placeholder="Type Head Name" className="input input-bordered input-md w-full max-w-xs" />
-                <button onClick={handleHeadAdd} className="btn btn-md m-2">Add Head Name</button>
-            </div>
+                <div className='m-2'>
+                    <h3 className='text-left my-2 ml-5'>Add Head Name !</h3>
+                    <input onChange={handleHead} type="text" placeholder="Type Head Name" className="input input-bordered input-md w-full max-w-xs" />
+                    <button onClick={handleHeadAdd} className="btn btn-md m-2">Add Head Name</button>
+                </div>
 
-            <div className='m-2'>
-                <h3 className='text-left my-2 ml-7'>Add Course Name !</h3>
-                <input onChange={handleCourse} type="text" placeholder="Type Course Name" className="input input-bordered input-md w-full max-w-xs" />
-                <button onClick={handleCourseAdd} className="btn btn-md m-2">Add Course Name</button>
-            </div>
+                <div className='m-2'>
+                    <h3 className='text-left my-2 ml-7'>Add Course Name !</h3>
+                    <input onChange={handleCourse} type="text" placeholder="Type Course Name" className="input input-bordered input-md w-full max-w-xs" />
+                    <button onClick={handleCourseAdd} className="btn btn-md m-2">Add Course Name</button>
+                </div>
 
-            <div className='m-2'>
-                <h3 className='text-left my-2 ml-6'>Add Batch Name !</h3>
-                <input onChange={handleBatch} type="text" placeholder="Type Batch Name" className="input input-bordered input-md w-full max-w-xs" />
-                <button onClick={handleBatchAdd} className="btn btn-md m-2">Add Batch Name</button>
+                <div className='m-2'>
+                    <h3 className='text-left my-2 ml-6'>Add Batch Name !</h3>
+                    <input onChange={handleBatch} type="text" placeholder="Type Batch Name" className="input input-bordered input-md w-full max-w-xs" />
+                    <button onClick={handleBatchAdd} className="btn btn-md m-2">Add Batch Name</button>
+                </div>
+            </div>
+            <div>
+                <p>New to USC CRM Software <Link className='text-secondary' to="/signup">Create new Account</Link></p>
             </div>
         </div>
     );
