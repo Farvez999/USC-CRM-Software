@@ -13,10 +13,10 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.mordayw.mongodb.net/?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.kvy0n2p.mongodb.net/?retryWrites=true&w=majority`;
+// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.mordayw.mongodb.net/?retryWrites=true&w=majority`;
 // const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.kvy0n2p.mongodb.net/?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 function verifyJWT(req, res, next) {
 
@@ -39,6 +39,7 @@ function verifyJWT(req, res, next) {
 
 async function run() {
     try {
+
         const usersCollection = client.db("usc-crm").collection("users");
         const personalDataCollection = client.db("usc-crm").collection("personal-data");
         const admissitionsCollection = client.db("usc-crm").collection("admisstion-data");
@@ -137,7 +138,11 @@ async function run() {
         //Update put
         app.put('/leads/:name', async (req, res) => {
             const name = req.params.name;
-            // console.log(id);
+            // const course = req.params.course;
+            // const batch = req.params.batch;
+            // const employee = req.params.employee;
+            // const head = req.params.headName;
+            console.log(name);
             const filter = { employeeName: name }
             const updateLead = req.body;
             // console.log(updateLead);
@@ -163,7 +168,7 @@ async function run() {
             let updateEmployee;
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
-                const newArr = [...existingData, ...closeData];
+                const newArr = [...existingData, ...admissionData];
                 await admissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
 
             }
@@ -174,7 +179,7 @@ async function run() {
                         batchName: batchName,
                         employeeName: employeeName,
                         headName: headName,
-                        data: closeData
+                        data: admissionData
                     });
             }
 
@@ -203,40 +208,53 @@ async function run() {
             res.send(users)
         })
 
-        // Total Students
-        app.get('/user/total-admissions', async (req, res) => {
+
+        //Admin  Total Leads
+        app.get('/user/total-leads', async (req, res) => {
+            const courseSearch = req.query.courseSearch
+            const batchSearch = req.query.batchSearch
+            const userSearch = req.query.userSearch
+            const headSearch = req.query.headSearch
             let query = {};
+            if (courseSearch.length && batchSearch.length && userSearch.length && headSearch.length) {
+                query = {
+                    "$or": [
+                        { courseName: { $regex: courseSearch } },
+                        { batchName: { $regex: batchSearch } },
+                        { employeeName: { $regex: userSearch } },
+                        { headName: { $regex: headSearch } }
+
+                    ]
+                }
+            }
+            const cursors = personalDataCollection.find(query);
+            const TotalAdmission = await cursors.toArray();
+            res.send(TotalAdmission)
+        })
+
+        //Admin  Total Students
+        app.get('/user/total-admissions', async (req, res) => {
+            const courseSearch = req.query.courseSearch
+            const batchSearch = req.query.batchSearch
+            const userSearch = req.query.userSearch
+            const headSearch = req.query.headSearch
+            let query = {};
+            if (courseSearch.length && batchSearch.length && userSearch.length && headSearch.length) {
+                query = {
+                    "$or": [
+                        { courseName: { $regex: courseSearch } },
+                        { batchName: { $regex: batchSearch } },
+                        { employeeName: { $regex: userSearch } },
+                        { headName: { $regex: headSearch } }
+
+                    ]
+                }
+            }
             const cursors = admissitionsCollection.find(query);
             const TotalAdmission = await cursors.toArray();
             res.send(TotalAdmission)
         })
-        // app.get('/user/total-admissions', async (req, res) => {
-        //     const search = req.query.search
-        //     console.log(search)
-        //     let query = {};
-        //     if (search.length) {
-        //         query = {
-        //             $text: { $search: search }
-        //         }
-        //     }
-        //     // let query = {
-        //     //     // "$or": [
-        //     //     //     { Name: { $regex: search } },
-        //     //     //     { Email: { $regex: search } }
-        //     //     // ]
 
-        //     // };
-        //     // if(search.length){
-        //     //     query = {
-        //     //         $text: {
-        //     //             $search: search
-        //     //         }
-        //     //     }
-        //     // }
-        //     const cursors = admissitionsCollection.find(query);
-        //     const TotalAdmission = await cursors.toArray();
-        //     res.send(TotalAdmission)
-        // })
 
         // Student Close or delete
 
@@ -466,10 +484,10 @@ async function run() {
         app.get('/followup/:name/:date', async (req, res) => {
             const name = req.params.name;
             const date = req.params.date;
-            const query = {}; //employeeName: name
-            console.log(query);
+            const query = { employeeName: name }; //employeeName: name
+            // console.log(query);
             const users = await personalDataCollection.find(query).toArray()
-            console.log(users);
+            // console.log(users);
             let lData = users.map(lead => {
 
                 const lds = lead.data.filter(ld => formatedDate(ld.FirstFollowup) === formatedDate(date) || formatedDate(ld.SecondFollowup) === formatedDate(date) || formatedDate(ld.ThirdFollowup) === formatedDate(date) || formatedDate(ld.NextFollowupDate) === formatedDate(date))
@@ -478,14 +496,14 @@ async function run() {
                 return lead;
 
             })
-            let namee = lData.filter(d => d.employeeName)
-            console.log("Farvez", namee);
-            if (name) {
-                let data = lData.filter(d => d.data.length > 0)
-            }
+
+            // console.log("Farvez", namee);
+            // if (name) {
+            //     let data = lData.filter(d => d.data.length > 0)
+            // }
             // console.log("Farvez", lData.filter(d => d.employeeName));
             let data = lData.filter(d => d.data.length > 0)
-            console.log("Last Date", data);
+            // console.log("Last Date", data);
             res.send(data)
         })
 

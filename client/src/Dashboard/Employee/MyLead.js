@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthProvider';
-import { useQuery } from '@tanstack/react-query'
-import Edit from './Edit';
 import { toast } from 'react-hot-toast';
+import EditModal from './EditModal';
 
 const MyLead = () => {
 
@@ -11,14 +9,14 @@ const MyLead = () => {
     const [search, setSearch] = useState("");
 
     const [leads, setLeads] = useState([])
-    const [admission, setAdmission] = useState([])
-    const [signleLeads, setSignleLeads] = useState([])
-    const [batchName, setBatchData] = useState([])
-    const [myLeads, setMyLeads] = useState([])
+
+    const [editData, setEdidData] = useState(null)
+    const [sLead, setSLead] = useState()
+
 
 
     useEffect(() => {
-        fetch(`https://server-farvez999.vercel.app/leads/${user.displayName}`, {
+        fetch(`http://localhost:5000/leads/${user.displayName}`, {
             headers: {
                 authorization: `bearer ${localStorage.getItem('accessToken')}`
             }
@@ -32,23 +30,30 @@ const MyLead = () => {
 
 
     const [updateState, setUpdateState] = useState(-1)
+    console.log(updateState);
 
-    const [leadsStatus, setLeadsStatus] = useState()
+    const [leadsUpdate, setLeadsUpdate] = useState()
 
+    // const courseName = leads.map(lead => lead.courseName);
+    // const batch = leads.map(lead => lead.batchName);
+    // const employeeName = leads.map(lead => lead.employeeName);
+    // const headName = leads.map(lead => lead.headName);
+    console.log(leadsUpdate);
 
-    const handleUpdate = event => {
+    const handleUpdate = (event) => {
         event.preventDefault();
-        console.log(leadsStatus);
-        fetch(`https://server-farvez999.vercel.app/leads/${user.displayName}`, {
+        console.log(leadsUpdate);
+        fetch(`http://localhost:5000/leads/${user.displayName}`, {
             method: 'PUT', // or 'PUT'
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(leadsStatus),
+            body: JSON.stringify(leadsUpdate),
         })
             .then((response) => response.json())
             .then((data) => {
                 toast.success('Lead Updates Success')
+                setEdidData(null)
             });
     }
 
@@ -68,7 +73,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`https://server-farvez999.vercel.app/user-admission-add`, {
+        fetch(`http://localhost:5000/user-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -113,7 +118,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`https://server-farvez999.vercel.app/user-close-add`, {
+        fetch(`http://localhost:5000/user-close-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -177,7 +182,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`https://server-farvez999.vercel.app/user-online-admission-add`, {
+        fetch(`http://localhost:5000/user-online-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -205,7 +210,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`https://server-farvez999.vercel.app/user-offline-admission-add`, {
+        fetch(`http://localhost:5000/user-offline-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -233,7 +238,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`https://server-farvez999.vercel.app/user-seminar-interested-add`, {
+        fetch(`http://localhost:5000/user-seminar-interested-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -250,6 +255,12 @@ const MyLead = () => {
 
 
 
+    const handleEdidData = (l, singleLead) => {
+        setEdidData(l)
+        setSLead(singleLead)
+    }
+
+
     return (
         <div>
             <h3 className="text-2xl mb-3">My Leads</h3>
@@ -260,12 +271,12 @@ const MyLead = () => {
 
             <div >
                 <div className="overflow-scroll" style={{ height: '430px', width: "1050px" }}>
-                    <form onSubmit={handleUpdate}>
+                    <form>
                         <table className="table-fixed">
                             <thead className='sticky top-0 bg-slate-300' style={{ width: "1200px" }}>
                                 <tr className='text-xs'>
                                     <th width="20px" style={{ border: "1px solid black" }}>#</th>
-                                    <th width="30px" style={{ border: "1px solid black" }}>B Name</th>
+                                    <th width="30px" style={{ border: "1px solid black" }}>B N</th>
                                     <div>
                                         <th width="70px" className='min-w-[70px] max-w-[70px]: overflow-x-auto' style={{ border: "1px solid black" }}>Name</th>
                                         <th width="100px" className='min-w-[100px] max-w-[100px]: overflow-x-auto' style={{ border: "1px solid black" }}>Phone</th>
@@ -295,62 +306,57 @@ const MyLead = () => {
                                                 <th width="30px" style={{ border: "1px solid black" }}>{singleLead.batchName}</th>
                                                 {
                                                     singleLead?.data?.map((l, i) =>
-                                                        updateState === l.Id ? <Edit
-                                                            l={l}
-                                                            singleLead={singleLead}
-                                                            setLeads={setLeads}
-                                                            leadsStatus={leadsStatus}
-                                                            setLeadsStatus={setLeadsStatus} /> :
-                                                            <div>
-                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.Name}</td>
-                                                                <td width="100px" className='min-w-[100px] max-w-[100px]:' style={{ border: "1px solid black" }}>{l.Phone.slice(2)}</td>
-                                                                <td width="110px" className='min-w-[110px] max-w-[110px]:' style={{ border: "1px solid black" }}>{l.Email.slice(0, -9)}</td>
-                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.FirstFollowup}</td>
-                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.SecondFollowup}</td>
-                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.ThirdFollowup}</td>
-                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.NextFollowupDate}</td>
-                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.Remark}</td>
-                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.RemarkTwo}</td>
-                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.AdmissionStates}</td>
-                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
-                                                                    <button onClick={() => handleEdit(l.Id)} className="btn btn-xs btn-secondary mr-2">Edit</button>
-                                                                    <p className='btn btn-xs btn-primary my-2' onClick={() => handleAdmission(l, singleLead)} >Add</p>
-                                                                    <p className='btn btn-xs btn-denger' onClick={() => handleClose(l, singleLead)} >Cl</p>
-                                                                </td>
-                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
-                                                                    <p className='btn btn-xs btn-primary my-2' onClick={() => handleOnline(l, singleLead)} >On</p>
-                                                                    <p className='btn btn-xs btn-denger' onClick={() => handleOffline(l, singleLead)} >Off</p>
-                                                                </td>
-                                                                <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
-                                                                    <p className='text-xs btn btn-xs btn-primary my-2' onClick={() => handleSeminarInterested(l, singleLead)} >Inter</p>
-                                                                    {/* <p onClick={() => handleTodayFollowup(l, singleLead)} type="">Today</p> */}
-                                                                </td>
 
-                                                            </div>
+                                                        <div>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.Name}</td>
+                                                            <td width="100px" className='min-w-[100px] max-w-[100px]:' style={{ border: "1px solid black" }}>{l.Phone?.slice(2)}</td>
+                                                            <td width="110px" className='min-w-[110px] max-w-[110px]:' style={{ border: "1px solid black" }}>{l.Email?.slice(0, -9)}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.FirstFollowup}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.SecondFollowup}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.ThirdFollowup}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.NextFollowupDate}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.Remark}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.RemarkTwo}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.AdmissionStates}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
+                                                                <label onClick={() => handleEdidData(l, singleLead)} htmlFor="editModal" className="btn btn-xs btn-secondary mr-2">Edit</label>
+                                                                <p className='btn btn-xs btn-primary my-2' onClick={() => handleAdmission(l, singleLead)} >Add</p>
+                                                                <p className='btn btn-xs btn-denger' onClick={() => handleClose(l, singleLead)} >Cl</p>
+                                                            </td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
+                                                                <p className='btn btn-xs btn-primary my-2' onClick={() => handleOnline(l, singleLead)} >On</p>
+                                                                <p className='btn btn-xs btn-denger' onClick={() => handleOffline(l, singleLead)} >Off</p>
+                                                            </td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
+                                                                <p className='text-xs btn btn-xs btn-primary my-2' onClick={() => handleSeminarInterested(l, singleLead)} >Inter</p>
+                                                                {/* <p onClick={() => handleTodayFollowup(l, singleLead)} type="">Today</p> */}
+                                                            </td>
 
+                                                        </div>
                                                     )
                                                 }
                                             </tr>
-
-
                                         )
                                 }
-
                             </tbody>
-
                         </table>
                     </form>
                 </div>
+                {
+                    editData &&
+                    <EditModal
+                        handleUpdate={handleUpdate}
+                        editData={editData}
+                        singleLead={sLead}
+                        leadsUpdate={leadsUpdate}
+                        setLeadsUpdate={setLeadsUpdate}
+                    >
+                    </EditModal>}
             </div>
-
         </div>
     );
 
 
-    function handleEdit(id) {
-        setUpdateState(id)
-        console.log(id);
-    }
 };
 
 

@@ -18,59 +18,59 @@ const TotalAdd = () => {
 
     return (
         <div>
-        <h3 className="text-2xl mb-3">My Admissions</h3>
+            <h3 className="text-2xl mb-3">My Admissions</h3>
 
-        <input type="text" className="input input-bordered input-sm w-full max-w-xs mb-3" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Name, Phone, Email'></input>
+            <input type="text" className="input input-bordered input-sm w-full max-w-xs mb-3" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Name, Phone, Email'></input>
 
-        <div className="overflow-auto" style={{ height: '430px', width: "1050px" }}>
-            <form>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th style={{ border: "1px solid black" }}>#</th>
-                            <th style={{ border: "1px solid black" }}>Course Name</th>
-                            <th style={{ border: "1px solid black" }}>Batch Name</th>
-                            <th style={{ border: "1px solid black" }}>User Name</th>
-                            <th style={{ border: "1px solid black" }}>Head Name</th>
-                            <th style={{ border: "1px solid black" }}>Student Information</th>
-                        </tr>
-                    </thead>
+            <div className="overflow-auto" style={{ height: '430px', width: "1050px" }}>
+                <form>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th style={{ border: "1px solid black" }}>#</th>
+                                <th style={{ border: "1px solid black" }}>Course Name</th>
+                                <th style={{ border: "1px solid black" }}>Batch Name</th>
+                                <th style={{ border: "1px solid black" }}>User Name</th>
+                                <th style={{ border: "1px solid black" }}>Head Name</th>
+                                <th style={{ border: "1px solid black" }}>Student Information</th>
+                            </tr>
+                        </thead>
 
-                    <tbody>
+                        <tbody>
 
-                        {
-                            admissions.map((admission, i) =>
-                                <tr key={admission.Id}>
-                                    <th style={{ border: "1px solid black" }}>{i + 1}</th>
-                                    <td style={{ border: "1px solid black" }}>{admission.courseName}</td>
-                                    <td style={{ border: "1px solid black" }}>{admission.batchName}</td>
-                                    <td style={{ border: "1px solid black" }}>{admission.employeeName}</td>
-                                    <td style={{ border: "1px solid black" }}>{admission.headName}</td>
+                            {
+                                admissions.map((admission, i) =>
+                                    <tr key={admission.Id}>
+                                        <th style={{ border: "1px solid black" }}>{i + 1}</th>
+                                        <td style={{ border: "1px solid black" }}>{admission.courseName}</td>
+                                        <td style={{ border: "1px solid black" }}>{admission.batchName}</td>
+                                        <td style={{ border: "1px solid black" }}>{admission.employeeName}</td>
+                                        <td style={{ border: "1px solid black" }}>{admission.headName}</td>
 
-                                    {
-                                        admission?.data?.filter((d) => {
-                                            return search?.toLowerCase() === '' ? d : d.Name.toLowerCase().includes(search) || d.Phone.toLowerCase().includes(search) || d.Email.toLowerCase().includes(search);
-                                        })
-                                            ?.map(d =>
-                                                <tr>
-                                                    <td style={{ border: "1px solid black" }}>{d.Name}</td>
-                                                    <td style={{ border: "1px solid black" }}>{d.Phone}</td>
-                                                    <td style={{ border: "1px solid black" }}>{d.Email}</td>
-                                                </tr>
-                                            )
-                                    }
-                                </tr>
+                                        {
+                                            admission?.data?.filter((d) => {
+                                                return search?.toLowerCase() === '' ? d : d.Name.toLowerCase().includes(search) || d.Phone.toLowerCase().includes(search) || d.Email.toLowerCase().includes(search);
+                                            })
+                                                ?.map(d =>
+                                                    <tr>
+                                                        <td style={{ border: "1px solid black" }}>{d.Name}</td>
+                                                        <td style={{ border: "1px solid black" }}>{d.Phone}</td>
+                                                        <td style={{ border: "1px solid black" }}>{d.Email}</td>
+                                                    </tr>
+                                                )
+                                        }
+                                    </tr>
 
-                            )
-                        }
+                                )
+                            }
 
-                    </tbody>
+                        </tbody>
 
-                </table>
-            </form>
+                    </table>
+                </form>
+            </div>
+
         </div>
-
-    </div>
     );
 };
 

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { AuthContext } from '../../contexts/AuthProvider';
 import Edit from './Edit';
+import EditModal from './EditModal';
 
 const TodayFollowup = () => {
 
@@ -12,7 +13,15 @@ const TodayFollowup = () => {
 
     const [leadsStatus, setLeadsStatus] = useState()
 
-    console.log(todayFollowup);
+    const [editData, setEdidData] = useState(null)
+    const [sLead, setSLead] = useState()
+
+    const handleEdidData = (l, singleLead) => {
+        setEdidData(l)
+        setSLead(singleLead)
+    }
+
+
 
     var date = new Date()
     console.log(date);
@@ -34,7 +43,7 @@ const TodayFollowup = () => {
     const handleUpdate = event => {
         event.preventDefault();
         console.log(leadsStatus);
-        fetch(`https://server-farvez999.vercel.app/leads/${user.displayName}`, {
+        fetch(`http://localhost:5000/leads/${user.displayName}`, {
             method: 'PUT', // or 'PUT'
             headers: {
                 'Content-Type': 'application/json',
@@ -44,6 +53,7 @@ const TodayFollowup = () => {
             .then((response) => response.json())
             .then((data) => {
                 toast.success('Lead Updates Success')
+                setEdidData(null)
             });
     }
 
@@ -63,7 +73,7 @@ const TodayFollowup = () => {
             headName
         }
 
-        fetch(`https://server-farvez999.vercel.app/user-admission-add`, {
+        fetch(`http://localhost:5000/user-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -108,7 +118,7 @@ const TodayFollowup = () => {
             headName
         }
 
-        fetch(`https://server-farvez999.vercel.app/user-close-add`, {
+        fetch(`http://localhost:5000/user-close-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -150,22 +160,22 @@ const TodayFollowup = () => {
                         <thead>
                             <tr className='text-xs'>
                                 <th style={{ border: "1px solid black" }}>#</th>
-                                <th width="5%" style={{ border: "1px solid black" }}>C N</th>
-                                <th width="5%" style={{ border: "1px solid black" }}>B N</th>
-                                <th width="5%" style={{ border: "1px solid black" }}>U N</th>
-                                <th width="5%" style={{ border: "1px solid black" }}>H N</th>
+                                <th width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>C N</th>
+                                <th width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>B N</th>
+                                <th width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>U N</th>
+                                <th width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>H N</th>
                                 <tr>
-                                    <th width="5%" style={{ border: "1px solid black" }}>Name</th>
-                                    <th width="7%" style={{ border: "1px solid black" }}>Phone</th>
-                                    <th width="10%" style={{ border: "1px solid black" }}>Email</th>
-                                    <th width="4%" style={{ border: "1px solid black" }}>1st F up</th>
-                                    <th width="4%" style={{ border: "1px solid black" }}>2nd F up</th>
-                                    <th width="4%" style={{ border: "1px solid black" }}>3rd F up</th>
-                                    <th width="4%" style={{ border: "1px solid black" }}>Next F D</th>
-                                    <th width="4%" style={{ border: "1px solid black" }}>Remark</th>
-                                    <th width="3%" style={{ border: "1px solid black" }}>Remark 2</th>
-                                    <th width="6%" style={{ border: "1px solid black" }}>Ad S</th>
-                                    <th width="6%" style={{ border: "1px solid black" }}>Action</th>
+                                    <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Name</th>
+                                    <th width="100px" className='min-w-[100px] max-w-[100px]:' style={{ border: "1px solid black" }}>Phone</th>
+                                    <th width="110px" className='min-w-[110px] max-w-[110px]:' style={{ border: "1px solid black" }}>Email</th>
+                                    <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>1st F up</th>
+                                    <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>2nd F up</th>
+                                    <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>3rd F up</th>
+                                    <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Next F D</th>
+                                    <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Remark</th>
+                                    <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Remark 2</th>
+                                    <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Ad S</th>
+                                    <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Action</th>
                                 </tr>
                             </tr>
                         </thead>
@@ -176,10 +186,10 @@ const TodayFollowup = () => {
                                 todayFollowup.map((todayFollow, i) =>
                                     <tr key={todayFollow.Id}>
                                         <th style={{ border: "1px solid black" }}>{i + 1}</th>
-                                        <td style={{ border: "1px solid black" }}>{todayFollow.courseName}</td>
-                                        <td style={{ border: "1px solid black" }}>{todayFollow.batchName}</td>
-                                        <td style={{ border: "1px solid black" }}>{todayFollow.employeeName}</td>
-                                        <td style={{ border: "1px solid black" }}>{todayFollow.headName}</td>
+                                        <td width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>{todayFollow.courseName}</td>
+                                        <td width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>{todayFollow.batchName}</td>
+                                        <td width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>{todayFollow.employeeName}</td>
+                                        <td width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>{todayFollow.headName}</td>
 
                                         {
                                             todayFollow?.data?.filter((d) => {
@@ -193,19 +203,19 @@ const TodayFollowup = () => {
                                                         leadsStatus={leadsStatus}
                                                         setLeadsStatus={setLeadsStatus} /> :
                                                         <tr>
-                                                            <td width="10%" style={{ border: "1px solid black" }}>{d.Name}</td>
-                                                            <td width="7%" style={{ border: "1px solid black" }}>{d.Phone}</td>
-                                                            <td width="10%" style={{ border: "1px solid black" }}>{d.Email}</td>
-                                                            <td width="5%" style={{ border: "1px solid black" }}>{d.FirstFollowup}</td>
-                                                            <td width="5%" style={{ border: "1px solid black" }}>{d.SecondFollowup}</td>
-                                                            <td width="5%" style={{ border: "1px solid black" }}>{d.ThirdFollowup}</td>
-                                                            <td width="5%" style={{ border: "1px solid black" }}>{d.NextFollowupDate}</td>
-                                                            <td width="5%" style={{ border: "1px solid black" }}>{d.Remark}</td>
-                                                            <td width="5%" style={{ border: "1px solid black" }}>{d.RemarkTwo}</td>
-                                                            <td width="5%" style={{ border: "1px solid black" }}>{d.AdmissionStates}</td>
-                                                            <td width="5%" style={{ border: "1px solid black" }}>
-                                                                <button onClick={() => handleEdit(d.Id)} className="btn btn-xs btn-secondary mr-2">Edit</button>
-                                                                <p className='btn btn-xs btn-primary my-2' onClick={() => handleAdmission(d, todayFollow)} >Admission</p>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.Name}</td>
+                                                            <td width="100px" className='min-w-[100px] max-w-[100px]:' style={{ border: "1px solid black" }}>{d.Phone?.slice(2)}</td>
+                                                            <td width="110px" className='min-w-[110px] max-w-[110px]:' style={{ border: "1px solid black" }}>{d.Email?.slice(0, -9)}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.FirstFollowup}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.SecondFollowup}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.ThirdFollowup}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.NextFollowupDate}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.Remark}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.RemarkTwo}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.AdmissionStates}</td>
+                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
+                                                                <label onClick={() => handleEdidData(d, todayFollow)} htmlFor="editModal" className="btn btn-xs btn-secondary mr-2">Edit</label>
+                                                                <p className='btn btn-xs btn-primary my-2' onClick={() => handleAdmission(d, todayFollow)} >Add</p>
                                                                 <p className='btn btn-xs btn-denger' onClick={() => handleClose(d, todayFollow)} >Close</p>
                                                             </td>
                                                         </tr>
@@ -221,13 +231,19 @@ const TodayFollowup = () => {
                     </table>
                 </form>
             </div>
-
+            {
+                editData &&
+                <EditModal
+                    handleUpdate={handleUpdate}
+                    editData={editData}
+                    singleLead={sLead}
+                    leadsStatus={leadsStatus}
+                    setLeadsStatus={setLeadsStatus}
+                >
+                </EditModal>}
         </div>
     );
-    function handleEdit(id) {
-        setUpdateState(id)
-        console.log(id);
-    }
+
 };
 
 export default TodayFollowup;

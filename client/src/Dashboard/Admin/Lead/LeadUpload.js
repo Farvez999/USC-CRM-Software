@@ -144,7 +144,7 @@ const LeadUpload = () => {
             headName
         }
 
-        fetch(`https://server-farvez999.vercel.app/personal-data-add`, {
+        fetch(`http://localhost:5000/personal-data-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -218,66 +218,68 @@ const LeadUpload = () => {
                     </div>
 
                     <br></br>
+                </form>
+            </div>
 
-                    <div className='flex items-center gap-2'>
-                        <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleCourseName}>
-                            {
-                                coursesName?.map((user) =>
-                                    <option
-                                        key={user._id}
-                                        value={user.courseName}>
-                                        {user.courseName}
-                                    </option>
-                                )
-                            }
-                        </select>
-
-                        <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleBatchName}>
+            <div>
+                <div className='flex items-center gap-2'>
+                    <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleCourseName}>
                         {
-                                batchsName?.map((user) =>
-                                    <option
-                                        key={user._id}
-                                        value={user.batchName}>
-                                        {user.batchName}
-                                    </option>
-                                )
-                            }
-                        </select>
+                            coursesName?.map((user) =>
+                                <option
+                                    key={user._id}
+                                    value={user.courseName}>
+                                    {user.courseName}
+                                </option>
+                            )
+                        }
+                    </select>
 
-                        <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleSelectUser}>
-                            {/* <option disabled selected>Select User</option> */}
-                            {
-                                usersName?.map((user) =>
-                                    <option
-                                        key={user._id}
-                                        value={user.userName}>
-                                        {user.userName}
-                                    </option>
-                                )
-                            }
-                            {/* <option disabled selected>Select User</option>
+                    <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleBatchName}>
+                        {
+                            batchsName?.map((user) =>
+                                <option
+                                    key={user._id}
+                                    value={user.batchName}>
+                                    {user.batchName}
+                                </option>
+                            )
+                        }
+                    </select>
+
+                    <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleSelectUser}>
+                        {/* <option disabled selected>Select User</option> */}
+                        {
+                            usersName?.map((user) =>
+                                <option
+                                    key={user._id}
+                                    value={user.userName}>
+                                    {user.userName}
+                                </option>
+                            )
+                        }
+                        {/* <option disabled selected>Select User</option>
                             <option>Sumaiya</option>
                             <option>Sonia</option> */}
-                        </select>
+                    </select>
 
-                        <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleSelectHead}>
-                            {
-                                headsName?.map((user) =>
-                                    <option
-                                        key={user._id}
-                                        value={user.headName}>
-                                        {user.headName}
-                                    </option>
-                                )
-                            }
-                            {/* <option disabled selected>Select Head</option>
+                    <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleSelectHead}>
+                        {
+                            headsName?.map((user) =>
+                                <option
+                                    key={user._id}
+                                    value={user.headName}>
+                                    {user.headName}
+                                </option>
+                            )
+                        }
+                        {/* <option disabled selected>Select Head</option>
                             <option>Shuvo</option>
                             <option>Nahid</option> */}
-                        </select>
+                    </select>
 
-                        <button className='btn btn-success btn-sm mx-6' onClick={handleAdded} type="submit">Added User or DataBase</button>
-                    </div>
-                </form>
+                    <button className='btn btn-success btn-sm mx-6' onClick={handleAdded} type="submit">Added User or DataBase</button>
+                </div>
             </div>
 
             <br></br>

@@ -58,7 +58,7 @@ const Signup = () => {
 
     const saveUserDasboard = (name, email, role) => {
         const user = { name, email, role };
-        fetch('https://server-farvez999.vercel.app/users', {
+        fetch('http://localhost:5000/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

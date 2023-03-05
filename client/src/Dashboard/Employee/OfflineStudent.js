@@ -9,7 +9,7 @@ const OfflineStudent = () => {
     const { data: offlines = [], refetch } = useQuery({
         queryKey: ['offlines'],
         queryFn: async () => {
-            const res = await fetch(`https://server-farvez999.vercel.app/user/offline-admissions/${user.displayName}`);
+            const res = await fetch(`http://localhost:5000/user/offline-admissions/${user.displayName}`);
             const data = await res.json();
             return data;
         }
