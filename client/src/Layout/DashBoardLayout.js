@@ -33,6 +33,8 @@ const DashBoardLayout = () => {
                                 <li><Link to='/dashboard/online-student'>My Online</Link></li>
                                 <li><Link to='/dashboard/offline-student'>My Offline</Link></li>
                                 <li><Link to='/dashboard/seminar-interested'>Seminar Inter</Link></li>
+                                <li><Link to='/dashboard/seminar-attend'>Seminar Attend</Link></li>
+                                <li><Link to='/dashboard/no-receive'>No Receive</Link></li>
                                 <li><Link to='/dashboard/today-followup'>Today Follow</Link></li>
                             </>
                         }

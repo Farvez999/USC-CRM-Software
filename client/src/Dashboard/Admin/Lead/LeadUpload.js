@@ -71,7 +71,7 @@ const LeadUpload = () => {
             const data = XLSX.utils.sheet_to_json(worksheet);
             console.log(data);
             setExcelData(data);
-            setPaginationData(_(data).slice(0).take(pageSize).value())
+            // setPaginationData(_(data).slice(0).take(pageSize).value())
         }
         else {
             setExcelData(null);
@@ -135,13 +135,14 @@ const LeadUpload = () => {
 
 
     const handleAdded = () => {
-        const ccc = paginationData.filter(cd => cd.isChecked === true);
+        const ccc = excelData.filter(cd => cd.isChecked === true);
         const personalData = {
             data: ccc,
             courseName,
             batchName,
             employeeName,
-            headName
+            headName,
+            date: new Date()
         }
 
         fetch(`http://localhost:5000/personal-data-add`, {
@@ -154,49 +155,54 @@ const LeadUpload = () => {
         })
             .then(res => res.json())
             .then(data => {
-                // console.log(data);
-                // if (data.acknowledged) {
-                //     console.log(data);
-                //     // setIsloader(false)
-                toast.success('Database Data added successfully')
-                //     // navigate('/dashboard/sellerProducts')
-                // }
+
+                console.log(data);
+                if (data.acknowledged) {
+                    console.log(data);
+                    // setIsloader(false)
+                    toast.success('Database Data added successfully')
+                    // navigate('/dashboard/sellerProducts')
+                }
             })
         // .catch(error => { toast.error(error.message); setIsloader(false) })
     }
 
 
     // pagination
-    const pageCount = excelData !== null && Math.ceil(excelData.length / pageSize);
-    // console.log(pageCount);
-    if (pageCount === 1) { return null }
-    const pages = _.range(1, pageCount + 1)
+    // const pageCount = excelData !== null && Math.ceil(excelData.length / pageSize);
+    // // console.log(pageCount);
+    // if (pageCount === 1) { return null }
+    // const pages = _.range(1, pageCount + 1)
 
-    const paginitaion = (pageNo) => {
-        setcurrentPage(pageNo)
-        const startIndex = (pageNo - 1) * pageSize;
-        const paginationD = _(excelData).slice(startIndex).take(pageSize).value();
-        setPaginationData(paginationD)
-    }
+    // const paginitaion = (pageNo) => {
+    //     setcurrentPage(pageNo)
+    //     const startIndex = (pageNo - 1) * pageSize;
+    //     const paginationD = _(excelData).slice(startIndex).take(pageSize).value();
+    //     setPaginationData(paginationD)
+    // }
 
     // All select checkbox 
     const toggle = (e) => {
         console.log(e.target.checked);
         setAllChecked(e.target.checked)
         if (e.target.checked) {
-            paginationData.map(data => data.isChecked = true)
+            // paginationData.map(data => data.isChecked = true)
+            excelData.map(data => data.isChecked = true)
         }
         else {
-            paginationData.map(data => data.isChecked = false)
+            // paginationData.map(data => data.isChecked = false)
+            excelData.map(data => data.isChecked = false)
         }
-        console.log(paginationData);
+        console.log(excelData);
     }
 
     // single checkbox 
     const handleChange = (e, name) => {
         console.log(e.target.checked);
-        paginationData.map(pd => pd?.Name === name ? pd.isChecked = e.target.checked : pd)
-        setPaginationData(paginationData)
+        // paginationData.map(pd => pd?.Name === name ? pd.isChecked = e.target.checked : pd)
+        // setPaginationData(paginationData)
+        excelData.map(pd => pd?.Name === name ? pd.isChecked = e.target.checked : pd)
+        setExcelData(excelData)
     }
 
     return (
@@ -223,7 +229,8 @@ const LeadUpload = () => {
 
             <div>
                 <div className='flex items-center gap-2'>
-                    <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleCourseName}>
+                    <select required className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleCourseName}>
+                        <option disabled selected>Select Course Name</option>
                         {
                             coursesName?.map((user) =>
                                 <option
@@ -236,6 +243,7 @@ const LeadUpload = () => {
                     </select>
 
                     <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleBatchName}>
+                        <option disabled selected>Select Batch Name</option>
                         {
                             batchsName?.map((user) =>
                                 <option
@@ -248,7 +256,7 @@ const LeadUpload = () => {
                     </select>
 
                     <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleSelectUser}>
-                        {/* <option disabled selected>Select User</option> */}
+                        <option disabled selected>Select User Name</option>
                         {
                             usersName?.map((user) =>
                                 <option
@@ -264,6 +272,7 @@ const LeadUpload = () => {
                     </select>
 
                     <select className="select select-bordered select-sm w-1/6 max-w-xs" required onChange={handleSelectHead}>
+                        <option disabled selected>Select Head Name</option>
                         {
                             headsName?.map((user) =>
                                 <option
@@ -337,7 +346,7 @@ const LeadUpload = () => {
             </div>
 
             {/* Pagination  */}
-            <div className='pagination flex items-1 items-center justify-center'>
+            {/* <div className='pagination flex items-1 items-center justify-center'>
                 {
                     pages.map((page) => (
                         <p className={
@@ -348,7 +357,7 @@ const LeadUpload = () => {
                     ))
                 }
 
-            </div>
+            </div> */}
         </div>
     );
 };

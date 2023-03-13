@@ -28,23 +28,15 @@ const MyLead = () => {
     }, [])
 
 
-
-    const [updateState, setUpdateState] = useState(-1)
-    console.log(updateState);
-
     const [leadsUpdate, setLeadsUpdate] = useState()
-
-    // const courseName = leads.map(lead => lead.courseName);
-    // const batch = leads.map(lead => lead.batchName);
-    // const employeeName = leads.map(lead => lead.employeeName);
-    // const headName = leads.map(lead => lead.headName);
-    console.log(leadsUpdate);
 
     const handleUpdate = (event) => {
         event.preventDefault();
-        console.log(leadsUpdate);
-        fetch(`http://localhost:5000/leads/${user.displayName}`, {
-            method: 'PUT', // or 'PUT'
+        // console.log(leadsUpdate);
+        // console.log(editData);
+        // console.log(sLead.employeeName);
+        fetch(`http://localhost:5000/leads?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
+            method: 'PATCH', // or 'PUT'
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -70,7 +62,8 @@ const MyLead = () => {
             courseName,
             batchName,
             employeeName,
-            headName
+            headName,
+            // date: new Date()
         }
 
         fetch(`http://localhost:5000/user-admission-add`, {
@@ -83,7 +76,10 @@ const MyLead = () => {
         })
             .then(res => res.json())
             .then(data => {
-                toast.success('Admisstion Data added successfully')
+
+                if (data.acknowledged) {
+                    toast.success('Admisstion Data added successfully')
+                }
 
                 let lData = leads.map(lead => {
                     if (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) {
@@ -128,7 +124,7 @@ const MyLead = () => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
+                // console.log(data);
                 toast.success('Admisstion Data Close successfully')
                 let lData = leads.map(lead => {
                     if (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) {
@@ -192,7 +188,7 @@ const MyLead = () => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
+                // console.log(data);
                 toast.success('Online Admissions Interested')
             })
     }
@@ -220,7 +216,7 @@ const MyLead = () => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
+                // console.log(data);
                 toast.success('Offline Admissions Interested')
             })
     }
@@ -248,11 +244,66 @@ const MyLead = () => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
+                // console.log(data);
                 toast.success('Seminar Interested Added')
+                let lData = leads.map(lead => {
+                    if (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) {
+                        const lds = lead.data.filter(ld => ld.Id !== l.Id)
+                        lead.data = lds;
+                        return lead;
+                    } else {
+
+                        return lead;
+                    }
+                })
+
+                lData = lData.filter(ld => ld.data.length !== 0);
+
+                setLeads(lData)
             })
     }
 
+    const handleNoRecice = (l, singleLead) => {
+        const courseName = singleLead.courseName
+        const batchName = singleLead.batchName
+        const employeeName = singleLead.employeeName
+        const headName = singleLead.headName
+        const seminarIntersted = {
+            data: l,
+            courseName,
+            batchName,
+            employeeName,
+            headName
+        }
+
+        fetch(`http://localhost:5000/user-no-recive-add`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
+            },
+            body: JSON.stringify(seminarIntersted)
+        })
+            .then(res => res.json())
+            .then(data => {
+                // console.log(data);
+                toast.success('No Recived Added')
+                let lData = leads.map(lead => {
+                    if (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) {
+                        const lds = lead.data.filter(ld => ld.Id !== l.Id)
+                        lead.data = lds;
+                        return lead;
+                    } else {
+
+                        return lead;
+                    }
+                })
+
+                lData = lData.filter(ld => ld.data.length !== 0);
+
+                setLeads(lData)
+            })
+    }
 
 
     const handleEdidData = (l, singleLead) => {
@@ -265,7 +316,7 @@ const MyLead = () => {
         <div>
             <h3 className="text-2xl mb-3">My Leads</h3>
 
-            <input type="text" className="input input-bordered input-sm w-full max-w-xs mb-3" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Batch Name'></input>
+            <input type="text" className="input input-bordered input-sm w-full max-w-xs mb-3" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Name, Phone, Email'></input>
 
             {/* <button onClick={handleTodayFollowup} type="">Today</button> */}
 
@@ -275,12 +326,16 @@ const MyLead = () => {
                         <table className="table-fixed">
                             <thead className='sticky top-0 bg-slate-300' style={{ width: "1200px" }}>
                                 <tr className='text-xs'>
-                                    <th width="20px" style={{ border: "1px solid black" }}>#</th>
+                                    {/* <th width="20px" style={{ border: "1px solid black" }}>#</th>
                                     <th width="30px" style={{ border: "1px solid black" }}>B N</th>
+                                    <th width="30px" style={{ border: "1px solid black" }}>Date</th> */}
                                     <div>
-                                        <th width="70px" className='min-w-[70px] max-w-[70px]: overflow-x-auto' style={{ border: "1px solid black" }}>Name</th>
-                                        <th width="100px" className='min-w-[100px] max-w-[100px]: overflow-x-auto' style={{ border: "1px solid black" }}>Phone</th>
-                                        <th width="110px" className='min-w-[110px] max-w-[110px]: overflow-x-auto' style={{ border: "1px solid black" }}>Email</th>
+                                        <th width="20px" className='min-w-[20px] max-w-[20px]:' style={{ border: "1px solid black" }}>#</th>
+                                        <th width="60px" className='min-w-[60px] max-w-[60px]:' style={{ border: "1px solid black" }}>B N</th>
+                                        <th width="60px" className='min-w-[60px] max-w-[60px]:' style={{ border: "1px solid black" }}>Date</th>
+                                        <th width="80px" className='min-w-[80px] max-w-[80px]: overflow-x-auto' style={{ border: "1px solid black" }}>Name</th>
+                                        <th width="120px" className='min-w-[120px] max-w-[120px]: overflow-x-auto' style={{ border: "1px solid black" }}>Phone</th>
+                                        <th width="200px" className='min-w-[200px] max-w-[200px]: overflow-x-auto' style={{ border: "1px solid black" }}>Email</th>
                                         <th width="70px" className='min-w-[70px] max-w-[70px]: overflow-x-auto' style={{ border: "1px solid black" }} >1st F up</th>
                                         <th width="70px" className='min-w-[70px] max-w-[70px]: overflow-x-auto' style={{ border: "1px solid black" }}>2nd F up</th>
                                         <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>3rd F up</th>
@@ -297,20 +352,25 @@ const MyLead = () => {
 
                             <tbody style={{ width: "1200px" }} className='w-fit text-xs'>
                                 {
-                                    leads?.filter((singleLead) => {
-                                        return search?.toLowerCase() === '' ? singleLead : singleLead.batchName.toLowerCase().includes(search?.toLowerCase())
+                                    leads?.filter(singleLead => {
+                                        return search?.toLowerCase() === '' ? singleLead : singleLead.batchName.toLowerCase().includes(search?.toLowerCase()) || singleLead.date.toLowerCase().includes(search?.toLowerCase())
                                     })
                                         ?.map((singleLead, i) =>
                                             <tr>
-                                                <th width="20px" style={{ border: "1px solid black" }}>{i + 1}</th>
-                                                <th width="30px" style={{ border: "1px solid black" }}>{singleLead.batchName}</th>
+                                                {/* <th width="20px" style={{ border: "1px solid black" }}>{i + 1}</th> */}
+                                                {/* <th width="30px" style={{ border: "1px solid black" }}>{singleLead.batchName}</th>
+                                                <th width="30px" style={{ border: "1px solid black" }}>{singleLead.date.slice(0, -14)}</th> */}
                                                 {
                                                     singleLead?.data?.map((l, i) =>
 
                                                         <div>
-                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.Name}</td>
-                                                            <td width="100px" className='min-w-[100px] max-w-[100px]:' style={{ border: "1px solid black" }}>{l.Phone?.slice(2)}</td>
-                                                            <td width="110px" className='min-w-[110px] max-w-[110px]:' style={{ border: "1px solid black" }}>{l.Email?.slice(0, -9)}</td>
+                                                            <td width="20px" className='min-w-[20px] max-w-[20px]:' style={{ border: "1px solid black" }}>{i + 1}</td>
+                                                            <td width="60px" className='min-w-[60px] max-w-[60px]:' style={{ border: "1px solid black" }}>{singleLead.batchName}</td>
+                                                            <td width="60px" className='min-w-[60px] max-w-[60px]:' style={{ border: "1px solid black" }}>{singleLead.date?.slice(0, -14)}</td>
+
+                                                            <td width="80px" className='min-w-[80px] max-w-[80px]:' style={{ border: "1px solid black" }}>{l.Name}</td>
+                                                            <td width="120px" className='min-w-[120px] max-w-[120px]:' style={{ border: "1px solid black" }}>{l.Phone}</td>
+                                                            <td width="200px" className='min-w-[200px] max-w-[200px]:' style={{ border: "1px solid black" }}>{l.Email?.slice(0, -9)}</td>
                                                             <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.FirstFollowup}</td>
                                                             <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.SecondFollowup}</td>
                                                             <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.ThirdFollowup}</td>
@@ -319,7 +379,7 @@ const MyLead = () => {
                                                             <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.RemarkTwo}</td>
                                                             <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{l.AdmissionStates}</td>
                                                             <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
-                                                                <label onClick={() => handleEdidData(l, singleLead)} htmlFor="editModal" className="btn btn-xs btn-secondary mr-2">Edit</label>
+                                                                <label onClick={() => handleEdidData(l, singleLead)} htmlFor="editModal" className="btn btn-xs btn-secondary">Edit</label>
                                                                 <p className='btn btn-xs btn-primary my-2' onClick={() => handleAdmission(l, singleLead)} >Add</p>
                                                                 <p className='btn btn-xs btn-denger' onClick={() => handleClose(l, singleLead)} >Cl</p>
                                                             </td>
@@ -329,7 +389,7 @@ const MyLead = () => {
                                                             </td>
                                                             <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
                                                                 <p className='text-xs btn btn-xs btn-primary my-2' onClick={() => handleSeminarInterested(l, singleLead)} >Inter</p>
-                                                                {/* <p onClick={() => handleTodayFollowup(l, singleLead)} type="">Today</p> */}
+                                                                <p className='text-xs btn btn-xs btn-primary my-2' onClick={() => handleNoRecice(l, singleLead)}>No R</p>
                                                             </td>
 
                                                         </div>

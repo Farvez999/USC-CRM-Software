@@ -1,8 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const jwt = require('jsonwebtoken');
-const e = require('express');
+const jwt = require('jsonwebtoken')
 require('dotenv').config();
 
 
@@ -13,10 +12,10 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.mordayw.mongodb.net/?retryWrites=true&w=majority`;
-// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.kvy0n2p.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.mordayw.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.kvy0n2p.mongodb.net/?retryWrites=true&w=majority`;
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 function verifyJWT(req, res, next) {
 
@@ -47,6 +46,8 @@ async function run() {
         const onlineAdmissitionsCollection = client.db("usc-crm").collection("online-admission-data");
         const offlineAdmissitionsCollection = client.db("usc-crm").collection("offline-admission-data");
         const seminarInterestedCollection = client.db("usc-crm").collection("seminar-interested-data");
+        const seminarAttendCollection = client.db("usc-crm").collection("seminar-attend-data");
+        const noReceiveCollection = client.db("usc-crm").collection("no-recevie-data");
         const userSettingCollection = client.db("usc-crm").collection("user-name-setting");
         const headSettingCollection = client.db("usc-crm").collection("head-name-setting");
         const courseSettingCollection = client.db("usc-crm").collection("course-name-setting");
@@ -103,8 +104,10 @@ async function run() {
             const batchName = req.body.batchName;
             const employeeName = req.body.employeeName;
             const headName = req.body.headName;
-            const existingEmployee = await personalDataCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
-            console.log(existingEmployee);
+            const date = req.body.date;
+            console.log(date);
+            const existingEmployee = await personalDataCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            // console.log("e", existingEmployee);
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
                 const newArr = [...existingData, ...personalData];
@@ -118,6 +121,7 @@ async function run() {
                         batchName: batchName,
                         employeeName: employeeName,
                         headName: headName,
+                        date: date,
                         data: personalData
                     });
                 return res.send(existingEmployee);
@@ -128,7 +132,7 @@ async function run() {
         app.get('/leads/:name', async (req, res) => {
             const name = req.params.name;
             const query = { employeeName: name };
-            const users = await personalDataCollection.find(query).toArray()
+            const users = await personalDataCollection.find(query).sort({ date: -1 }).toArray()
             res.send(users);
         })
 
@@ -136,23 +140,16 @@ async function run() {
 
 
         //Update put
-        app.put('/leads/:name', async (req, res) => {
-            const name = req.params.name;
-            // const course = req.params.course;
-            // const batch = req.params.batch;
-            // const employee = req.params.employee;
-            // const head = req.params.headName;
-            console.log(name);
-            const filter = { employeeName: name }
+        app.patch('/leads', async (req, res) => {
+            console.log(req.query);
             const updateLead = req.body;
-            // console.log(updateLead);
             const option = { upsert: true };
             const updatedUser = {
                 $set: {
                     data: updateLead
                 }
             }
-            const resulted = await personalDataCollection.updateOne(filter, updatedUser, option)
+            const resulted = await personalDataCollection.updateMany(req.query, updatedUser, option)
             res.send(resulted);
         })
 
@@ -164,12 +161,12 @@ async function run() {
             const batchName = req.body.batchName;
             const employeeName = req.body.employeeName;
             const headName = req.body.headName;
-            const existingEmployee = await admissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
+            const existingEmployee = await admissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
             let updateEmployee;
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
                 const newArr = [...existingData, ...admissionData];
-                await admissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+                await admissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName }, { $set: { data: newArr } }, { new: true });
 
             }
             else {
@@ -179,6 +176,7 @@ async function run() {
                         batchName: batchName,
                         employeeName: employeeName,
                         headName: headName,
+                        date: new Date(),
                         data: admissionData
                     });
             }
@@ -186,7 +184,7 @@ async function run() {
             const idData = await personalDataCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
             if (idData) {
                 const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
-                updateEmployee = await personalDataCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newData } }, { new: true });
+                updateEmployee = await personalDataCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName }, { $set: { data: newData } }, { new: true });
 
             }
             return res.send(updateEmployee);
@@ -227,9 +225,22 @@ async function run() {
                     ]
                 }
             }
-            const cursors = personalDataCollection.find(query);
+            const cursors = personalDataCollection.find(query).sort({ date: -1 });
             const TotalAdmission = await cursors.toArray();
             res.send(TotalAdmission)
+        })
+
+        //Total lead admin delete
+        app.delete('/admin/total-lead/:id', async (req, res) => {
+            const id = req.params.id;
+            const idData = await personalDataCollection.findOne({ employeeName: req.query.employeeName, courseName: req.query.courseName, batchName: req.query.batchName, headName: req.query.headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== Number(id))
+                console.log(newData);
+                updateEmployee = await personalDataCollection.updateOne({ employeeName: req.query.employeeName, courseName: req.query.courseName, batchName: req.query.batchName, headName: req.query.headName }, { $set: { data: newData } }, { new: true });
+                res.send(updateEmployee);
+            }
+
         })
 
         //Admin  Total Students
@@ -239,7 +250,7 @@ async function run() {
             const userSearch = req.query.userSearch
             const headSearch = req.query.headSearch
             let query = {};
-            if (courseSearch.length && batchSearch.length && userSearch.length && headSearch.length) {
+            if (courseSearch?.length && batchSearch?.length && userSearch?.length && headSearch?.length) {
                 query = {
                     "$or": [
                         { courseName: { $regex: courseSearch } },
@@ -279,6 +290,7 @@ async function run() {
                         batchName: batchName,
                         employeeName: employeeName,
                         headName: headName,
+                        date: new Date(),
                         data: closeData
                     });
             }
@@ -335,13 +347,13 @@ async function run() {
             const batchName = req.body.batchName;
             const employeeName = req.body.employeeName;
             const headName = req.body.headName;
-            const existingEmployee = await onlineAdmissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
+            const existingEmployee = await onlineAdmissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
                 // console.log(existingData);
                 const newArr = [...existingData, ...onlineAdmissionData];
                 // console.log(newArr);
-                const updateEmployee = await onlineAdmissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+                const updateEmployee = await onlineAdmissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName }, { $set: { data: newArr } }, { new: true });
                 return res.send(updateEmployee);
             }
             else {
@@ -351,6 +363,7 @@ async function run() {
                         batchName: batchName,
                         employeeName: employeeName,
                         headName: headName,
+                        date: new Date(),
                         data: onlineAdmissionData
                     });
                 return res.send(existingEmploye);
@@ -359,6 +372,7 @@ async function run() {
 
 
         // Online Admission Post 
+
         app.post('/user-offline-admission-add', async (req, res) => {
             const offlineAdmissionData = [req.body.data];
             const courseName = req.body.courseName;
@@ -368,9 +382,7 @@ async function run() {
             const existingEmployee = await offlineAdmissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
-                // console.log(existingData);
                 const newArr = [...existingData, ...offlineAdmissionData];
-                // console.log(newArr);
                 const updateEmployee = await offlineAdmissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
                 return res.send(updateEmployee);
             }
@@ -381,6 +393,7 @@ async function run() {
                         batchName: batchName,
                         employeeName: employeeName,
                         headName: headName,
+                        date: new Date(),
                         data: offlineAdmissionData
                     });
                 return res.send(existingEmploye);
@@ -395,6 +408,47 @@ async function run() {
             res.send(users)
         })
 
+        //User online-admissions update
+        app.patch('/user/offline-admissions', async (req, res) => {
+            console.log(req.query);
+            const updateLead = req.body;
+            const option = { upsert: true };
+            const updatedUser = {
+                $set: {
+                    data: updateLead
+                }
+            }
+            const resulted = await offlineAdmissitionsCollection.updateMany(req.query, updatedUser, option)
+            res.send(resulted);
+        })
+
+        //User online-admissions update
+        app.patch('/user/online-admissions', async (req, res) => {
+            console.log(req.query);
+            const updateLead = req.body;
+            const option = { upsert: true };
+            const updatedUser = {
+                $set: {
+                    data: updateLead
+                }
+            }
+            const resulted = await onlineAdmissitionsCollection.updateMany(req.query, updatedUser, option)
+            res.send(resulted);
+        })
+
+        app.put('/user/today-followup', async (req, res) => {
+            console.log(req.query);
+            const updateLead = req.body;
+            const option = { upsert: true };
+            const updatedUser = {
+                $set: {
+                    data: updateLead
+                }
+            }
+            const resulted = await personalDataCollection.updateMany(req.query, updatedUser, option)
+            res.send(resulted);
+        })
+
         //Head Admissions get
         app.get('/head/online-admissions/:name', async (req, res) => {
             const name = req.params.name;
@@ -404,6 +458,7 @@ async function run() {
         })
 
         //User Admissions get
+
         app.get('/user/offline-admissions/:name', async (req, res) => {
             const name = req.params.name;
             const query = { employeeName: name }
@@ -437,36 +492,141 @@ async function run() {
         })
 
 
-
-
-        // Online Admission Post 
+        //seminar interest added post
         app.post('/user-seminar-interested-add', async (req, res) => {
             const seminarInterestedData = [req.body.data];
             const courseName = req.body.courseName;
             const batchName = req.body.batchName;
             const employeeName = req.body.employeeName;
             const headName = req.body.headName;
-            const existingEmployee = await seminarInterestedCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
+            const existingEmployee = await seminarInterestedCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
             if (existingEmployee) {
                 const existingData = existingEmployee.data;
-                // console.log(existingData);
                 const newArr = [...existingData, ...seminarInterestedData];
-                // console.log(newArr);
-                const updateEmployee = await seminarInterestedCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
-                return res.send(updateEmployee);
+                await seminarInterestedCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+
             }
             else {
-                const existingEmploye = await seminarInterestedCollection.insertOne(
+                await seminarInterestedCollection.insertOne(
                     {
                         courseName: courseName,
                         batchName: batchName,
                         employeeName: employeeName,
                         headName: headName,
+                        date: new Date(),
                         data: seminarInterestedData
                     });
-                return res.send(existingEmploye);
             }
+
+            const idData = await personalDataCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await personalDataCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
         })
+
+        app.post('/user-seminar-data-close-add', async (req, res) => {
+            const closeData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await closeCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                const newArr = [...existingData, ...closeData];
+                await closeCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+
+            }
+            else {
+                await closeCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        date: new Date(),
+                        data: closeData
+                    });
+            }
+
+            const idData = await seminarInterestedCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await seminarInterestedCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
+        })
+
+        //No Recuved added post
+        app.post('/user-no-recive-add', async (req, res) => {
+            const noReciveData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await noReceiveCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                const newArr = [...existingData, ...noReciveData];
+                await noReceiveCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+
+            }
+            else {
+                await noReceiveCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        date: new Date(),
+                        data: noReciveData
+                    });
+            }
+
+            const idData = await personalDataCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await personalDataCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
+        })
+
+
+        // Online Admission Post 
+        // app.post('/user-seminar-interested-add', async (req, res) => {
+        //     const seminarInterestedData = [req.body.data];
+        //     const courseName = req.body.courseName;
+        //     const batchName = req.body.batchName;
+        //     const employeeName = req.body.employeeName;
+        //     const headName = req.body.headName;
+        //     const existingEmployee = await seminarInterestedCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+        //     if (existingEmployee) {
+        //         const existingData = existingEmployee.data;
+        //         const newArr = [...existingData, ...seminarInterestedData];
+        //         const updateEmployee = await seminarInterestedCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName }, { $set: { data: newArr } }, { new: true });
+        //         return res.send(updateEmployee);
+        //     }
+        //     else {
+        //         const existingEmploye = await seminarInterestedCollection.insertOne(
+        //             {
+        //                 courseName: courseName,
+        //                 batchName: batchName,
+        //                 employeeName: employeeName,
+        //                 headName: headName,
+        //                 date: new Date(),
+        //                 data: seminarInterestedData
+        //             });
+        //         return res.send(existingEmploye);
+        //     }
+        // })
 
 
         app.get('/user/seminar-interested/:name', async (req, res) => {
@@ -475,6 +635,256 @@ async function run() {
             const users = await seminarInterestedCollection.find(query).toArray()
             res.send(users)
         })
+
+        app.post('/seminar-attend-add', async (req, res) => {
+            const admissionData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await seminarAttendCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                const newArr = [...existingData, ...admissionData];
+                await seminarAttendCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName }, { $set: { data: newArr } }, { new: true });
+
+            }
+            else {
+                await seminarAttendCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        date: new Date(),
+                        data: admissionData
+                    });
+            }
+
+            const idData = await seminarInterestedCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await seminarInterestedCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
+        })
+
+        app.post('/seminar-interest-close-data', async (req, res) => {
+            const closeData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await closeCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                const newArr = [...existingData, ...closeData];
+                await closeCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+
+            }
+            else {
+                await closeCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        date: new Date(),
+                        data: closeData
+                    });
+            }
+
+            const idData = await seminarInterestedCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await seminarInterestedCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
+        })
+
+        app.post('/seminar-online-admission-data', async (req, res) => {
+            const closeData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await onlineAdmissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                const newArr = [...existingData, ...closeData];
+                await onlineAdmissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+
+            }
+            else {
+                await onlineAdmissitionsCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        date: new Date(),
+                        data: closeData
+                    });
+            }
+
+            const idData = await seminarInterestedCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await seminarInterestedCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
+        })
+
+        app.post('/seminar-offline-admission-data', async (req, res) => {
+            const closeData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await offlineAdmissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                const newArr = [...existingData, ...closeData];
+                await offlineAdmissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+
+            }
+            else {
+                await offlineAdmissitionsCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        date: new Date(),
+                        data: closeData
+                    });
+            }
+
+            const idData = await seminarInterestedCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await seminarInterestedCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
+        })
+
+        app.patch('/user/seminar-interested', async (req, res) => {
+            const updateLead = req.body;
+            console.log(updateLead);
+            const option = { upsert: true };
+            const updatedUser = {
+                $set: {
+                    data: updateLead
+                }
+            }
+            const resulted = await seminarInterestedCollection.updateMany(req.query, updatedUser, option)
+            res.send(resulted);
+        })
+
+
+        //No Recived--------------------------------------------------
+        app.get('/user/no-receive/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { employeeName: name }
+            const users = await noReceiveCollection.find(query).toArray()
+            res.send(users)
+        })
+
+
+        app.patch('/user/no-receive', async (req, res) => {
+            const updateLead = req.body;
+            console.log(updateLead);
+            const option = { upsert: true };
+            const updatedUser = {
+                $set: {
+                    data: updateLead
+                }
+            }
+            const resulted = await noReceiveCollection.updateMany(req.query, updatedUser, option)
+            res.send(resulted);
+        })
+
+        app.post('/no-receive-admission-add', async (req, res) => {
+            const admissionData = [req.body.data];
+            // console.log(admissionData);
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await admissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                const newArr = [...existingData, ...admissionData];
+                await admissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName }, { $set: { data: newArr } }, { new: true });
+
+            }
+            else {
+                await admissitionsCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        date: new Date(),
+                        data: admissionData
+                    });
+            }
+
+            const idData = await noReceiveCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await noReceiveCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
+        })
+
+        app.post('/no-receive-user-close', async (req, res) => {
+            const closeData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await closeCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                const newArr = [...existingData, ...closeData];
+                await closeCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+
+            }
+            else {
+                await closeCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        date: new Date(),
+                        data: closeData
+                    });
+            }
+
+            const idData = await noReceiveCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await noReceiveCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
+        })
+
+        // -----------------------------------------------------------
+
 
         function formatedDate(date) {
             const newDate = new Date(date);
@@ -486,51 +896,217 @@ async function run() {
             const date = req.params.date;
             const query = { employeeName: name }; //employeeName: name
             // console.log(query);
-            const users = await personalDataCollection.find(query).toArray()
+            const users = await seminarInterestedCollection.find(query).toArray()
+            const noreceive = await noReceiveCollection.find(query).toArray()
+            const onlineF = await onlineAdmissitionsCollection.find(query).toArray()
+            const offlineF = await offlineAdmissitionsCollection.find(query).toArray()
             // console.log(users);
             let lData = users.map(lead => {
 
                 const lds = lead.data.filter(ld => formatedDate(ld.FirstFollowup) === formatedDate(date) || formatedDate(ld.SecondFollowup) === formatedDate(date) || formatedDate(ld.ThirdFollowup) === formatedDate(date) || formatedDate(ld.NextFollowupDate) === formatedDate(date))
-                console.log("LDS", lds);
+                // console.log("LDS", lds);
                 lead.data = lds
                 return lead;
 
             })
+            let noRData = noreceive.map(noRlead => {
 
-            // console.log("Farvez", namee);
-            // if (name) {
-            //     let data = lData.filter(d => d.data.length > 0)
-            // }
-            // console.log("Farvez", lData.filter(d => d.employeeName));
+                const noRlds = noRlead.data.filter(ld => formatedDate(ld.FirstFollowup) === formatedDate(date) || formatedDate(ld.SecondFollowup) === formatedDate(date) || formatedDate(ld.ThirdFollowup) === formatedDate(date) || formatedDate(ld.NextFollowupDate) === formatedDate(date))
+                noRlead.data = noRlds
+                return noRlead;
+
+            })
+            let onLineFData = onlineF.map(onFlead => {
+
+                const onFleads = onFlead.data.filter(ld => formatedDate(ld.FirstFollowup) === formatedDate(date) || formatedDate(ld.SecondFollowup) === formatedDate(date) || formatedDate(ld.ThirdFollowup) === formatedDate(date) || formatedDate(ld.NextFollowupDate) === formatedDate(date))
+                onFlead.data = onFleads
+                return onFlead;
+
+            })
+            let ofLineFData = offlineF.map(ofFlead => {
+
+                const ofFleads = ofFlead.data.filter(ld => formatedDate(ld.FirstFollowup) === formatedDate(date) || formatedDate(ld.SecondFollowup) === formatedDate(date) || formatedDate(ld.ThirdFollowup) === formatedDate(date) || formatedDate(ld.NextFollowupDate) === formatedDate(date))
+                ofFlead.data = ofFleads
+                return ofFlead;
+
+            })
+
             let data = lData.filter(d => d.data.length > 0)
+            let noRdata = noRData.filter(noRd => noRd.data.length > 0)
+            let onFdata = onLineFData.filter(onF => onF.data.length > 0)
+            let ofFdata = ofLineFData.filter(ofF => ofF.data.length > 0)
             // console.log("Last Date", data);
-            res.send(data)
-        })
 
-        // const existingEmployee = await seminarInterestedCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName });
-        // if (existingEmployee) {
-        //     const existingData = existingEmployee.data;
-        //     // console.log(existingData);
-        //     const newArr = [...existingData, ...seminarInterestedData];
-        //     // console.log(newArr);
-        //     const updateEmployee = await seminarInterestedCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
-        //     return res.send(updateEmployee);
-        // }
-        // else {
-        //     const existingEmploye = await seminarInterestedCollection.insertOne(
-        //         {
-        //             courseName: courseName,
-        //             batchName: batchName,
-        //             employeeName: employeeName,
-        //             headName: headName,
-        //             data: seminarInterestedData
-        //         });
-        //     return res.send(existingEmploye);
-        // }
+            res.send([...data, ...noRdata, ...onFdata, ...ofFdata])
+        })
 
 
 
         // ''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+        // Seminar Attend ----------------------------------------------------
+
+        app.get('/user/seminar-attend/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { employeeName: name }
+            const users = await seminarAttendCollection.find(query).toArray()
+            res.send(users)
+        })
+
+        // Admission Post 
+        app.post('/seminar-attend-addmission', async (req, res) => {
+            const seminarAttendData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await admissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                const newArr = [...existingData, ...seminarAttendData];
+                await admissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName }, { $set: { data: newArr } }, { new: true });
+
+            }
+            else {
+                await admissitionsCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        date: new Date(),
+                        data: seminarAttendData
+                    });
+            }
+
+            const idData = await seminarAttendCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await seminarAttendCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
+        })
+
+        app.post('/seminar-attend-close-data', async (req, res) => {
+            const closeData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await closeCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                const newArr = [...existingData, ...closeData];
+                await closeCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+
+            }
+            else {
+                await closeCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        date: new Date(),
+                        data: closeData
+                    });
+            }
+
+            const idData = await seminarAttendCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await seminarAttendCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
+        })
+
+        app.post('/seminar-attend-online-admission-data', async (req, res) => {
+            const closeData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await onlineAdmissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                const newArr = [...existingData, ...closeData];
+                await onlineAdmissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+
+            }
+            else {
+                await onlineAdmissitionsCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        date: new Date(),
+                        data: closeData
+                    });
+            }
+
+            const idData = await seminarAttendCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await seminarAttendCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
+        })
+
+        app.post('/seminar-attend-offline-admission-data', async (req, res) => {
+            const closeData = [req.body.data];
+            const courseName = req.body.courseName;
+            const batchName = req.body.batchName;
+            const employeeName = req.body.employeeName;
+            const headName = req.body.headName;
+            const existingEmployee = await offlineAdmissitionsCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName });
+            let updateEmployee;
+            if (existingEmployee) {
+                const existingData = existingEmployee.data;
+                const newArr = [...existingData, ...closeData];
+                await offlineAdmissitionsCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newArr } }, { new: true });
+
+            }
+            else {
+                await offlineAdmissitionsCollection.insertOne(
+                    {
+                        courseName: courseName,
+                        batchName: batchName,
+                        employeeName: employeeName,
+                        headName: headName,
+                        date: new Date(),
+                        data: closeData
+                    });
+            }
+
+            const idData = await seminarAttendCollection.findOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName: headName })
+            if (idData) {
+                const newData = idData.data.filter(data => data.Id !== req.body.data.Id)
+                updateEmployee = await seminarAttendCollection.updateOne({ employeeName: employeeName, courseName: courseName, batchName: batchName, headName, headName }, { $set: { data: newData } }, { new: true });
+
+            }
+            return res.send(updateEmployee);
+        })
+
+        app.patch('/user/seminar-attend', async (req, res) => {
+            const updateLead = req.body;
+            console.log(updateLead);
+            const option = { upsert: true };
+            const updatedUser = {
+                $set: {
+                    data: updateLead
+                }
+            }
+            const resulted = await seminarAttendCollection.updateMany(req.query, updatedUser, option)
+            res.send(resulted);
+        })
+
 
         //All User 
         app.get('/users', async (req, res) => {

@@ -73,7 +73,7 @@ const TotalAdmission = () => {
 
     return (
         <div>
-            <h3 className="text-3xl mb-5">Total Admission</h3>
+            <h3 className="text-2xl mb-3">Total Admission</h3>
 
             <div className='flex flex-wrap items-center my-2'>
                 <div className="form-control">
@@ -82,7 +82,7 @@ const TotalAdmission = () => {
                     </label>
                     <select
                         ref={courseRef}
-                        className="select w-full border-gray-400"
+                        className="select select-sm w-full border-gray-400"
                     >
                         {
                             coursesName?.map((user) =>
@@ -100,7 +100,7 @@ const TotalAdmission = () => {
                     <label className="label">
                         <span className="label-text">Batch Name</span>
                     </label>
-                    <select className="select w-full border-gray-400" required
+                    <select className="select select-sm w-full border-gray-400" required
                         ref={batchRef}>
                         {
                             batchsName?.map((user) =>
@@ -118,7 +118,7 @@ const TotalAdmission = () => {
                     <label className="label">
                         <span className="label-text">Employee Name</span>
                     </label>
-                    <select className="select w-full border-gray-400" required
+                    <select className="select select-sm w-full border-gray-400" required
                         ref={userRef}>
                         {
                             usersName?.map((user) =>
@@ -136,7 +136,7 @@ const TotalAdmission = () => {
                     <label className="label">
                         <span className="label-text">Head Name</span>
                     </label>
-                    <select className="select w-full border-gray-400" required
+                    <select className="select select-sm w-full border-gray-400" required
                         ref={headRef}>
                         {
                             headsName?.map((user) =>
@@ -152,24 +152,21 @@ const TotalAdmission = () => {
                 <div className='mt-8'>
                     <button
                         onClick={handleSearch}
-                        className="btn btn-primary text-white bg-green-500"
+                        className="btn btn-sm btn-primary text-white bg-green-500"
                     >
                         Filter
                     </button>
                 </div>
 
-                <div className='mt-8 ml-32'>
-                    <input type="text" className="input input-bordered input-md w-full max-w-md" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Student Name, Phone, Email'></input>
+                <div className='mt-8 ml-44'>
+                    <input type="text" className="input input-bordered input-sm w-full max-w-md" onChange={(e) => setSearch(e.target.value)} placeholder='Search By Student Name, Phone, Email'></input>
                 </div>
             </div>
-
-
-
 
             <div className="overflow-auto" style={{ height: '430px', width: "1050px" }}>
                 <form>
                     <table className="table-fixed">
-                        <thead className='text-xs'>
+                        <thead className='text-xs sticky top-0 bg-slate-300' style={{ width: "1200px" }}>
                             <tr>
                                 <th style={{ border: "1px solid black" }}>#</th>
                                 <th width="105px" className='min-w-[105px] max-w-[105px]:' style={{ border: "1px solid black" }}>Course Name</th>
@@ -177,14 +174,14 @@ const TotalAdmission = () => {
                                 <th width="105px" className='min-w-[105px] max-w-[105px]:' style={{ border: "1px solid black" }}>User Name</th>
                                 <th width="105px" className='min-w-[105px] max-w-[105px]:' style={{ border: "1px solid black" }}>Head Name</th>
                                 <div>
-                                    <th width="120px" className='min-w-[120px] max-w-[120px]:' style={{ border: "1px solid black" }}>Name</th>
-                                    <th width="150px" className='min-w-[150px] max-w-[150px]:' style={{ border: "1px solid black" }}>Phone</th>
-                                    <th width="250px" className='min-w-[250px] max-w-[250px]:' style={{ border: "1px solid black" }}>Email</th>
+                                    <th width="160px" className='min-w-[160px] max-w-[160px]:' style={{ border: "1px solid black" }}>Name</th>
+                                    <th width="160px" className='min-w-[160px] max-w-[160px]:' style={{ border: "1px solid black" }}>Phone</th>
+                                    <th width="300px" className='min-w-[300px] max-w-[300px]:' style={{ border: "1px solid black" }}>Email</th>
                                 </div>
                             </tr>
                         </thead>
 
-                        <tbody>
+                        <tbody className='w-fit text-xs' style={{ width: "1200px" }}>
                             {
                                 admissions?.map((admission, i) =>
                                     <tr
@@ -200,10 +197,10 @@ const TotalAdmission = () => {
                                             })
                                                 ?.map((d, i) =>
                                                     <div>
-                                                        {/* <td width="150px" className='min-w-[150px] max-w-[150px]:' style={{ border: "1px solid black" }}>{i + 1}</td> */}
-                                                        <td width="120px" className='min-w-[120px] max-w-[120px]:' style={{ border: "1px solid black" }}>{d.Name}</td>
-                                                        <td width="150px" className='min-w-[150px] max-w-[150px]:' style={{ border: "1px solid black" }}>{d.Phone?.slice(2)}</td>
-                                                        <td width="250px" className='min-w-[250px] max-w-[250px]:' style={{ border: "1px solid black" }}>{d.Email?.slice(0, -9)}</td>
+                                                        {/* <td width="160px" className='min-w-[160px] max-w-[160px]:' style={{ border: "1px solid black" }}>{i + 1}</td> */}
+                                                        <td width="160px" className='min-w-[160px] max-w-[160px]:' style={{ border: "1px solid black" }}>{d.Name}</td>
+                                                        <td width="160px" className='min-w-[160px] max-w-[160px]:' style={{ border: "1px solid black" }}>{d.Phone}</td>
+                                                        <td width="300px" className='min-w-[300px] max-w-[300px]:' style={{ border: "1px solid black" }}>{d.Email?.slice(0, -9)}</td>
                                                     </div>)
                                         }
                                     </tr>)

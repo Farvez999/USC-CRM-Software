@@ -101,8 +101,51 @@ const Dashboard = () => {
         );
     };
 
+    const cardData = [
+        {
+            id: 1,
+            name: 'Opening Hours',
+            description: 'Open 9.00 am to 5.00pm everyday',
+            // icon: clock,
+            bgClass: 'bg-gradient-to-r from-primary to-secondary'
+        },
+        {
+            id: 2,
+            name: 'Our Locations',
+            description: 'Open 9.00 am to 5.00pm everyday',
+            // icon: marker,
+            bgClass: 'bg-accent'
+        },
+        {
+            id: 3,
+            name: 'Contact Us',
+            description: 'Open 9.00 am to 5.00pm everyday',
+            // icon: phone,
+            bgClass: 'bg-gradient-to-r from-primary to-secondary'
+        },
+    ]
+
     return (
         <div>
+
+            <div className='grid mt-8 gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+                {
+                    cardData.map(card =>
+                        <div className={`card text-white p-6 md:card-side shadow-xl ${card.bgClass}`}>
+                            <figure>
+                                <img src={card.icon} alt="Movie" />
+                            </figure>
+                            <div className="card-body">
+                                <h2 className="card-title">{card.name}</h2>
+                                <p>{card.description}</p>
+                            </div>
+                        </div>
+                    )
+                }
+            </div>
+
+
+
             <h2 className='text-2xl font-bold'>Hello {user.displayName} !</h2>
 
             <div className='flex flex-row flex-wrap my-2 items-center'>

@@ -25,6 +25,9 @@ import OnlineSt from "../Dashboard/Head/OnlineSt";
 import OfflineSt from "../Dashboard/Head/OfflineSt";
 import UserSetting from "../Dashboard/Admin/Settings/UserSetting";
 import TotalLead from "../Dashboard/Admin/Lead/TotalLead";
+import ResponsiveDrawer from "../Layout/ResponsiveDrawer";
+import NoReceive from "../Dashboard/Employee/NoReceive";
+import SeminarAttend from "../Dashboard/Employee/SeminarAttend";
 
 const router = createBrowserRouter([
     {
@@ -57,6 +60,10 @@ const router = createBrowserRouter([
             //         ),
             // },
         ],
+    },
+    {
+        path: '/dashboard/farvez',
+        element: <PrivateRoutes><ResponsiveDrawer></ResponsiveDrawer></PrivateRoutes>,
     },
     {
         path: '/dashboard',
@@ -122,6 +129,14 @@ const router = createBrowserRouter([
             {
                 path: '/dashboard/seminar-interested',
                 element: <SeminarInterested></SeminarInterested>
+            },
+            {
+                path: '/dashboard/seminar-attend',
+                element: <SeminarAttend></SeminarAttend>
+            },
+            {
+                path: '/dashboard/no-receive',
+                element: <NoReceive></NoReceive>
             },
             {
                 path: '/dashboard/today-followup',

@@ -9,19 +9,11 @@ const TodayFollowup = () => {
     const { user } = useContext(AuthContext)
     const [todayFollowup, setTodayFollowup] = useState([])
     const [search, setSearch] = useState("");
-    const [updateState, setUpdateState] = useState(-1)
-
-    const [leadsStatus, setLeadsStatus] = useState()
 
     const [editData, setEdidData] = useState(null)
     const [sLead, setSLead] = useState()
 
-    const handleEdidData = (l, singleLead) => {
-        setEdidData(l)
-        setSLead(singleLead)
-    }
-
-
+    console.log(todayFollowup);
 
     var date = new Date()
     console.log(date);
@@ -40,23 +32,23 @@ const TodayFollowup = () => {
 
 
 
-    const handleUpdate = event => {
-        event.preventDefault();
-        console.log(leadsStatus);
-        fetch(`http://localhost:5000/leads/${user.displayName}`, {
-            method: 'PUT', // or 'PUT'
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(leadsStatus),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                toast.success('Lead Updates Success')
-                setEdidData(null)
-            });
-    }
+    const [leadsUpdate, setLeadsUpdate] = useState()
 
+    const handleUpdate = (event) => {
+        event.preventDefault();
+        // fetch(`http://localhost:5000/user/today-followup?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
+        //     method: 'PUT', // or 'PUT'
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(leadsUpdate),
+        // })
+        //     .then((response) => response.json())
+        //     .then((data) => {
+        //         toast.success('Lead Updates Success')
+        //         setEdidData(null)
+        //     });
+    }
 
 
     const handleAdmission = (l, singleLead) => {
@@ -148,6 +140,11 @@ const TodayFollowup = () => {
             })
     }
 
+    const handleEdidData = (d, online) => {
+        setEdidData(d)
+        setSLead(online)
+    }
+
     return (
         <div>
             <h3 className="text-3xl mb-3">Today Followup Student</h3>
@@ -157,17 +154,19 @@ const TodayFollowup = () => {
             <div className="overflow-auto" style={{ height: '430px', width: "1050px" }}>
                 <form onSubmit={handleUpdate}>
                     <table className="table-fixed">
-                        <thead>
+                        <thead className='sticky top-0 bg-slate-300' style={{ width: "1200px" }}>
                             <tr className='text-xs'>
-                                <th style={{ border: "1px solid black" }}>#</th>
-                                <th width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>C N</th>
-                                <th width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>B N</th>
-                                <th width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>U N</th>
-                                <th width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>H N</th>
+
                                 <tr>
+                                    <th style={{ border: "1px solid black" }}>#</th>
+                                    <th width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>Date</th>
+                                    <th width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>C N</th>
+                                    <th width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>B N</th>
+                                    <th width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>U N</th>
+                                    <th width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>H N</th>
                                     <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Name</th>
-                                    <th width="100px" className='min-w-[100px] max-w-[100px]:' style={{ border: "1px solid black" }}>Phone</th>
-                                    <th width="110px" className='min-w-[110px] max-w-[110px]:' style={{ border: "1px solid black" }}>Email</th>
+                                    <th width="120px" className='min-w-[120px] max-w-[120px]:' style={{ border: "1px solid black" }}>Phone</th>
+                                    <th width="200px" className='min-w-[200px] max-w-[200px]:' style={{ border: "1px solid black" }}>Email</th>
                                     <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>1st F up</th>
                                     <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>2nd F up</th>
                                     <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>3rd F up</th>
@@ -183,42 +182,38 @@ const TodayFollowup = () => {
                         <tbody className='text-xs'>
 
                             {
-                                todayFollowup.map((todayFollow, i) =>
+                                todayFollowup.map((todayFollow) =>
                                     <tr key={todayFollow.Id}>
-                                        <th style={{ border: "1px solid black" }}>{i + 1}</th>
-                                        <td width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>{todayFollow.courseName}</td>
-                                        <td width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>{todayFollow.batchName}</td>
-                                        <td width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>{todayFollow.employeeName}</td>
-                                        <td width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>{todayFollow.headName}</td>
+
 
                                         {
                                             todayFollow?.data?.filter((d) => {
                                                 return search?.toLowerCase() === '' ? d : d.Name.toLowerCase().includes(search) || d.Phone.toLowerCase().includes(search) || d.Email.toLowerCase().includes(search);
                                             })
-                                                ?.map(d =>
-                                                    updateState === d.Id ? <Edit
-                                                        l={d}
-                                                        singleLead={todayFollow}
-                                                        setLeads={setTodayFollowup}
-                                                        leadsStatus={leadsStatus}
-                                                        setLeadsStatus={setLeadsStatus} /> :
-                                                        <tr>
-                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.Name}</td>
-                                                            <td width="100px" className='min-w-[100px] max-w-[100px]:' style={{ border: "1px solid black" }}>{d.Phone?.slice(2)}</td>
-                                                            <td width="110px" className='min-w-[110px] max-w-[110px]:' style={{ border: "1px solid black" }}>{d.Email?.slice(0, -9)}</td>
-                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.FirstFollowup}</td>
-                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.SecondFollowup}</td>
-                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.ThirdFollowup}</td>
-                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.NextFollowupDate}</td>
-                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.Remark}</td>
-                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.RemarkTwo}</td>
-                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.AdmissionStates}</td>
-                                                            <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
-                                                                <label onClick={() => handleEdidData(d, todayFollow)} htmlFor="editModal" className="btn btn-xs btn-secondary mr-2">Edit</label>
-                                                                <p className='btn btn-xs btn-primary my-2' onClick={() => handleAdmission(d, todayFollow)} >Add</p>
-                                                                <p className='btn btn-xs btn-denger' onClick={() => handleClose(d, todayFollow)} >Close</p>
-                                                            </td>
-                                                        </tr>
+                                                ?.map((d, i) =>
+                                                    <tr>
+                                                        <th style={{ border: "1px solid black" }}>{i + 1}</th>
+                                                        <td width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>{todayFollow.date.slice(0, -14)}</td>
+                                                        <td width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>{todayFollow.courseName}</td>
+                                                        <td width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>{todayFollow.batchName}</td>
+                                                        <td width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>{todayFollow.employeeName}</td>
+                                                        <td width="45px" className='min-w-[45px] max-w-[45px]:' style={{ border: "1px solid black" }}>{todayFollow.headName}</td>
+                                                        <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.Name}</td>
+                                                        <td width="120px" className='min-w-[120px] max-w-[120px]:' style={{ border: "1px solid black" }}>{d.Phone}</td>
+                                                        <td width="200px" className='min-w-[200px] max-w-[200px]:' style={{ border: "1px solid black" }}>{d.Email?.slice(0, -9)}</td>
+                                                        <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.FirstFollowup}</td>
+                                                        <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.SecondFollowup}</td>
+                                                        <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.ThirdFollowup}</td>
+                                                        <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.NextFollowupDate}</td>
+                                                        <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.Remark}</td>
+                                                        <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.RemarkTwo}</td>
+                                                        <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>{d.AdmissionStates}</td>
+                                                        <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
+                                                            <label onClick={() => handleEdidData(d, todayFollow)} htmlFor="editModal" className="btn btn-xs btn-secondary mr-2">Edit</label>
+                                                            <p className='btn btn-xs btn-primary my-2' onClick={() => handleAdmission(d, todayFollow)} >Add</p>
+                                                            <p className='btn btn-xs btn-denger' onClick={() => handleClose(d, todayFollow)} >Close</p>
+                                                        </td>
+                                                    </tr>
                                                 )
                                         }
                                     </tr>
@@ -237,8 +232,8 @@ const TodayFollowup = () => {
                     handleUpdate={handleUpdate}
                     editData={editData}
                     singleLead={sLead}
-                    leadsStatus={leadsStatus}
-                    setLeadsStatus={setLeadsStatus}
+                    leadsUpdate={leadsUpdate}
+                    setLeadsUpdate={setLeadsUpdate}
                 >
                 </EditModal>}
         </div>
