@@ -85,7 +85,7 @@ const LeadUpload = () => {
     const { data: coursesName = [] } = useQuery({
         queryKey: ['coursesName'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/course-name-setting`);
+            const res = await fetch(`https://server-farvez999.vercel.app/course-name-setting`);
             const data = await res.json();
             return data;
         }
@@ -98,7 +98,7 @@ const LeadUpload = () => {
     const { data: batchsName = [] } = useQuery({
         queryKey: ['batchsName'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/batch-name-setting`);
+            const res = await fetch(`https://server-farvez999.vercel.app/batch-name-setting`);
             const data = await res.json();
             return data;
         }
@@ -111,7 +111,7 @@ const LeadUpload = () => {
     const { data: usersName = [] } = useQuery({
         queryKey: ['usersName'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user-name-setting`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user-name-setting`);
             const data = await res.json();
             return data;
         }
@@ -126,7 +126,7 @@ const LeadUpload = () => {
     const { data: headsName = [] } = useQuery({
         queryKey: ['headsName'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/head-name-setting`);
+            const res = await fetch(`https://server-farvez999.vercel.app/head-name-setting`);
             const data = await res.json();
             return data;
         }
@@ -145,7 +145,7 @@ const LeadUpload = () => {
             date: new Date()
         }
 
-        fetch(`http://localhost:5000/personal-data-add`, {
+        fetch(`https://server-farvez999.vercel.app/personal-data-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',

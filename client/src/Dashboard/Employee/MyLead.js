@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthProvider';
 import { toast } from 'react-hot-toast';
 import EditModal from './EditModal';
+import { useQuery } from '@tanstack/react-query';
 
 const MyLead = () => {
 
@@ -14,9 +15,17 @@ const MyLead = () => {
     const [sLead, setSLead] = useState()
 
 
+    const { data: onlines = [], refetch } = useQuery({
+        queryKey: ['onlines'],
+        queryFn: async () => {
+            const res = await fetch(`https://server-farvez999.vercel.app/leads/${user.displayName}`);
+            const data = await res.json();
+            return data;
+        }
+    });
 
     useEffect(() => {
-        fetch(`http://localhost:5000/leads/${user.displayName}`, {
+        fetch(`https://server-farvez999.vercel.app/leads/${user.displayName}`, {
             headers: {
                 authorization: `bearer ${localStorage.getItem('accessToken')}`
             }
@@ -32,10 +41,7 @@ const MyLead = () => {
 
     const handleUpdate = (event) => {
         event.preventDefault();
-        // console.log(leadsUpdate);
-        // console.log(editData);
-        // console.log(sLead.employeeName);
-        fetch(`http://localhost:5000/leads?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
+        fetch(`https://server-farvez999.vercel.app/leads?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
             method: 'PATCH', // or 'PUT'
             headers: {
                 'Content-Type': 'application/json',
@@ -45,6 +51,7 @@ const MyLead = () => {
             .then((response) => response.json())
             .then((data) => {
                 toast.success('Lead Updates Success')
+                refetch()
                 setEdidData(null)
             });
     }
@@ -66,7 +73,7 @@ const MyLead = () => {
             // date: new Date()
         }
 
-        fetch(`http://localhost:5000/user-admission-add`, {
+        fetch(`https://server-farvez999.vercel.app/user-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -114,7 +121,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-close-add`, {
+        fetch(`https://server-farvez999.vercel.app/user-close-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -178,7 +185,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-online-admission-add`, {
+        fetch(`https://server-farvez999.vercel.app/user-online-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -189,9 +196,24 @@ const MyLead = () => {
             .then(res => res.json())
             .then(data => {
                 // console.log(data);
-                toast.success('Online Admissions Interested')
+                toast.success('Online Seminar Interested')
+                let lData = onlines.map(lead => {
+                    if (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) {
+                        const lds = lead.data.filter(ld => ld.Id !== l.Id)
+                        lead.data = lds;
+                        return lead;
+                    } else {
+
+                        return lead;
+                    }
+                })
+
+                lData = lData.filter(ld => ld.data.length !== 0);
+                refetch()
+                setLeads(lData)
             })
     }
+
 
     const handleOffline = (l, singleLead) => {
         const courseName = singleLead.courseName
@@ -206,7 +228,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-offline-admission-add`, {
+        fetch(`https://server-farvez999.vercel.app/user-offline-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -218,6 +240,20 @@ const MyLead = () => {
             .then(data => {
                 // console.log(data);
                 toast.success('Offline Admissions Interested')
+                let lData = onlines.map(lead => {
+                    if (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) {
+                        const lds = lead.data.filter(ld => ld.Id !== l.Id)
+                        lead.data = lds;
+                        return lead;
+                    } else {
+
+                        return lead;
+                    }
+                })
+
+                lData = lData.filter(ld => ld.data.length !== 0);
+                refetch()
+                setLeads(lData)
             })
     }
 
@@ -234,7 +270,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-seminar-interested-add`, {
+        fetch(`https://server-farvez999.vercel.app/user-seminar-interested-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -276,7 +312,7 @@ const MyLead = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-no-recive-add`, {
+        fetch(`https://server-farvez999.vercel.app/user-no-recive-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',

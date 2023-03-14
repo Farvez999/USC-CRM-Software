@@ -23,7 +23,7 @@ const TotalLead = () => {
 
 
     useEffect(() => {
-        fetch(`http://localhost:5000/user/total-leads?courseSearch=${courseSearch}&batchSearch=${batchSearch}&userSearch=${userSearch}&headSearch=${headSearch}`)
+        fetch(`https://server-farvez999.vercel.app/user/total-leads?courseSearch=${courseSearch}&batchSearch=${batchSearch}&userSearch=${userSearch}&headSearch=${headSearch}`)
             .then((res) => res.json())
             .then((data) => setAmissions(data));
     }, [courseSearch, batchSearch, userSearch, headSearch]);
@@ -33,7 +33,7 @@ const TotalLead = () => {
         console.log(d.Id);
         console.log(admission);
 
-        fetch(`http://localhost:5000/admin/total-lead/${d.Id}?courseName=${admission.courseName}&batchName=${admission.batchName}&employeeName=${admission.employeeName}&headName=${admission.headName}`, {
+        fetch(`https://server-farvez999.vercel.app/admin/total-lead/${d.Id}?courseName=${admission.courseName}&batchName=${admission.batchName}&employeeName=${admission.employeeName}&headName=${admission.headName}`, {
             method: 'DELETE',
             headers: {
                 authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -52,7 +52,7 @@ const TotalLead = () => {
     const { data: coursesName = [] } = useQuery({
         queryKey: ['coursesName'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/course-name-setting`);
+            const res = await fetch(`https://server-farvez999.vercel.app/course-name-setting`);
             const data = await res.json();
             return data;
         }
@@ -61,7 +61,7 @@ const TotalLead = () => {
     const { data: batchsName = [] } = useQuery({
         queryKey: ['batchsName'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/batch-name-setting`);
+            const res = await fetch(`https://server-farvez999.vercel.app/batch-name-setting`);
             const data = await res.json();
             return data;
         }
@@ -70,7 +70,7 @@ const TotalLead = () => {
     const { data: usersName = [] } = useQuery({
         queryKey: ['usersName'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user-name-setting`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user-name-setting`);
             const data = await res.json();
             return data;
         }
@@ -79,7 +79,7 @@ const TotalLead = () => {
     const { data: headsName = [] } = useQuery({
         queryKey: ['headsName'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/head-name-setting`);
+            const res = await fetch(`https://server-farvez999.vercel.app/head-name-setting`);
             const data = await res.json();
             return data;
         }

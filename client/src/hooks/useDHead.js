@@ -5,7 +5,7 @@ const useDHead = email => {
     const [isDHeadLoading, setIsDHeadAdminLoading] = useState(true);
     useEffect(() => {
         if (email) {
-            fetch(`http://localhost:5000/users/dhead/${email}`)
+            fetch(`https://server-farvez999.vercel.app/users/dhead/${email}`)
                 .then(res => res.json())
                 .then(data => {
                     console.log(data);

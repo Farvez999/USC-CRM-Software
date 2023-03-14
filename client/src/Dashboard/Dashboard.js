@@ -19,7 +19,7 @@ const Dashboard = () => {
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/users`);
+            const res = await fetch(`https://server-farvez999.vercel.app/users`);
             const data = await res.json();
             return data;
         }
@@ -30,7 +30,7 @@ const Dashboard = () => {
     const { data: admissions = [] } = useQuery({
         queryKey: ['admissions'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user/total-admissions`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user/total-admissions`);
             const data = await res.json();
             return data;
         }
@@ -41,7 +41,7 @@ const Dashboard = () => {
     const { data: closes = [] } = useQuery({
         queryKey: ['closes'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user/total-close`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user/total-close`);
             const data = await res.json();
             return data;
         }
@@ -50,7 +50,7 @@ const Dashboard = () => {
     const { data: onlineStudents = [] } = useQuery({
         queryKey: ['onlineStudents'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user/total-online-student`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user/total-online-student`);
             const data = await res.json();
             return data;
         }
@@ -59,7 +59,7 @@ const Dashboard = () => {
     const { data: offlineStudents = [] } = useQuery({
         queryKey: ['offlineStudents'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user/total-offline-student`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user/total-offline-student`);
             const data = await res.json();
             return data;
         }

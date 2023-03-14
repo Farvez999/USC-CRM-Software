@@ -17,14 +17,14 @@ const SeminarInterested = () => {
     const { data: seminarInteresteds = [], refetch } = useQuery({
         queryKey: ['seminarInteresteds'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user/seminar-interested/${user.displayName}`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user/seminar-interested/${user.displayName}`);
             const data = await res.json();
             return data;
         }
     });
 
     useEffect(() => {
-        fetch(`http://localhost:5000/user/seminar-interested/${user.displayName}`, {
+        fetch(`https://server-farvez999.vercel.app/user/seminar-interested/${user.displayName}`, {
             headers: {
                 authorization: `bearer ${localStorage.getItem('accessToken')}`
             }
@@ -41,7 +41,7 @@ const SeminarInterested = () => {
 
     const handleUpdate = (event) => {
         event.preventDefault();
-        fetch(`http://localhost:5000/user/seminar-interested?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
+        fetch(`https://server-farvez999.vercel.app/user/seminar-interested?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
             method: 'PATCH', // or 'PUT'
             headers: {
                 'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const SeminarInterested = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/seminar-interest-add`, {
+        fetch(`https://server-farvez999.vercel.app/seminar-interest-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -117,7 +117,7 @@ const SeminarInterested = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/seminar-interest-close-data`, {
+        fetch(`https://server-farvez999.vercel.app/seminar-interest-close-data`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -160,7 +160,7 @@ const SeminarInterested = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/seminar-attend-add`, {
+        fetch(`https://server-farvez999.vercel.app/seminar-attend-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -202,7 +202,7 @@ const SeminarInterested = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/seminar-online-admission-data`, {
+        fetch(`https://server-farvez999.vercel.app/seminar-online-admission-data`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -244,7 +244,7 @@ const SeminarInterested = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/seminar-offline-admission-data`, {
+        fetch(`https://server-farvez999.vercel.app/seminar-offline-admission-data`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',

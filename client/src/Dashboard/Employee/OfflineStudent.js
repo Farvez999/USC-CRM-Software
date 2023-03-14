@@ -15,7 +15,7 @@ const OfflineStudent = () => {
     const { data: offlines = [], refetch } = useQuery({
         queryKey: ['offlines'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user/offline-admissions/${user.displayName}`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user/offline-admissions/${user.displayName}`);
             const data = await res.json();
             return data;
         }
@@ -27,7 +27,7 @@ const OfflineStudent = () => {
 
     const handleUpdate = (event) => {
         event.preventDefault();
-        fetch(`http://localhost:5000/user/offline-admissions?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
+        fetch(`https://server-farvez999.vercel.app/user/offline-admissions?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
             method: 'PATCH', // or 'PUT'
             headers: {
                 'Content-Type': 'application/json',
@@ -37,6 +37,7 @@ const OfflineStudent = () => {
             .then((response) => response.json())
             .then((data) => {
                 toast.success('Lead Updates Success')
+                refetch()
                 setEdidData(null)
             });
     }
@@ -56,7 +57,7 @@ const OfflineStudent = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-admission-add`, {
+        fetch(`https://server-farvez999.vercel.app/offline-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -68,7 +69,7 @@ const OfflineStudent = () => {
             .then(data => {
                 toast.success('Admisstion Data added successfully')
 
-                let lData = leads.map(lead => {
+                let lData = offlines.map(lead => {
                     if (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) {
                         const lds = lead.data.filter(ld => ld.Id !== l.Id)
                         lead.data = lds;
@@ -101,7 +102,7 @@ const OfflineStudent = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-close-add`, {
+        fetch(`https://server-farvez999.vercel.app/offline-close-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -113,7 +114,7 @@ const OfflineStudent = () => {
             .then(data => {
                 console.log(data);
                 toast.success('Admisstion Data Close successfully')
-                let lData = leads.map(lead => {
+                let lData = offlines.map(lead => {
                     if (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) {
                         const lds = lead.data.filter(ld => ld.Id !== l.Id)
                         lead.data = lds;

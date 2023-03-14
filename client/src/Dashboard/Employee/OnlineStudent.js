@@ -19,7 +19,7 @@ const OnlineStudent = () => {
     const { data: onlines = [], refetch } = useQuery({
         queryKey: ['onlines'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user/online-admissions/${user.displayName}`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user/online-admissions/${user.displayName}`);
             const data = await res.json();
             return data;
         }
@@ -30,7 +30,7 @@ const OnlineStudent = () => {
     const handleUpdate = (event) => {
         event.preventDefault();
         console.log(leadsUpdate);
-        fetch(`http://localhost:5000/user/online-admissions?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
+        fetch(`https://server-farvez999.vercel.app/user/online-admissions?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
             method: 'PATCH', // or 'PUT'
             headers: {
                 'Content-Type': 'application/json',
@@ -40,6 +40,7 @@ const OnlineStudent = () => {
             .then((response) => response.json())
             .then((data) => {
                 toast.success('Lead Updates Success')
+                refetch()
                 setEdidData(null)
             });
     }
@@ -58,7 +59,7 @@ const OnlineStudent = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-admission-add`, {
+        fetch(`https://server-farvez999.vercel.app/online-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -82,7 +83,7 @@ const OnlineStudent = () => {
                 })
 
                 lData = lData.filter(ld => ld.data.length !== 0);
-
+                refetch()
                 setLeads(lData)
             })
 
@@ -103,7 +104,7 @@ const OnlineStudent = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-close-add`, {
+        fetch(`https://server-farvez999.vercel.app/online-close-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -127,7 +128,7 @@ const OnlineStudent = () => {
                 })
 
                 lData = lData.filter(ld => ld.data.length !== 0);
-
+                refetch()
                 setLeads(lData)
 
             })

@@ -16,14 +16,14 @@ const NoReceive = () => {
     const { data: noReceives = [], refetch } = useQuery({
         queryKey: ['noReceives'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user/no-receive/${user.displayName}`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user/no-receive/${user.displayName}`);
             const data = await res.json();
             return data;
         }
     });
 
     useEffect(() => {
-        fetch(`http://localhost:5000/user/no-receive/${user.displayName}`, {
+        fetch(`https://server-farvez999.vercel.app/user/no-receive/${user.displayName}`, {
             headers: {
                 authorization: `bearer ${localStorage.getItem('accessToken')}`
             }
@@ -40,7 +40,7 @@ const NoReceive = () => {
 
     const handleUpdate = (event) => {
         event.preventDefault();
-        fetch(`http://localhost:5000/user/no-receive?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
+        fetch(`https://server-farvez999.vercel.app/user/no-receive?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
             method: 'PATCH', // or 'PUT'
             headers: {
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const NoReceive = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/no-receive-admission-add`, {
+        fetch(`https://server-farvez999.vercel.app/no-receive-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -117,7 +117,7 @@ const NoReceive = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/no-receive-user-close`, {
+        fetch(`https://server-farvez999.vercel.app/no-receive-user-close`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -144,6 +144,133 @@ const NoReceive = () => {
                 refetch()
                 setLeads(lData)
 
+            })
+    }
+
+    const handleOnline = (l, seminarInterested) => {
+        const courseName = seminarInterested.courseName
+        const batchName = seminarInterested.batchName
+        const employeeName = seminarInterested.employeeName
+        const headName = seminarInterested.headName
+        const onlineAdmisssionIntersted = {
+            data: l,
+            courseName,
+            batchName,
+            employeeName,
+            headName
+        }
+
+        fetch(`https://server-farvez999.vercel.app/no-receive-online-data`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
+            },
+            body: JSON.stringify(onlineAdmisssionIntersted)
+        })
+            .then(res => res.json())
+            .then(data => {
+                // console.log(data);
+                toast.success('Online Seminar Interested')
+                let lData = noReceives.map(lead => {
+                    if (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) {
+                        const lds = lead.data.filter(ld => ld.Id !== l.Id)
+                        lead.data = lds;
+                        return lead;
+                    } else {
+
+                        return lead;
+                    }
+                })
+
+                lData = lData.filter(ld => ld.data.length !== 0);
+                refetch()
+                setLeads(lData)
+            })
+    }
+
+    const handleOffline = (l, seminarInterested) => {
+        const courseName = seminarInterested.courseName
+        const batchName = seminarInterested.batchName
+        const employeeName = seminarInterested.employeeName
+        const headName = seminarInterested.headName
+        const offlineAdmisssionIntersted = {
+            data: l,
+            courseName,
+            batchName,
+            employeeName,
+            headName
+        }
+
+        fetch(`https://server-farvez999.vercel.app/no-receive-offline-data`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
+            },
+            body: JSON.stringify(offlineAdmisssionIntersted)
+        })
+            .then(res => res.json())
+            .then(data => {
+                // console.log(data);
+                toast.success('Offline Admissions Interested')
+                let lData = noReceives.map(lead => {
+                    if (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) {
+                        const lds = lead.data.filter(ld => ld.Id !== l.Id)
+                        lead.data = lds;
+                        return lead;
+                    } else {
+
+                        return lead;
+                    }
+                })
+
+                lData = lData.filter(ld => ld.data.length !== 0);
+                refetch()
+                setLeads(lData)
+            })
+    }
+
+
+    const handleattend = (l, singleLead) => {
+        const courseName = singleLead.courseName
+        const batchName = singleLead.batchName
+        const employeeName = singleLead.employeeName
+        const headName = singleLead.headName
+        const seminarIntersted = {
+            data: l,
+            courseName,
+            batchName,
+            employeeName,
+            headName
+        }
+
+        fetch(`https://server-farvez999.vercel.app/no-receive-attend-add`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
+            },
+            body: JSON.stringify(seminarIntersted)
+        })
+            .then(res => res.json())
+            .then(data => {
+                // console.log(data);
+                toast.success('Seminar Interested Added')
+                let lData = noReceives.map(lead => {
+                    if (lead.batchName === batchName && lead.courseName === courseName && lead.employeeName === employeeName && lead.headName === headName) {
+                        const lds = lead.data.filter(ld => ld.Id !== l.Id)
+                        lead.data = lds;
+                        return lead;
+                    } else {
+
+                        return lead;
+                    }
+                })
+
+                lData = lData.filter(ld => ld.data.length !== 0);
+                refetch()
+                setLeads(lData)
             })
     }
 
@@ -182,6 +309,7 @@ const NoReceive = () => {
                                     <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Remark 2</th>
                                     <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Ad S</th>
                                     <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Action</th>
+                                    <th width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>Interested</th>
                                 </tr>
                             </tr>
                         </thead>
@@ -221,7 +349,11 @@ const NoReceive = () => {
                                                             <p className='btn btn-xs btn-primary my-2' onClick={() => handleAdmission(d, noReceive)} >Add</p>
                                                             <p className='btn btn-xs btn-denger' onClick={() => handleClose(d, noReceive)} >Cl</p>
                                                         </td>
-
+                                                        <td width="70px" className='min-w-[70px] max-w-[70px]:' style={{ border: "1px solid black" }}>
+                                                            <p className='btn btn-xs btn-primary my-2' onClick={() => handleOnline(d, noReceive)} >On</p>
+                                                            <p className='btn btn-xs btn-denger' onClick={() => handleOffline(d, noReceive)} >Off</p>
+                                                            <p className='btn btn-xs btn-denger mt-2 mb-2' onClick={() => handleattend(d, noReceive)} > S I </p>
+                                                        </td>
 
                                                     </tr>
                                                 )

@@ -19,7 +19,7 @@ const TodayFollowup = () => {
     console.log(date);
 
     useEffect(() => {
-        fetch(`http://localhost:5000/followup/${user.displayName}/${date}`, {
+        fetch(`https://server-farvez999.vercel.app/followup/${user.displayName}/${date}`, {
             headers: {
                 authorization: `bearer ${localStorage.getItem('accessToken')}`
             }
@@ -30,24 +30,37 @@ const TodayFollowup = () => {
             })
     }, [])
 
+    // useEffect(() => {
+    //     fetch(`https://server-farvez999.vercel.app/followupData`, {
+    //         headers: {
+    //             authorization: `bearer ${localStorage.getItem('accessToken')}`
+    //         }
+    //     })
+    //         .then((response) => response.json())
+    //         .then((data) => {
+    //             // setTodayFollowup(data)
+    //             console.log(data);
+    //         })
+    // }, [])
+
 
 
     const [leadsUpdate, setLeadsUpdate] = useState()
 
     const handleUpdate = (event) => {
         event.preventDefault();
-        // fetch(`http://localhost:5000/user/today-followup?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
-        //     method: 'PUT', // or 'PUT'
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(leadsUpdate),
-        // })
-        //     .then((response) => response.json())
-        //     .then((data) => {
-        //         toast.success('Lead Updates Success')
-        //         setEdidData(null)
-        //     });
+        fetch(`https://server-farvez999.vercel.app/user/today-followup?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
+            method: 'PATCH', // or 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(leadsUpdate),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                toast.success('Lead Updates Success')
+                setEdidData(null)
+            });
     }
 
 
@@ -65,7 +78,7 @@ const TodayFollowup = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-admission-add`, {
+        fetch(`https://server-farvez999.vercel.app/user-admission-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -110,7 +123,7 @@ const TodayFollowup = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/user-close-add`, {
+        fetch(`https://server-farvez999.vercel.app/user-close-add`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',

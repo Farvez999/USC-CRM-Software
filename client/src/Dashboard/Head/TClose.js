@@ -10,7 +10,7 @@ const TClose = () => {
     const { data: closes = [], refetch } = useQuery({
         queryKey: ['closes'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/head/close/${user.displayName}`);
+            const res = await fetch(`https://server-farvez999.vercel.app/head/close/${user.displayName}`);
             const data = await res.json();
             return data;
         }

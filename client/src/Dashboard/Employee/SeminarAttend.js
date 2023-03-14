@@ -16,14 +16,14 @@ const SeminarAttend = () => {
     const { data: seminarAttends = [], refetch } = useQuery({
         queryKey: ['seminarAttends'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user/seminar-attend/${user.displayName}`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user/seminar-attend/${user.displayName}`);
             const data = await res.json();
             return data;
         }
     });
 
     useEffect(() => {
-        fetch(`http://localhost:5000/user/seminar-attend/${user.displayName}`, {
+        fetch(`https://server-farvez999.vercel.app/user/seminar-attend/${user.displayName}`, {
             headers: {
                 authorization: `bearer ${localStorage.getItem('accessToken')}`
             }
@@ -40,7 +40,7 @@ const SeminarAttend = () => {
 
     const handleUpdate = (event) => {
         event.preventDefault();
-        fetch(`http://localhost:5000/user/seminar-attend?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
+        fetch(`https://server-farvez999.vercel.app/user/seminar-attend?employeeName=${sLead.employeeName}&courseName=${sLead.courseName}&batchName=${sLead.batchName}&headName=${sLead.headName}`, {
             method: 'PATCH', // or 'PUT'
             headers: {
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const SeminarAttend = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/seminar-attend-online-data`, {
+        fetch(`https://server-farvez999.vercel.app/seminar-attend-online-data`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -116,7 +116,7 @@ const SeminarAttend = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/seminar-attend-close-data`, {
+        fetch(`https://server-farvez999.vercel.app/seminar-attend-close-data`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -159,7 +159,7 @@ const SeminarAttend = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/seminar-attend-online-admission-data`, {
+        fetch(`https://server-farvez999.vercel.app/seminar-attend-online-admission-data`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -201,7 +201,7 @@ const SeminarAttend = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/seminar-attend-offline-admission-data`, {
+        fetch(`https://server-farvez999.vercel.app/seminar-attend-offline-admission-data`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',

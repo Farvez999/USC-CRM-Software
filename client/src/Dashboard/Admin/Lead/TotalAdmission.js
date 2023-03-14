@@ -20,7 +20,7 @@ const TotalAdmission = () => {
     console.log(batchSearch);
 
     useEffect(() => {
-        fetch(`http://localhost:5000/user/total-admissions?courseSearch=${courseSearch}&batchSearch=${batchSearch}&userSearch=${userSearch}&headSearch=${headSearch}`)
+        fetch(`https://server-farvez999.vercel.app/user/total-admissions?courseSearch=${courseSearch}&batchSearch=${batchSearch}&userSearch=${userSearch}&headSearch=${headSearch}`)
             .then((res) => res.json())
             .then((data) => setAmissions(data));
     }, [courseSearch, batchSearch, userSearch, headSearch]);
@@ -28,7 +28,7 @@ const TotalAdmission = () => {
     const { data: coursesName = [] } = useQuery({
         queryKey: ['coursesName'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/course-name-setting`);
+            const res = await fetch(`https://server-farvez999.vercel.app/course-name-setting`);
             const data = await res.json();
             return data;
         }
@@ -37,7 +37,7 @@ const TotalAdmission = () => {
     const { data: batchsName = [] } = useQuery({
         queryKey: ['batchsName'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/batch-name-setting`);
+            const res = await fetch(`https://server-farvez999.vercel.app/batch-name-setting`);
             const data = await res.json();
             return data;
         }
@@ -46,7 +46,7 @@ const TotalAdmission = () => {
     const { data: usersName = [] } = useQuery({
         queryKey: ['usersName'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/user-name-setting`);
+            const res = await fetch(`https://server-farvez999.vercel.app/user-name-setting`);
             const data = await res.json();
             return data;
         }
@@ -55,7 +55,7 @@ const TotalAdmission = () => {
     const { data: headsName = [] } = useQuery({
         queryKey: ['headsName'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/head-name-setting`);
+            const res = await fetch(`https://server-farvez999.vercel.app/head-name-setting`);
             const data = await res.json();
             return data;
         }

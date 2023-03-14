@@ -31,7 +31,7 @@ const UserSetting = () => {
             userName
         }
 
-        fetch(`http://localhost:5000/user-name-setting`, {
+        fetch(`https://server-farvez999.vercel.app/user-name-setting`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -51,7 +51,7 @@ const UserSetting = () => {
             headName
         }
 
-        fetch(`http://localhost:5000/head-name-setting`, {
+        fetch(`https://server-farvez999.vercel.app/head-name-setting`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -71,7 +71,7 @@ const UserSetting = () => {
             courseName
         }
 
-        fetch(`http://localhost:5000/course-name-setting`, {
+        fetch(`https://server-farvez999.vercel.app/course-name-setting`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -91,7 +91,7 @@ const UserSetting = () => {
             batchName
         }
 
-        fetch(`http://localhost:5000/batch-name-setting`, {
+        fetch(`https://server-farvez999.vercel.app/batch-name-setting`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',

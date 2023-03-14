@@ -10,7 +10,7 @@ const TotalAdd = () => {
     const { data: admissions = [], refetch } = useQuery({
         queryKey: ['admissions'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/head/admissions/${user.displayName}`);
+            const res = await fetch(`https://server-farvez999.vercel.app/head/admissions/${user.displayName}`);
             const data = await res.json();
             return data;
         }

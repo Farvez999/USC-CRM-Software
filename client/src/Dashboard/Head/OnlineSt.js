@@ -10,7 +10,7 @@ const OnlineSt = () => {
     const { data: onlines = [], refetch } = useQuery({
         queryKey: ['onlines'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/head/online-admissions/${user.displayName}`);
+            const res = await fetch(`https://server-farvez999.vercel.app/head/online-admissions/${user.displayName}`);
             const data = await res.json();
             return data;
         }
